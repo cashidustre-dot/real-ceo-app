@@ -12,14 +12,12 @@ app = Flask(__name__)
 # =========================================================
 
 def get_db():
-
     return psycopg2.connect(
         os.environ["DATABASE_URL"]
     )
 
 
 def init_db():
-
     conn = get_db()
     cur = conn.cursor()
 
@@ -45,7 +43,6 @@ def init_db():
 
 @app.route("/")
 def home():
-
     return send_from_directory(
         ".",
         "index.html"
@@ -71,22 +68,17 @@ def add_transaction():
         ""
     )
 
-    # Transaction turi
     if transaction_type not in [
         "income",
         "expense"
     ]:
-
         return jsonify({
             "success": False,
             "error": "Noto'g'ri transaction turi"
         }), 400
 
-    # Summa
     try:
-
         amount = float(amount)
-
     except (TypeError, ValueError):
 
         return jsonify({
@@ -101,7 +93,6 @@ def add_transaction():
             "error": "Summa 0 dan katta bo'lishi kerak"
         }), 400
 
-    # Database
     conn = get_db()
     cur = conn.cursor()
 
@@ -167,27 +158,16 @@ def get_transactions():
     for row in rows:
 
         transactions.append({
-
             "id": row[0],
-
             "type": row[1],
-
-            "amount": float(
-                row[2]
-            ),
-
+            "amount": float(row[2]),
             "description": row[3] or "",
-
-            "created_at":
-                row[4].isoformat()
+            "created_at": row[4].isoformat()
         })
 
     return jsonify({
-
         "success": True,
-
-        "transactions":
-            transactions
+        "transactions": transactions
     })
 
 
@@ -206,7 +186,6 @@ def summary():
 
     cur.execute("""
         SELECT
-
             COALESCE(
                 SUM(
                     CASE
@@ -217,7 +196,6 @@ def summary():
                 ),
                 0
             ),
-
             COALESCE(
                 SUM(
                     CASE
@@ -228,7 +206,6 @@ def summary():
                 ),
                 0
             )
-
         FROM transactions
     """)
 
@@ -238,17 +215,102 @@ def summary():
     conn.close()
 
     return jsonify({
+        "income": float(income),
+        "expense": float(expense),
+        "profit": float(income - expense)
+    })
 
-        "income":
-            float(income),
 
-        "expense":
-            float(expense),
+# =========================================================
+# REPORT
+# =========================================================
 
-        "profit":
-            float(
-                income - expense
+@app.route(
+    "/api/report",
+    methods=["GET"]
+)
+def report():
+
+    period = request.args.get(
+        "period",
+        "today"
+    )
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    if period == "today":
+
+        condition = """
+            created_at >= CURRENT_DATE
+        """
+
+    elif period == "week":
+
+        condition = """
+            created_at >= CURRENT_DATE - INTERVAL '6 days'
+        """
+
+    elif period == "month":
+
+        condition = """
+            created_at >= DATE_TRUNC(
+                'month',
+                CURRENT_DATE
             )
+        """
+
+    else:
+
+        return jsonify({
+            "success": False,
+            "error": "Noto'g'ri hisobot davri"
+        }), 400
+
+    query = f"""
+        SELECT
+            COALESCE(
+                SUM(
+                    CASE
+                        WHEN type = 'income'
+                        THEN amount
+                        ELSE 0
+                    END
+                ),
+                0
+            ),
+            COALESCE(
+                SUM(
+                    CASE
+                        WHEN type = 'expense'
+                        THEN amount
+                        ELSE 0
+                    END
+                ),
+                0
+            ),
+            COUNT(*)
+        FROM transactions
+        WHERE {condition}
+    """
+
+    cur.execute(query)
+
+    income, expense, transaction_count = cur.fetchone()
+
+    cur.close()
+    conn.close()
+
+    income = float(income)
+    expense = float(expense)
+
+    return jsonify({
+        "success": True,
+        "period": period,
+        "income": income,
+        "expense": expense,
+        "profit": income - expense,
+        "transaction_count": transaction_count
     })
 
 
@@ -260,11 +322,8 @@ def summary():
 def health():
 
     return jsonify({
-
         "status": "ok",
-
-        "service":
-            "Real CEO"
+        "service": "Real CEO"
     })
 
 
@@ -277,14 +336,13 @@ try:
     init_db()
 
     print(
-        "✅ PostgreSQL bazasi tayyor."
+        "PostgreSQL bazasi tayyor."
     )
 
 except Exception as error:
 
     print(
-        "❌ PostgreSQL bazasini "
-        "ishga tushirishda xatolik:"
+        "PostgreSQL bazasini ishga tushirishda xatolik:"
     )
 
     print(error)
@@ -306,8 +364,6 @@ if __name__ == "__main__":
     )
 
     app.run(
-
         host="0.0.0.0",
-
         port=port
     )
