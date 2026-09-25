@@ -4,6 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#111827">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Real CEO">
+<link rel="apple-touch-icon" href="/icon-192.png">
+
 <title>Real CEO</title>
 
 <style>
@@ -367,6 +374,80 @@ label{
 
 }
 
+/* =====================================================
+   REAL CEO APP LOCK
+===================================================== */
+
+#appShell{
+    display:none;
+}
+
+body.unlocked #appShell{
+    display:block;
+}
+
+#appLock{
+    position:fixed;
+    inset:0;
+    z-index:99999;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    background:linear-gradient(135deg,#111827,#1f2937);
+}
+
+.lock-card{
+    width:100%;
+    max-width:390px;
+    background:white;
+    border-radius:20px;
+    padding:30px 24px;
+    box-shadow:0 20px 60px rgba(0,0,0,.25);
+    text-align:center;
+}
+
+.lock-logo{
+    font-size:30px;
+    font-weight:bold;
+    margin-bottom:8px;
+}
+
+.lock-logo span{
+    color:#22c55e;
+}
+
+.lock-subtitle{
+    color:#6b7280;
+    margin-bottom:22px;
+}
+
+.lock-input{
+    margin-bottom:12px;
+    text-align:left;
+}
+
+.lock-error{
+    min-height:20px;
+    color:#dc2626;
+    font-size:13px;
+    margin:8px 0;
+}
+
+.lock-btn{
+    width:100%;
+    padding:13px;
+    border-radius:10px;
+    background:#16a34a;
+    color:white;
+    font-size:16px;
+    font-weight:bold;
+}
+
+.lock-btn:active{
+    transform:scale(.99);
+}
+
 @media(max-width:700px){
 
     .topbar{
@@ -428,7 +509,42 @@ label{
 </style>
 </head>
 
-<body>
+<body class="locked">
+
+<!-- =====================================================
+     REAL CEO APP LOCK
+===================================================== -->
+<div id="appLock">
+    <div class="lock-card">
+        <div class="lock-logo">
+            REAL <span>CEO</span>
+        </div>
+
+        <div class="lock-subtitle">
+            Ilovani ochish uchun maxsus kodni kiriting
+        </div>
+
+        <div class="lock-input">
+            <label for="appCode">Maxsus kod</label>
+            <input
+                id="appCode"
+                type="password"
+                inputmode="text"
+                autocomplete="current-password"
+                placeholder="Kodni kiriting"
+                onkeydown="if(event.key==='Enter') unlockApp()"
+            >
+        </div>
+
+        <div id="lockError" class="lock-error"></div>
+
+        <button class="lock-btn" onclick="unlockApp()">
+            🔐 Kirish
+        </button>
+    </div>
+</div>
+
+<div id="appShell">
 
 <header class="topbar">
 
@@ -1700,6 +1816,90 @@ label{
 
 </div>
 
+</div><!-- /appShell -->
+
+
+<script>
+
+// =====================================================
+// REAL CEO APP LOCK + PWA
+// =====================================================
+
+const REAL_CEO_ACCESS_CODE = "2212jama";
+const REAL_CEO_UNLOCK_KEY = "real_ceo_unlocked";
+
+function unlockApp(){
+
+    const input = document.getElementById("appCode");
+    const error = document.getElementById("lockError");
+
+    const code = input.value;
+
+    if(code === REAL_CEO_ACCESS_CODE){
+
+        localStorage.setItem(
+            REAL_CEO_UNLOCK_KEY,
+            "yes"
+        );
+
+        document.body.classList.remove("locked");
+        document.body.classList.add("unlocked");
+
+        document.getElementById("appLock").style.display = "none";
+
+        error.textContent = "";
+
+        startApp();
+
+    }else{
+
+        error.textContent =
+            "Kod noto‘g‘ri. Qaytadan kiriting.";
+
+        input.value = "";
+        input.focus();
+
+    }
+
+}
+
+function isAppUnlocked(){
+
+    return localStorage.getItem(
+        REAL_CEO_UNLOCK_KEY
+    ) === "yes";
+
+}
+
+function registerPWA(){
+
+    if("serviceWorker" in navigator){
+
+        window.addEventListener("load", () => {
+
+            navigator.serviceWorker
+                .register("/service-worker.js")
+                .then(() => {
+
+                    console.log(
+                        "Real CEO PWA ishga tushdi"
+                    );
+
+                })
+                .catch(error => {
+
+                    console.error(
+                        "Service Worker xatosi:",
+                        error
+                    );
+
+                });
+
+        });
+
+    }
+
+}
 
 <script>
 
@@ -4187,7 +4387,33 @@ async function startApp(){
 }
 
 
-startApp();
+registerPWA();
+
+if(isAppUnlocked()){
+
+    document.body.classList.remove("locked");
+    document.body.classList.add("unlocked");
+
+    document.getElementById("appLock").style.display = "none";
+
+    startApp();
+
+}else{
+
+    document.body.classList.add("locked");
+
+    setTimeout(() => {
+
+        const input =
+            document.getElementById("appCode");
+
+        if(input){
+            input.focus();
+        }
+
+    }, 300);
+
+}
 
 </script>
 
