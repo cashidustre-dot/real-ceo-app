@@ -5,36 +5,25 @@ from psycopg2.extras import RealDictCursor
 
 app = Flask(__name__)
 
-DATABASE_URL = os.environ.get("DATABASE_URL")
-
 
 # =========================================================
 # DATABASE
 # =========================================================
 
 def get_db():
-    if not DATABASE_URL:
-        raise RuntimeError("DATABASE_URL topilmadi!")
-
     return psycopg2.connect(
-        DATABASE_URL,
+        os.environ["DATABASE_URL"],
         cursor_factory=RealDictCursor
     )
 
 
-# =========================================================
-# DATABASE INIT / MIGRATION
-# =========================================================
-
 def init_db():
-
     conn = get_db()
     cur = conn.cursor()
 
     # =====================================================
     # TRANSACTIONS
     # =====================================================
-
     cur.execute("""
         CREATE TABLE IF NOT EXISTS transactions (
             id SERIAL PRIMARY KEY,
@@ -53,33 +42,26 @@ def init_db():
     # =====================================================
     # INVENTORY
     # =====================================================
-
     cur.execute("""
         CREATE TABLE IF NOT EXISTS inventory (
             id SERIAL PRIMARY KEY,
             name VARCHAR(255) NOT NULL,
             unit VARCHAR(50) NOT NULL,
-            quantity NUMERIC(14,3) DEFAULT 0,
-            min_quantity NUMERIC(14,3) DEFAULT 0,
+            quantity NUMERIC(14,4) DEFAULT 0,
+            min_quantity NUMERIC(14,4) DEFAULT 0,
             price NUMERIC(14,2) DEFAULT 0,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     """)
 
-    cur.execute("""
-        ALTER TABLE inventory
-        ADD COLUMN IF NOT EXISTS price NUMERIC(14,2) DEFAULT 0
-    """)
-
     # =====================================================
     # EMPLOYEES
     # =====================================================
-
     cur.execute("""
         CREATE TABLE IF NOT EXISTS employees (
             id SERIAL PRIMARY KEY,
             name VARCHAR(255) NOT NULL,
-            phone VARCHAR(50),
+            phone VARCHAR(100),
             position VARCHAR(255),
             salary NUMERIC(14,2) DEFAULT 0,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -89,33 +71,28 @@ def init_db():
     # =====================================================
     # SALES
     # =====================================================
-
     cur.execute("""
         CREATE TABLE IF NOT EXISTS sales (
             id SERIAL PRIMARY KEY,
             product_name VARCHAR(255) NOT NULL,
-            quantity NUMERIC(14,3) NOT NULL,
+            quantity NUMERIC(14,4) NOT NULL,
             unit_price NUMERIC(14,2) NOT NULL,
-            total NUMERIC(14,2),
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     """)
 
-    # Eski sales jadvaliga total qo'shish
+    # Old table migration
     cur.execute("""
         ALTER TABLE sales
         ADD COLUMN IF NOT EXISTS total NUMERIC(14,2)
     """)
 
-    # Eski sales uchun totalni hisoblash
     cur.execute("""
         UPDATE sales
         SET total = quantity * unit_price
         WHERE total IS NULL
     """)
 
-    # Juda muhim:
-    # Sotuv qaysi retseptdan yaratilganini saqlaymiz
     cur.execute("""
         ALTER TABLE sales
         ADD COLUMN IF NOT EXISTS recipe_id INTEGER
@@ -124,12 +101,11 @@ def init_db():
     # =====================================================
     # RECIPES
     # =====================================================
-
     cur.execute("""
         CREATE TABLE IF NOT EXISTS recipes (
             id SERIAL PRIMARY KEY,
-            name VARCHAR(255) NOT NULL UNIQUE,
-            sale_unit VARCHAR(50) DEFAULT 'dona',
+            name VARCHAR(255) UNIQUE NOT NULL,
+            sale_unit VARCHAR(100) DEFAULT 'dona',
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     """)
@@ -137,48 +113,42 @@ def init_db():
     # =====================================================
     # RECIPE ITEMS
     # =====================================================
-
     cur.execute("""
         CREATE TABLE IF NOT EXISTS recipe_items (
             id SERIAL PRIMARY KEY,
             recipe_id INTEGER NOT NULL
-                REFERENCES recipes(id) ON DELETE CASCADE,
+                REFERENCES recipes(id)
+                ON DELETE CASCADE,
             inventory_id INTEGER NOT NULL
-                REFERENCES inventory(id) ON DELETE CASCADE,
+                REFERENCES inventory(id),
             quantity NUMERIC(14,4) NOT NULL
         )
     """)
 
     # =====================================================
     # SALE INVENTORY USAGE
-    #
-    # Har bir sotuvda ombordan aynan qancha mahsulot
-    # ketganini saqlaydi.
     # =====================================================
-
     cur.execute("""
         CREATE TABLE IF NOT EXISTS sale_inventory_usage (
             id SERIAL PRIMARY KEY,
-
             sale_id INTEGER NOT NULL
-                REFERENCES sales(id) ON DELETE CASCADE,
-
+                REFERENCES sales(id)
+                ON DELETE CASCADE,
             inventory_id INTEGER NOT NULL
                 REFERENCES inventory(id),
-
             quantity NUMERIC(14,4) NOT NULL,
-
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     """)
 
     conn.commit()
-
     cur.close()
     conn.close()
 
-    print("DATABASE INIT / MIGRATION OK")
 
+# =========================================================
+# START DATABASE
+# =========================================================
 
 try:
     init_db()
@@ -187,12 +157,11 @@ except Exception as e:
 
 
 # =========================================================
-# MAIN PAGE
+# HOME
 # =========================================================
 
 @app.get("/")
 def home():
-
     index_path = os.path.join(
         os.path.dirname(os.path.abspath(__file__)),
         "index.html"
@@ -207,23 +176,10 @@ def home():
 
 @app.get("/api/health")
 def health():
-
-    try:
-
-        conn = get_db()
-        conn.close()
-
-        return jsonify({
-            "status": "ok",
-            "database": "connected"
-        })
-
-    except Exception as e:
-
-        return jsonify({
-            "status": "error",
-            "message": str(e)
-        }), 500
+    return jsonify({
+        "status": "ok",
+        "message": "Real CEO API ishlayapti"
+    })
 
 
 # =========================================================
@@ -232,51 +188,73 @@ def health():
 
 @app.get("/api/summary")
 def summary():
-
     conn = get_db()
     cur = conn.cursor()
 
     cur.execute("""
-        SELECT COALESCE(SUM(amount),0) AS total
+        SELECT
+            COALESCE(SUM(
+                CASE
+                    WHEN type = 'income'
+                    THEN amount
+                    ELSE 0
+                END
+            ), 0) AS income,
+
+            COALESCE(SUM(
+                CASE
+                    WHEN type = 'expense'
+                    THEN amount
+                    ELSE 0
+                END
+            ), 0) AS expense
         FROM transactions
-        WHERE type='income'
     """)
 
-    income = float(cur.fetchone()["total"])
+    finance = cur.fetchone()
 
     cur.execute("""
-        SELECT COALESCE(SUM(amount),0) AS total
-        FROM transactions
-        WHERE type='expense'
-    """)
-
-    expense = float(cur.fetchone()["total"])
-
-    cur.execute("""
-        SELECT COALESCE(SUM(quantity * price),0) AS total
+        SELECT
+            COALESCE(SUM(quantity * price), 0) AS inventory_value,
+            COUNT(*) FILTER (
+                WHERE quantity <= min_quantity
+            ) AS low_stock
         FROM inventory
     """)
 
-    inventory_value = float(cur.fetchone()["total"])
+    inventory_data = cur.fetchone()
 
     cur.execute("""
-        SELECT COUNT(*) AS count
-        FROM inventory
-        WHERE quantity <= min_quantity
+        SELECT
+            COALESCE(SUM(quantity), 0) AS today_sales
+        FROM sales
+        WHERE created_at >= CURRENT_DATE
     """)
 
-    low_stock = int(cur.fetchone()["count"])
+    sales_data = cur.fetchone()
+
+    income = float(finance["income"] or 0)
+    expense = float(finance["expense"] or 0)
+
+    result = {
+        "income": income,
+        "expense": expense,
+        "profit": income - expense,
+        "inventory_value": float(
+            inventory_data["inventory_value"] or 0
+        ),
+        "low_stock": int(
+            inventory_data["low_stock"] or 0
+        ),
+        "today_sales": float(
+            sales_data["today_sales"] or 0
+        )
+    }
 
     cur.close()
     conn.close()
 
-    return jsonify({
-        "income": income,
-        "expense": expense,
-        "profit": income - expense,
-        "inventory": inventory_value,
-        "low_stock": low_stock
-    })
+    return jsonify(result)
 
 
 # =========================================================
@@ -285,7 +263,6 @@ def summary():
 
 @app.get("/api/transactions")
 def get_transactions():
-
     conn = get_db()
     cur = conn.cursor()
 
@@ -295,31 +272,28 @@ def get_transactions():
         ORDER BY created_at DESC
     """)
 
-    data = cur.fetchall()
+    rows = cur.fetchall()
 
     cur.close()
     conn.close()
 
-    return jsonify(data)
+    return jsonify(rows)
 
 
 @app.post("/api/transactions")
 def add_transaction():
+    data = request.get_json() or {}
 
-    data = request.json or {}
-
-    transaction_type = data.get("type")
+    tx_type = data.get("type")
     amount = data.get("amount")
     description = data.get("description", "")
 
-    if transaction_type not in ["income", "expense"]:
-
+    if tx_type not in ["income", "expense"]:
         return jsonify({
-            "error": "type income yoki expense bo'lishi kerak"
+            "error": "type noto‘g‘ri"
         }), 400
 
     if amount is None:
-
         return jsonify({
             "error": "amount kerak"
         }), 400
@@ -330,51 +304,43 @@ def add_transaction():
     cur.execute("""
         INSERT INTO transactions
         (type, amount, description)
-
-        VALUES (%s,%s,%s)
-
+        VALUES (%s, %s, %s)
         RETURNING *
     """, (
-        transaction_type,
+        tx_type,
         amount,
         description
     ))
 
-    result = cur.fetchone()
+    row = cur.fetchone()
 
     conn.commit()
-
     cur.close()
     conn.close()
 
-    return jsonify(result), 201
+    return jsonify(row), 201
 
 
 @app.delete("/api/transactions/<int:transaction_id>")
 def delete_transaction(transaction_id):
-
     conn = get_db()
     cur = conn.cursor()
 
     cur.execute("""
         DELETE FROM transactions
-        WHERE id=%s
+        WHERE id = %s
         RETURNING *
-    """, (
-        transaction_id,
-    ))
+    """, (transaction_id,))
 
-    result = cur.fetchone()
+    row = cur.fetchone()
 
-    if not result:
-
+    if not row:
         conn.rollback()
-
         cur.close()
         conn.close()
 
         return jsonify({
-            "error": "transaction topilmadi"
+            "error": "Tranzaksiya topilmadi"
         }), 404
 
     conn.commit()
@@ -383,8 +349,7 @@ def delete_transaction(transaction_id):
     conn.close()
 
     return jsonify({
-        "success": True,
-        "deleted": result
+        "message": "Tranzaksiya o‘chirildi"
     })
 
 
@@ -394,75 +359,43 @@ def delete_transaction(transaction_id):
 
 @app.get("/api/report")
 def report():
-
-    period = request.args.get(
-        "period",
-        "today"
-    )
-
-    if period == "today":
-
-        condition = """
-            created_at >= CURRENT_DATE
-        """
-
-    elif period == "week":
-
-        condition = """
-            created_at >= CURRENT_DATE
-            - INTERVAL '7 days'
-        """
-
-    elif period == "month":
-
-        condition = """
-            created_at >= CURRENT_DATE
-            - INTERVAL '30 days'
-        """
-
-    else:
-
-        return jsonify({
-            "error":
-                "period today, week yoki month bo'lishi kerak"
-        }), 400
+    period = request.args.get("period", "today")
 
     conn = get_db()
     cur = conn.cursor()
 
+    if period == "week":
+        condition = "created_at >= CURRENT_DATE - INTERVAL '6 days'"
+    elif period == "month":
+        condition = "created_at >= DATE_TRUNC('month', CURRENT_DATE)"
+    else:
+        condition = "created_at >= CURRENT_DATE"
+
     cur.execute(f"""
         SELECT
-
             COALESCE(SUM(
                 CASE
-                    WHEN type='income'
+                    WHEN type = 'income'
                     THEN amount
                     ELSE 0
                 END
-            ),0) AS income,
+            ), 0) AS income,
 
             COALESCE(SUM(
                 CASE
-                    WHEN type='expense'
+                    WHEN type = 'expense'
                     THEN amount
                     ELSE 0
                 END
-            ),0) AS expense
-
+            ), 0) AS expense
         FROM transactions
-
         WHERE {condition}
     """)
 
-    result = cur.fetchone()
+    row = cur.fetchone()
 
-    income = float(
-        result["income"]
-    )
-
-    expense = float(
-        result["expense"]
-    )
+    income = float(row["income"] or 0)
+    expense = float(row["expense"] or 0)
 
     cur.close()
     conn.close()
@@ -481,54 +414,40 @@ def report():
 
 @app.get("/api/inventory")
 def get_inventory():
-
     conn = get_db()
     cur = conn.cursor()
 
     cur.execute("""
         SELECT *,
-
-            CASE
-                WHEN quantity <= min_quantity
-                THEN TRUE
-                ELSE FALSE
-            END AS low_stock
-
+               quantity * price AS total_value,
+               CASE
+                   WHEN quantity <= min_quantity
+                   THEN TRUE
+                   ELSE FALSE
+               END AS low_stock
         FROM inventory
-
-        ORDER BY name
+        ORDER BY id DESC
     """)
 
-    data = cur.fetchall()
+    rows = cur.fetchall()
 
     cur.close()
     conn.close()
 
-    return jsonify(data)
+    return jsonify(rows)
 
 
 @app.post("/api/inventory")
 def add_inventory():
-
-    data = request.json or {}
+    data = request.get_json() or {}
 
     name = data.get("name")
     unit = data.get("unit")
-    quantity = data.get(
-        "quantity",
-        0
-    )
-    min_quantity = data.get(
-        "min_quantity",
-        0
-    )
-    price = data.get(
-        "price",
-        0
-    )
+    quantity = data.get("quantity", 0)
+    min_quantity = data.get("min_quantity", 0)
+    price = data.get("price", 0)
 
     if not name or not unit:
-
         return jsonify({
             "error": "name va unit kerak"
         }), 400
@@ -538,16 +457,8 @@ def add_inventory():
 
     cur.execute("""
         INSERT INTO inventory
-        (
-            name,
-            unit,
-            quantity,
-            min_quantity,
-            price
-        )
-
-        VALUES (%s,%s,%s,%s,%s)
-
+        (name, unit, quantity, min_quantity, price)
+        VALUES (%s, %s, %s, %s, %s)
         RETURNING *
     """, (
         name,
@@ -557,72 +468,54 @@ def add_inventory():
         price
     ))
 
-    result = cur.fetchone()
+    row = cur.fetchone()
 
     conn.commit()
 
     cur.close()
     conn.close()
 
-    return jsonify(result), 201
+    return jsonify(row), 201
 
 
 @app.put("/api/inventory/<int:item_id>")
 def update_inventory(item_id):
+    data = request.get_json() or {}
 
-    data = request.json or {}
+    name = data.get("name")
+    unit = data.get("unit")
+    min_quantity = data.get("min_quantity")
+    price = data.get("price")
 
     conn = get_db()
     cur = conn.cursor()
 
     cur.execute("""
         UPDATE inventory
-
         SET
-
-            name=COALESCE(%s,name),
-
-            unit=COALESCE(%s,unit),
-
-            quantity=COALESCE(
-                %s,
-                quantity
-            ),
-
-            min_quantity=COALESCE(
-                %s,
-                min_quantity
-            ),
-
-            price=COALESCE(
-                %s,
-                price
-            )
-
-        WHERE id=%s
-
+            name = COALESCE(%s, name),
+            unit = COALESCE(%s, unit),
+            min_quantity = COALESCE(%s, min_quantity),
+            price = COALESCE(%s, price)
+        WHERE id = %s
         RETURNING *
     """, (
-        data.get("name"),
-        data.get("unit"),
-        data.get("quantity"),
-        data.get("min_quantity"),
-        data.get("price"),
+        name,
+        unit,
+        min_quantity,
+        price,
         item_id
     ))
 
-    result = cur.fetchone()
+    row = cur.fetchone()
 
-    if not result:
-
+    if not row:
         conn.rollback()
-
         cur.close()
         conn.close()
 
         return jsonify({
-            "error":
-                "mahsulot topilmadi"
+            "error": "Mahsulot topilmadi"
         }), 404
 
     conn.commit()
@@ -630,128 +523,45 @@ def update_inventory(item_id):
     cur.close()
     conn.close()
 
-    return jsonify(result)
+    return jsonify(row)
 
 
 @app.delete("/api/inventory/<int:item_id>")
 def delete_inventory(item_id):
-
-    conn = get_db()
-    cur = conn.cursor()
-
-    try:
-
-        cur.execute("""
-            SELECT id
-            FROM recipe_items
-            WHERE inventory_id=%s
-            LIMIT 1
-        """, (
-            item_id,
-        ))
-
-        used = cur.fetchone()
-
-        if used:
-
-            return jsonify({
-                "error":
-                    "Bu mahsulot retseptda ishlatilmoqda. "
-                    "Avval retseptdan olib tashlang."
-            }), 400
-
-        cur.execute("""
-            DELETE FROM inventory
-            WHERE id=%s
-            RETURNING *
-        """, (
-            item_id,
-        ))
-
-        result = cur.fetchone()
-
-        if not result:
-
-            conn.rollback()
-
-            return jsonify({
-                "error":
-                    "mahsulot topilmadi"
-            }), 404
-
-        conn.commit()
-
-        return jsonify({
-            "success": True,
-            "deleted": result
-        })
-
-    except Exception as e:
-
-        conn.rollback()
-
-        return jsonify({
-            "error": str(e)
-        }), 400
-
-    finally:
-
-        cur.close()
-        conn.close()
-
-
-# =========================================================
-# STOCK IN
-# =========================================================
-
-@app.post("/api/inventory/<int:item_id>/in")
-def inventory_in(item_id):
-
-    data = request.json or {}
-
-    amount = data.get(
-        "quantity"
-    )
-
-    if (
-        amount is None
-        or float(amount) <= 0
-    ):
-
-        return jsonify({
-            "error":
-                "quantity noto'g'ri"
-        }), 400
-
     conn = get_db()
     cur = conn.cursor()
 
     cur.execute("""
-        UPDATE inventory
+        SELECT COUNT(*) AS count
+        FROM recipe_items
+        WHERE inventory_id = %s
+    """, (item_id,))
 
-        SET quantity =
-            quantity + %s
+    used = cur.fetchone()
 
-        WHERE id=%s
-
-        RETURNING *
-    """, (
-        amount,
-        item_id
-    ))
-
-    result = cur.fetchone()
-
-    if not result:
-
-        conn.rollback()
-
+    if int(used["count"]) > 0:
         cur.close()
         conn.close()
 
         return jsonify({
-            "error":
-                "mahsulot topilmadi"
+            "error": "Bu mahsulot retseptda ishlatilgan. Avval retseptdan olib tashlang."
+        }), 400
+
+    cur.execute("""
+        DELETE FROM inventory
+        WHERE id = %s
+        RETURNING *
+    """, (item_id,))
+
+    row = cur.fetchone()
+
+    if not row:
+        conn.rollback()
+        cur.close()
+        conn.close()
+
+        return jsonify({
+            "error": "Mahsulot topilmadi"
         }), 404
 
     conn.commit()
@@ -759,30 +569,26 @@ def inventory_in(item_id):
     cur.close()
     conn.close()
 
-    return jsonify(result)
+    return jsonify({
+        "message": "Mahsulot o‘chirildi"
+    })
 
 
-# =========================================================
-# STOCK OUT
-# =========================================================
+@app.post("/api/inventory/<int:item_id>/stock")
+def inventory_stock(item_id):
+    data = request.get_json() or {}
 
-@app.post("/api/inventory/<int:item_id>/out")
-def inventory_out(item_id):
+    action = data.get("action")
+    amount = data.get("amount")
 
-    data = request.json or {}
-
-    amount = data.get(
-        "quantity"
-    )
-
-    if (
-        amount is None
-        or float(amount) <= 0
-    ):
-
+    if action not in ["in", "out"]:
         return jsonify({
-            "error":
-                "quantity noto'g'ri"
+            "error": "action in yoki out bo‘lishi kerak"
+        }), 400
+
+    if amount is None or float(amount) <= 0:
+        return jsonify({
+            "error": "amount noto‘g‘ri"
         }), 400
 
     conn = get_db()
@@ -791,84 +597,64 @@ def inventory_out(item_id):
     cur.execute("""
         SELECT *
         FROM inventory
-
-        WHERE id=%s
-
+        WHERE id = %s
         FOR UPDATE
-    """, (
-        item_id,
-    ))
+    """, (item_id,))
 
     item = cur.fetchone()
 
     if not item:
-
         conn.rollback()
-
         cur.close()
         conn.close()
 
         return jsonify({
-            "error":
-                "mahsulot topilmadi"
+            "error": "Mahsulot topilmadi"
         }), 404
 
-    if float(
-        item["quantity"]
-    ) < float(amount):
+    if action == "in":
+        new_quantity = float(item["quantity"]) + float(amount)
+    else:
+        new_quantity = float(item["quantity"]) - float(amount)
 
-        conn.rollback()
+        if new_quantity < 0:
+            conn.rollback()
+            cur.close()
+            conn.close()
 
-        cur.close()
-        conn.close()
-
-        return jsonify({
-            "error":
-                "omborda yetarli mahsulot yo'q"
-        }), 400
+            return jsonify({
+                "error": "Omborda yetarli mahsulot yo‘q"
+            }), 400
 
     cur.execute("""
         UPDATE inventory
-
-        SET quantity =
-            quantity - %s
-
-        WHERE id=%s
-
+        SET quantity = %s
+        WHERE id = %s
         RETURNING *
     """, (
-        amount,
+        new_quantity,
         item_id
     ))
 
-    result = cur.fetchone()
+    row = cur.fetchone()
 
     conn.commit()
 
     cur.close()
     conn.close()
 
-    return jsonify(result)
+    return jsonify(row)
 
-
-# =========================================================
-# PRICE
-# =========================================================
 
 @app.put("/api/inventory/<int:item_id>/price")
 def update_inventory_price(item_id):
+    data = request.get_json() or {}
 
-    data = request.json or {}
-
-    price = data.get(
-        "price"
-    )
+    price = data.get("price")
 
     if price is None:
-
         return jsonify({
-            "error":
-                "price kerak"
+            "error": "price kerak"
         }), 400
 
     conn = get_db()
@@ -876,29 +662,23 @@ def update_inventory_price(item_id):
 
     cur.execute("""
         UPDATE inventory
-
-        SET price=%s
-
-        WHERE id=%s
-
+        SET price = %s
+        WHERE id = %s
         RETURNING *
     """, (
         price,
         item_id
     ))
 
-    result = cur.fetchone()
+    row = cur.fetchone()
 
-    if not result:
-
+    if not row:
         conn.rollback()
-
         cur.close()
         conn.close()
 
         return jsonify({
-            "error":
-                "mahsulot topilmadi"
+            "error": "Mahsulot topilmadi"
         }), 404
 
     conn.commit()
@@ -906,48 +686,30 @@ def update_inventory_price(item_id):
     cur.close()
     conn.close()
 
-    return jsonify(result)
+    return jsonify(row)
 
 
 @app.get("/api/inventory/summary")
 def inventory_summary():
-
     conn = get_db()
     cur = conn.cursor()
 
     cur.execute("""
         SELECT
-
-            COALESCE(
-                SUM(quantity * price),
-                0
-            ) AS total_value,
-
+            COALESCE(SUM(quantity * price), 0) AS total_value,
             COUNT(*) AS products,
-
             COUNT(*) FILTER (
                 WHERE quantity <= min_quantity
             ) AS low_stock
-
         FROM inventory
     """)
 
-    result = cur.fetchone()
+    row = cur.fetchone()
 
     cur.close()
     conn.close()
 
-    return jsonify({
-
-        "total_value":
-            float(result["total_value"]),
-
-        "products":
-            int(result["products"]),
-
-        "low_stock":
-            int(result["low_stock"])
-    })
+    return jsonify(row)
 
 
 # =========================================================
@@ -956,48 +718,35 @@ def inventory_summary():
 
 @app.get("/api/employees")
 def get_employees():
-
     conn = get_db()
     cur = conn.cursor()
 
     cur.execute("""
         SELECT *
         FROM employees
-        ORDER BY name
+        ORDER BY id DESC
     """)
 
-    data = cur.fetchall()
+    rows = cur.fetchall()
 
     cur.close()
     conn.close()
 
-    return jsonify(data)
+    return jsonify(rows)
 
 
 @app.post("/api/employees")
 def add_employee():
-
-    data = request.json or {}
+    data = request.get_json() or {}
 
     name = data.get("name")
-    phone = data.get(
-        "phone",
-        ""
-    )
-    position = data.get(
-        "position",
-        ""
-    )
-    salary = data.get(
-        "salary",
-        0
-    )
+    phone = data.get("phone", "")
+    position = data.get("position", "")
+    salary = data.get("salary", 0)
 
     if not name:
-
         return jsonify({
-            "error":
-                "name kerak"
+            "error": "name kerak"
         }), 400
 
     conn = get_db()
@@ -1005,15 +754,8 @@ def add_employee():
 
     cur.execute("""
         INSERT INTO employees
-        (
-            name,
-            phone,
-            position,
-            salary
-        )
-
-        VALUES (%s,%s,%s,%s)
-
+        (name, phone, position, salary)
+        VALUES (%s, %s, %s, %s)
         RETURNING *
     """, (
         name,
@@ -1022,72 +764,54 @@ def add_employee():
         salary
     ))
 
-    result = cur.fetchone()
+    row = cur.fetchone()
 
     conn.commit()
 
     cur.close()
     conn.close()
 
-    return jsonify(result), 201
+    return jsonify(row), 201
 
 
 @app.put("/api/employees/<int:employee_id>")
 def update_employee(employee_id):
+    data = request.get_json() or {}
 
-    data = request.json or {}
+    name = data.get("name")
+    phone = data.get("phone")
+    position = data.get("position")
+    salary = data.get("salary")
 
     conn = get_db()
     cur = conn.cursor()
 
     cur.execute("""
         UPDATE employees
-
         SET
-
-            name=COALESCE(
-                %s,
-                name
-            ),
-
-            phone=COALESCE(
-                %s,
-                phone
-            ),
-
-            position=COALESCE(
-                %s,
-                position
-            ),
-
-            salary=COALESCE(
-                %s,
-                salary
-            )
-
-        WHERE id=%s
-
+            name = COALESCE(%s, name),
+            phone = COALESCE(%s, phone),
+            position = COALESCE(%s, position),
+            salary = COALESCE(%s, salary)
+        WHERE id = %s
         RETURNING *
     """, (
-        data.get("name"),
-        data.get("phone"),
-        data.get("position"),
-        data.get("salary"),
+        name,
+        phone,
+        position,
+        salary,
         employee_id
     ))
 
-    result = cur.fetchone()
+    row = cur.fetchone()
 
-    if not result:
-
+    if not row:
         conn.rollback()
-
         cur.close()
         conn.close()
 
         return jsonify({
-            "error":
-                "xodim topilmadi"
+            "error": "Xodim topilmadi"
         }), 404
 
     conn.commit()
@@ -1095,37 +819,29 @@ def update_employee(employee_id):
     cur.close()
     conn.close()
 
-    return jsonify(result)
+    return jsonify(row)
 
 
 @app.delete("/api/employees/<int:employee_id>")
 def delete_employee(employee_id):
-
     conn = get_db()
     cur = conn.cursor()
 
     cur.execute("""
         DELETE FROM employees
-
-        WHERE id=%s
-
+        WHERE id = %s
         RETURNING *
-    """, (
-        employee_id,
-    ))
+    """, (employee_id,))
 
-    result = cur.fetchone()
+    row = cur.fetchone()
 
-    if not result:
-
+    if not row:
         conn.rollback()
-
         cur.close()
         conn.close()
 
         return jsonify({
-            "error":
-                "xodim topilmadi"
+            "error": "Xodim topilmadi"
         }), 404
 
     conn.commit()
@@ -1134,43 +850,28 @@ def delete_employee(employee_id):
     conn.close()
 
     return jsonify({
-        "success": True,
-        "deleted": result
+        "message": "Xodim o‘chirildi"
     })
 
 
 @app.get("/api/employees/summary")
-def employees_summary():
-
+def employee_summary():
     conn = get_db()
     cur = conn.cursor()
 
     cur.execute("""
         SELECT
-
-            COUNT(*) AS count,
-
-            COALESCE(
-                SUM(salary),
-                0
-            ) AS salaries
-
+            COUNT(*) AS employees,
+            COALESCE(SUM(salary), 0) AS total_salary
         FROM employees
     """)
 
-    result = cur.fetchone()
+    row = cur.fetchone()
 
     cur.close()
     conn.close()
 
-    return jsonify({
-
-        "count":
-            int(result["count"]),
-
-        "salaries":
-            float(result["salaries"])
-    })
+    return jsonify(row)
 
 
 # =========================================================
@@ -1179,89 +880,143 @@ def employees_summary():
 
 @app.get("/api/recipes")
 def get_recipes():
-
     conn = get_db()
     cur = conn.cursor()
 
     cur.execute("""
         SELECT
-
             r.id,
             r.name,
             r.sale_unit,
             r.created_at,
 
-            COUNT(ri.id)
-                AS ingredient_count
+            COALESCE(
+                SUM(ri.quantity * i.price),
+                0
+            ) AS cost
 
         FROM recipes r
 
         LEFT JOIN recipe_items ri
             ON ri.recipe_id = r.id
 
-        GROUP BY r.id
+        LEFT JOIN inventory i
+            ON i.id = ri.inventory_id
 
-        ORDER BY r.name
+        GROUP BY
+            r.id,
+            r.name,
+            r.sale_unit,
+            r.created_at
+
+        ORDER BY r.id DESC
     """)
 
-    data = cur.fetchall()
+    recipes = cur.fetchall()
+
+    for recipe in recipes:
+        cur.execute("""
+            SELECT
+                ri.id,
+                ri.inventory_id,
+                i.name,
+                i.unit,
+                ri.quantity,
+                i.price,
+                ri.quantity * i.price AS item_cost
+            FROM recipe_items ri
+            JOIN inventory i
+                ON i.id = ri.inventory_id
+            WHERE ri.recipe_id = %s
+            ORDER BY ri.id
+        """, (recipe["id"],))
+
+        recipe["items"] = cur.fetchall()
 
     cur.close()
     conn.close()
 
-    return jsonify(data)
+    return jsonify(recipes)
+
+
+@app.get("/api/recipes/<int:recipe_id>")
+def get_recipe(recipe_id):
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute("""
+        SELECT *
+        FROM recipes
+        WHERE id = %s
+    """, (recipe_id,))
+
+    recipe = cur.fetchone()
+
+    if not recipe:
+        cur.close()
+        conn.close()
+
+        return jsonify({
+            "error": "Retsept topilmadi"
+        }), 404
+
+    cur.execute("""
+        SELECT
+            ri.id,
+            ri.inventory_id,
+            i.name,
+            i.unit,
+            ri.quantity,
+            i.price,
+            ri.quantity * i.price AS item_cost
+        FROM recipe_items ri
+        JOIN inventory i
+            ON i.id = ri.inventory_id
+        WHERE ri.recipe_id = %s
+        ORDER BY ri.id
+    """, (recipe_id,))
+
+    recipe["items"] = cur.fetchall()
+
+    total_cost = sum(
+        float(item["item_cost"] or 0)
+        for item in recipe["items"]
+    )
+
+    recipe["cost"] = total_cost
+
+    cur.close()
+    conn.close()
+
+    return jsonify(recipe)
 
 
 @app.post("/api/recipes")
-def create_recipe():
+def add_recipe():
+    data = request.get_json() or {}
 
-    data = request.json or {}
-
-    name = str(
-        data.get(
-            "name",
-            ""
-        )
-    ).strip()
-
-    sale_unit = data.get(
-        "sale_unit",
-        "dona"
-    )
-
-    ingredients = data.get(
-        "ingredients",
-        []
-    )
+    name = data.get("name")
+    sale_unit = data.get("sale_unit", "dona")
+    items = data.get("items", [])
 
     if not name:
-
         return jsonify({
-            "error":
-                "Taom nomini kiriting"
+            "error": "Retsept nomi kerak"
         }), 400
 
-    if not ingredients:
-
+    if not items:
         return jsonify({
-            "error":
-                "Kamida bitta mahsulot qo'shing"
+            "error": "Retseptga kamida bitta mahsulot qo‘shing"
         }), 400
 
     conn = get_db()
     cur = conn.cursor()
 
     try:
-
         cur.execute("""
             INSERT INTO recipes
-            (
-                name,
-                sale_unit
-            )
-
-            VALUES (%s,%s)
-
+            (name, sale_unit)
+            VALUES (%s, %s)
             RETURNING *
         """, (
             name,
@@ -1270,52 +1025,19 @@ def create_recipe():
 
         recipe = cur.fetchone()
 
-        for item in ingredients:
+        for item in items:
+            inventory_id = item.get("inventory_id")
+            quantity = item.get("quantity")
 
-            inventory_id = item.get(
-                "inventory_id"
-            )
-
-            quantity = item.get(
-                "quantity"
-            )
-
-            if not inventory_id:
-                continue
-
-            if quantity is None:
-                continue
-
-            if float(quantity) <= 0:
-                continue
-
-            cur.execute("""
-                SELECT id
-                FROM inventory
-
-                WHERE id=%s
-            """, (
-                inventory_id,
-            ))
-
-            inventory_item = cur.fetchone()
-
-            if not inventory_item:
-
-                raise Exception(
-                    "Tanlangan mahsulot "
-                    "omborda topilmadi"
+            if not inventory_id or quantity is None:
+                raise ValueError(
+                    "Retsept tarkibidagi ma'lumot noto‘g‘ri"
                 )
 
             cur.execute("""
                 INSERT INTO recipe_items
-                (
-                    recipe_id,
-                    inventory_id,
-                    quantity
-                )
-
-                VALUES (%s,%s,%s)
+                (recipe_id, inventory_id, quantity)
+                VALUES (%s, %s, %s)
             """, (
                 recipe["id"],
                 inventory_id,
@@ -1324,13 +1046,9 @@ def create_recipe():
 
         conn.commit()
 
-        return jsonify({
-            "success": True,
-            "recipe": recipe
-        }), 201
+        return jsonify(recipe), 201
 
     except Exception as e:
-
         conn.rollback()
 
         return jsonify({
@@ -1338,104 +1056,52 @@ def create_recipe():
         }), 400
 
     finally:
-
         cur.close()
         conn.close()
-
-
-@app.get("/api/recipes/<int:recipe_id>")
-def get_recipe(recipe_id):
-
-    conn = get_db()
-    cur = conn.cursor()
-
-    cur.execute("""
-        SELECT *
-        FROM recipes
-
-        WHERE id=%s
-    """, (
-        recipe_id,
-    ))
-
-    recipe = cur.fetchone()
-
-    if not recipe:
-
-        cur.close()
-        conn.close()
-
-        return jsonify({
-            "error":
-                "retsept topilmadi"
-        }), 404
-
-    cur.execute("""
-        SELECT
-
-            ri.id,
-            ri.inventory_id,
-            i.name AS inventory_name,
-            i.unit,
-            ri.quantity
-
-        FROM recipe_items ri
-
-        JOIN inventory i
-            ON i.id = ri.inventory_id
-
-        WHERE ri.recipe_id=%s
-
-        ORDER BY i.name
-    """, (
-        recipe_id,
-    ))
-
-    ingredients = cur.fetchall()
-
-    cur.close()
-    conn.close()
-
-    recipe["ingredients"] = ingredients
-
-    return jsonify(recipe)
 
 
 @app.put("/api/recipes/<int:recipe_id>")
 def update_recipe(recipe_id):
+    data = request.get_json() or {}
 
-    data = request.json or {}
-
-    name = data.get(
-        "name"
-    )
-
-    sale_unit = data.get(
-        "sale_unit"
-    )
+    name = data.get("name")
+    sale_unit = data.get("sale_unit")
+    items = data.get("items")
 
     conn = get_db()
     cur = conn.cursor()
 
     try:
+        cur.execute("""
+            SELECT *
+            FROM recipes
+            WHERE id = %s
+        """, (recipe_id,))
+
+        recipe = cur.fetchone()
+
+        if not recipe:
+            raise ValueError("Retsept topilmadi")
+
+        cur.execute("""
+            SELECT COUNT(*) AS count
+            FROM sales
+            WHERE recipe_id = %s
+        """, (recipe_id,))
+
+        used = cur.fetchone()
+
+        if int(used["count"]) > 0:
+            return jsonify({
+                "error": "Bu retsept sotuvlarda ishlatilgan. Uni o‘zgartirish xavfsiz emas."
+            }), 400
 
         cur.execute("""
             UPDATE recipes
-
             SET
-
-                name=COALESCE(
-                    %s,
-                    name
-                ),
-
-                sale_unit=COALESCE(
-                    %s,
-                    sale_unit
-                )
-
-            WHERE id=%s
-
+                name = COALESCE(%s, name),
+                sale_unit = COALESCE(%s, sale_unit)
+            WHERE id = %s
             RETURNING *
         """, (
             name,
@@ -1445,55 +1111,25 @@ def update_recipe(recipe_id):
 
         recipe = cur.fetchone()
 
-        if not recipe:
-
-            conn.rollback()
-
-            return jsonify({
-                "error":
-                    "retsept topilmadi"
-            }), 404
-
-        if "ingredients" in data:
-
+        if items is not None:
             cur.execute("""
                 DELETE FROM recipe_items
+                WHERE recipe_id = %s
+            """, (recipe_id,))
 
-                WHERE recipe_id=%s
-            """, (
-                recipe_id,
-            ))
+            for item in items:
+                inventory_id = item.get("inventory_id")
+                quantity = item.get("quantity")
 
-            for item in data[
-                "ingredients"
-            ]:
-
-                inventory_id = item.get(
-                    "inventory_id"
-                )
-
-                quantity = item.get(
-                    "quantity"
-                )
-
-                if not inventory_id:
-                    continue
-
-                if quantity is None:
-                    continue
-
-                if float(quantity) <= 0:
-                    continue
+                if not inventory_id or quantity is None:
+                    raise ValueError(
+                        "Retsept tarkibidagi ma'lumot noto‘g‘ri"
+                    )
 
                 cur.execute("""
                     INSERT INTO recipe_items
-                    (
-                        recipe_id,
-                        inventory_id,
-                        quantity
-                    )
-
-                    VALUES (%s,%s,%s)
+                    (recipe_id, inventory_id, quantity)
+                    VALUES (%s, %s, %s)
                 """, (
                     recipe_id,
                     inventory_id,
@@ -1502,13 +1138,9 @@ def update_recipe(recipe_id):
 
         conn.commit()
 
-        return jsonify({
-            "success": True,
-            "recipe": recipe
-        })
+        return jsonify(recipe)
 
     except Exception as e:
-
         conn.rollback()
 
         return jsonify({
@@ -1516,83 +1148,56 @@ def update_recipe(recipe_id):
         }), 400
 
     finally:
-
         cur.close()
         conn.close()
 
 
 @app.delete("/api/recipes/<int:recipe_id>")
 def delete_recipe(recipe_id):
-
     conn = get_db()
     cur = conn.cursor()
 
-    try:
+    cur.execute("""
+        SELECT COUNT(*) AS count
+        FROM sales
+        WHERE recipe_id = %s
+    """, (recipe_id,))
 
-        # Agar eski sotuvlar shu retseptga bog'langan
-        # bo'lsa, retseptni o'chirishga ruxsat bermaymiz.
-        cur.execute("""
-            SELECT COUNT(*) AS count
+    used = cur.fetchone()
 
-            FROM sales
-
-            WHERE recipe_id=%s
-        """, (
-            recipe_id,
-        ))
-
-        used_count = int(
-            cur.fetchone()["count"]
-        )
-
-        if used_count > 0:
-
-            return jsonify({
-                "error":
-                    "Bu retsept sotuvlarda ishlatilgan. "
-                    "Uni o'chirish o'rniga tahrirlang."
-            }), 400
-
-        cur.execute("""
-            DELETE FROM recipes
-
-            WHERE id=%s
-
-            RETURNING *
-        """, (
-            recipe_id,
-        ))
-
-        result = cur.fetchone()
-
-        if not result:
-
-            conn.rollback()
-
-            return jsonify({
-                "error":
-                    "retsept topilmadi"
-            }), 404
-
-        conn.commit()
-
-        return jsonify({
-            "success": True,
-            "deleted": result
-        })
-
-    except Exception as e:
-
-        conn.rollback()
-
-        return jsonify({
-            "error": str(e)
-        }), 400
-
-    finally:
-
+    if int(used["count"]) > 0:
         cur.close()
         conn.close()
+
+        return jsonify({
+            "error": "Bu retsept sotuvlarda ishlatilgan. Uni o‘chirib bo‘lmaydi."
+        }), 400
+
+    cur.execute("""
+        DELETE FROM recipes
+        WHERE id = %s
+        RETURNING *
+    """, (recipe_id,))
+
+    row = cur.fetchone()
+
+    if not row:
+        conn.rollback()
+        cur.close()
+        conn.close()
+
+        return jsonify({
+            "error": "Retsept topilmadi"
+        }), 404
+
+    conn.commit()
+
+    cur.close()
+    conn.close()
+
+    return jsonify({
+        "message": "Retsept o‘chirildi"
+    })
 
 
 # =========================================================
@@ -1601,111 +1206,101 @@ def delete_recipe(recipe_id):
 
 @app.get("/api/sales")
 def get_sales():
-
     conn = get_db()
     cur = conn.cursor()
 
     cur.execute("""
-        SELECT *
-
-        FROM sales
-
-        ORDER BY created_at DESC
+        SELECT
+            s.*,
+            r.name AS recipe_name
+        FROM sales s
+        LEFT JOIN recipes r
+            ON r.id = s.recipe_id
+        ORDER BY s.created_at DESC
     """)
 
-    data = cur.fetchall()
+    rows = cur.fetchall()
 
     cur.close()
     conn.close()
 
-    return jsonify(data)
+    return jsonify(rows)
+
+
+@app.get("/api/sales/summary")
+def sales_summary():
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute("""
+        SELECT
+            COALESCE(SUM(quantity), 0) AS total_quantity,
+            COALESCE(SUM(total), 0) AS total_sales
+        FROM sales
+        WHERE created_at >= CURRENT_DATE
+    """)
+
+    row = cur.fetchone()
+
+    cur.close()
+    conn.close()
+
+    return jsonify(row)
 
 
 # =========================================================
-# CREATE SALE
+# ADD SALE
 # =========================================================
 
 @app.post("/api/sales")
 def add_sale():
+    data = request.get_json() or {}
 
-    data = request.json or {}
-
-    product_name = data.get(
-        "product_name"
-    )
-
-    quantity = data.get(
-        "quantity"
-    )
-
-    unit_price = data.get(
-        "unit_price"
-    )
-
-    recipe_id = data.get(
-        "recipe_id"
-    )
+    product_name = data.get("product_name")
+    quantity = data.get("quantity")
+    unit_price = data.get("unit_price")
+    recipe_id = data.get("recipe_id")
 
     if not product_name:
-
         return jsonify({
-            "error":
-                "product_name kerak"
+            "error": "Mahsulot nomi kerak"
         }), 400
 
-    if quantity is None:
-
+    if quantity is None or float(quantity) <= 0:
         return jsonify({
-            "error":
-                "quantity kerak"
+            "error": "Sotuv miqdori noto‘g‘ri"
         }), 400
 
-    if float(quantity) <= 0:
-
+    if unit_price is None or float(unit_price) < 0:
         return jsonify({
-            "error":
-                "quantity noto'g'ri"
+            "error": "Narx noto‘g‘ri"
         }), 400
-
-    if unit_price is None:
-
-        return jsonify({
-            "error":
-                "unit_price kerak"
-        }), 400
-
-    if float(unit_price) < 0:
-
-        return jsonify({
-            "error":
-                "unit_price noto'g'ri"
-        }), 400
-
-    quantity = float(
-        quantity
-    )
-
-    unit_price = float(
-        unit_price
-    )
-
-    total = (
-        quantity
-        * unit_price
-    )
 
     conn = get_db()
     cur = conn.cursor()
 
     try:
+        quantity = float(quantity)
+        unit_price = float(unit_price)
+        total = quantity * unit_price
+
+        # ---------------------------------------------
+        # RECIPE CHECK
+        # ---------------------------------------------
 
         recipe_items = []
 
-        # =================================================
-        # RETSEPTNI TEKSHIRISH
-        # =================================================
-
         if recipe_id:
+            cur.execute("""
+                SELECT *
+                FROM recipes
+                WHERE id = %s
+            """, (recipe_id,))
+
+            recipe = cur.fetchone()
+
+            if not recipe:
+                raise ValueError("Retsept topilmadi")
 
             cur.execute("""
                 SELECT
@@ -1714,57 +1309,29 @@ def add_sale():
                     i.name,
                     i.unit,
                     i.quantity AS stock
-
                 FROM recipe_items ri
-
                 JOIN inventory i
-                    ON i.id =
-                       ri.inventory_id
-
-                WHERE ri.recipe_id=%s
-
-                FOR UPDATE
-            """, (
-                recipe_id,
-            ))
+                    ON i.id = ri.inventory_id
+                WHERE ri.recipe_id = %s
+                FOR UPDATE OF i
+            """, (recipe_id,))
 
             recipe_items = cur.fetchall()
 
-            if not recipe_items:
-
-                raise Exception(
-                    "Bu retseptda mahsulotlar "
-                    "mavjud emas"
-                )
-
-            # Omborda yetarliligini tekshirish
             for item in recipe_items:
-
-                needed = (
-                    float(
-                        item["quantity"]
-                    )
-                    * quantity
-                )
-
-                stock = float(
-                    item["stock"]
-                )
+                needed = float(item["quantity"]) * quantity
+                stock = float(item["stock"])
 
                 if stock < needed:
-
-                    raise Exception(
-                        f"{item['name']} "
-                        f"yetarli emas. "
-                        f"Kerak: {needed} "
-                        f"{item['unit']}, "
-                        f"omborda: {stock} "
-                        f"{item['unit']}"
+                    raise ValueError(
+                        f"{item['name']} yetarli emas. "
+                        f"Kerak: {needed} {item['unit']}, "
+                        f"omborda: {stock} {item['unit']}"
                     )
 
-        # =================================================
-        # SOTUVNI SAQLASH
-        # =================================================
+        # ---------------------------------------------
+        # INSERT SALE
+        # ---------------------------------------------
 
         cur.execute("""
             INSERT INTO sales
@@ -1775,15 +1342,7 @@ def add_sale():
                 total,
                 recipe_id
             )
-
-            VALUES (
-                %s,
-                %s,
-                %s,
-                %s,
-                %s
-            )
-
+            VALUES (%s, %s, %s, %s, %s)
             RETURNING *
         """, (
             product_name,
@@ -1795,9 +1354,9 @@ def add_sale():
 
         sale = cur.fetchone()
 
-        # =================================================
-        # DAROMADNI SAQLASH
-        # =================================================
+        # ---------------------------------------------
+        # INCOME TRANSACTION
+        # ---------------------------------------------
 
         cur.execute("""
             INSERT INTO transactions
@@ -1807,14 +1366,12 @@ def add_sale():
                 description,
                 sale_id
             )
-
             VALUES (
                 'income',
                 %s,
                 %s,
                 %s
             )
-
             RETURNING id
         """, (
             total,
@@ -1822,44 +1379,23 @@ def add_sale():
             sale["id"]
         ))
 
-        transaction = cur.fetchone()
-
-        # =================================================
-        # OMBORDAN YECHISH
-        # =================================================
-
-        used_inventory = []
+        # ---------------------------------------------
+        # INVENTORY DECREASE
+        # ---------------------------------------------
 
         for item in recipe_items:
+            needed = float(item["quantity"]) * quantity
 
-            needed = (
-                float(
-                    item["quantity"]
-                )
-                * quantity
-            )
-
-            # Ombordan yechish
             cur.execute("""
                 UPDATE inventory
-
-                SET quantity =
-                    quantity - %s
-
-                WHERE id=%s
-
-                RETURNING *
+                SET quantity = quantity - %s
+                WHERE id = %s
             """, (
                 needed,
                 item["inventory_id"]
             ))
 
-            updated = cur.fetchone()
-
-            # =================================================
-            # SOTUVDA QANCHA ISHLATILGANINI SAQLASH
-            # =================================================
-
+            # exact usage record
             cur.execute("""
                 INSERT INTO sale_inventory_usage
                 (
@@ -1867,283 +1403,525 @@ def add_sale():
                     inventory_id,
                     quantity
                 )
-
-                VALUES (%s,%s,%s)
+                VALUES (%s, %s, %s)
             """, (
                 sale["id"],
                 item["inventory_id"],
                 needed
             ))
 
-            used_inventory.append({
-
-                "inventory_id":
-                    item["inventory_id"],
-
-                "name":
-                    item["name"],
-
-                "used":
-                    needed,
-
-                "remaining":
-                    float(
-                        updated["quantity"]
-                    )
-            })
-
         conn.commit()
 
-        return jsonify({
-
-            "success": True,
-
-            "sale":
-                sale,
-
-            "transaction_id":
-                transaction["id"],
-
-            "inventory_used":
-                used_inventory
-
-        }), 201
+        return jsonify(sale), 201
 
     except Exception as e:
-
         conn.rollback()
 
         return jsonify({
-            "error":
-                str(e)
+            "error": str(e)
         }), 400
 
     finally:
-
         cur.close()
         conn.close()
 
 
 # =========================================================
-# SALES SUMMARY
-# =========================================================
-
-@app.get("/api/sales/summary")
-def sales_summary():
-
-    conn = get_db()
-    cur = conn.cursor()
-
-    cur.execute("""
-        SELECT
-
-            COALESCE(
-                SUM(total),
-                0
-            ) AS total_sales,
-
-            COUNT(*) AS sales_count
-
-        FROM sales
-
-        WHERE created_at >= CURRENT_DATE
-    """)
-
-    result = cur.fetchone()
-
-    cur.close()
-    conn.close()
-
-    return jsonify({
-
-        "total_sales":
-            float(
-                result["total_sales"]
-            ),
-
-        "sales_count":
-            int(
-                result["sales_count"]
-            )
-    })
-
-
-# =========================================================
 # DELETE SALE
-#
-# ENG MUHIM QISM:
-# Sotuv o'chirilganda ombor qaytariladi.
 # =========================================================
 
 @app.delete("/api/sales/<int:sale_id>")
 def delete_sale(sale_id):
-
     conn = get_db()
     cur = conn.cursor()
 
     try:
-
-        # =================================================
-        # SOTUVNI TOPISH
-        # =================================================
+        # ---------------------------------------------
+        # FIND SALE
+        # ---------------------------------------------
 
         cur.execute("""
             SELECT *
-
             FROM sales
-
-            WHERE id=%s
-
+            WHERE id = %s
             FOR UPDATE
-        """, (
-            sale_id,
-        ))
+        """, (sale_id,))
 
         sale = cur.fetchone()
 
         if not sale:
+            raise ValueError("Sotuv topilmadi")
 
-            conn.rollback()
-
-            return jsonify({
-                "error":
-                    "sotuv topilmadi"
-            }), 404
-
-        # =================================================
-        # OMBORGA QAYTARILADIGAN MAHSULOTLAR
-        # =================================================
+        # ---------------------------------------------
+        # GET INVENTORY USAGE
+        # ---------------------------------------------
 
         cur.execute("""
             SELECT
                 sui.inventory_id,
                 sui.quantity,
-                i.name,
-                i.unit
-
+                i.name
             FROM sale_inventory_usage sui
-
             JOIN inventory i
-                ON i.id =
-                   sui.inventory_id
+                ON i.id = sui.inventory_id
+            WHERE sui.sale_id = %s
+            FOR UPDATE OF i
+        """, (sale_id,))
 
-            WHERE sui.sale_id=%s
+        usage_rows = cur.fetchall()
 
-            FOR UPDATE
-        """, (
-            sale_id,
-        ))
+        restored = []
 
-        usage_items = cur.fetchall()
+        # ---------------------------------------------
+        # RESTORE INVENTORY
+        # ---------------------------------------------
 
-        restored_inventory = []
-
-        # =================================================
-        # OMBORGA QAYTARISH
-        # =================================================
-
-        for item in usage_items:
-
+        for usage in usage_rows:
             cur.execute("""
                 UPDATE inventory
-
-                SET quantity =
-                    quantity + %s
-
-                WHERE id=%s
-
+                SET quantity = quantity + %s
+                WHERE id = %s
                 RETURNING *
             """, (
-                item["quantity"],
-                item["inventory_id"]
+                usage["quantity"],
+                usage["inventory_id"]
             ))
 
-            updated = cur.fetchone()
+            item = cur.fetchone()
 
-            if updated:
+            restored.append({
+                "name": usage["name"],
+                "quantity": float(usage["quantity"])
+            })
 
-                restored_inventory.append({
-
-                    "inventory_id":
-                        item["inventory_id"],
-
-                    "name":
-                        item["name"],
-
-                    "restored":
-                        float(
-                            item["quantity"]
-                        ),
-
-                    "remaining":
-                        float(
-                            updated["quantity"]
-                        )
-                })
-
-        # =================================================
-        # DAROMADNI O'CHIRISH
-        # =================================================
+        # ---------------------------------------------
+        # DELETE LINKED TRANSACTION
+        # ---------------------------------------------
 
         cur.execute("""
             DELETE FROM transactions
+            WHERE sale_id = %s
+        """, (sale_id,))
 
-            WHERE sale_id=%s
-        """, (
-            sale_id,
-        ))
-
-        # =================================================
-        # SALE INVENTORY USAGE O'CHIRISH
-        # =================================================
+        # ---------------------------------------------
+        # DELETE USAGE
+        # ---------------------------------------------
 
         cur.execute("""
             DELETE FROM sale_inventory_usage
+            WHERE sale_id = %s
+        """, (sale_id,))
 
-            WHERE sale_id=%s
-        """, (
-            sale_id,
-        ))
-
-        # =================================================
-        # SOTUVNI O'CHIRISH
-        # =================================================
+        # ---------------------------------------------
+        # DELETE SALE
+        # ---------------------------------------------
 
         cur.execute("""
             DELETE FROM sales
-
-            WHERE id=%s
-        """, (
-            sale_id,
-        ))
+            WHERE id = %s
+        """, (sale_id,))
 
         conn.commit()
 
         return jsonify({
-
-            "success": True,
-
-            "deleted":
-                sale,
-
-            "inventory_restored":
-                restored_inventory
-
+            "message": "Sotuv o‘chirildi va ombor tiklandi",
+            "restored": restored
         })
 
     except Exception as e:
-
         conn.rollback()
 
         return jsonify({
-            "error":
-                str(e)
+            "error": str(e)
         }), 400
 
     finally:
-
         cur.close()
         conn.close()
+
+
+# =========================================================
+# COST / PROFIT
+# =========================================================
+
+@app.get("/api/profit-summary")
+def profit_summary():
+    """
+    Sotuvlar bo‘yicha:
+    - revenue = sotuvdan tushgan pul
+    - cost = retseptdagi mahsulotlar tannarxi
+    - profit = revenue - cost
+    """
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    # -----------------------------------------------------
+    # BUGUN
+    # -----------------------------------------------------
+
+    cur.execute("""
+        SELECT
+            COALESCE(SUM(s.total), 0) AS revenue,
+
+            COALESCE(
+                SUM(
+                    s.quantity *
+                    COALESCE(recipe_cost.cost, 0)
+                ),
+                0
+            ) AS cost
+
+        FROM sales s
+
+        LEFT JOIN LATERAL (
+            SELECT
+                COALESCE(
+                    SUM(
+                        ri.quantity * i.price
+                    ),
+                    0
+                ) AS cost
+
+            FROM recipe_items ri
+
+            JOIN inventory i
+                ON i.id = ri.inventory_id
+
+            WHERE ri.recipe_id = s.recipe_id
+        ) recipe_cost
+        ON TRUE
+
+        WHERE s.created_at >= CURRENT_DATE
+    """)
+
+    today = cur.fetchone()
+
+    # -----------------------------------------------------
+    # HAFTA
+    # -----------------------------------------------------
+
+    cur.execute("""
+        SELECT
+            COALESCE(SUM(s.total), 0) AS revenue,
+
+            COALESCE(
+                SUM(
+                    s.quantity *
+                    COALESCE(recipe_cost.cost, 0)
+                ),
+                0
+            ) AS cost
+
+        FROM sales s
+
+        LEFT JOIN LATERAL (
+            SELECT
+                COALESCE(
+                    SUM(
+                        ri.quantity * i.price
+                    ),
+                    0
+                ) AS cost
+
+            FROM recipe_items ri
+
+            JOIN inventory i
+                ON i.id = ri.inventory_id
+
+            WHERE ri.recipe_id = s.recipe_id
+        ) recipe_cost
+        ON TRUE
+
+        WHERE s.created_at >= CURRENT_DATE - INTERVAL '6 days'
+    """)
+
+    week = cur.fetchone()
+
+    # -----------------------------------------------------
+    # OY
+    # -----------------------------------------------------
+
+    cur.execute("""
+        SELECT
+            COALESCE(SUM(s.total), 0) AS revenue,
+
+            COALESCE(
+                SUM(
+                    s.quantity *
+                    COALESCE(recipe_cost.cost, 0)
+                ),
+                0
+            ) AS cost
+
+        FROM sales s
+
+        LEFT JOIN LATERAL (
+            SELECT
+                COALESCE(
+                    SUM(
+                        ri.quantity * i.price
+                    ),
+                    0
+                ) AS cost
+
+            FROM recipe_items ri
+
+            JOIN inventory i
+                ON i.id = ri.inventory_id
+
+            WHERE ri.recipe_id = s.recipe_id
+        ) recipe_cost
+        ON TRUE
+
+        WHERE s.created_at >= DATE_TRUNC(
+            'month',
+            CURRENT_DATE
+        )
+    """)
+
+    month = cur.fetchone()
+
+    # -----------------------------------------------------
+    # TOP PRODUCTS
+    # -----------------------------------------------------
+
+    cur.execute("""
+        SELECT
+            s.product_name,
+            SUM(s.quantity) AS quantity,
+            SUM(s.total) AS revenue,
+
+            SUM(
+                s.quantity *
+                COALESCE(recipe_cost.cost, 0)
+            ) AS cost
+
+        FROM sales s
+
+        LEFT JOIN LATERAL (
+            SELECT
+                COALESCE(
+                    SUM(
+                        ri.quantity * i.price
+                    ),
+                    0
+                ) AS cost
+
+            FROM recipe_items ri
+
+            JOIN inventory i
+                ON i.id = ri.inventory_id
+
+            WHERE ri.recipe_id = s.recipe_id
+        ) recipe_cost
+        ON TRUE
+
+        GROUP BY s.product_name
+
+        ORDER BY quantity DESC
+
+        LIMIT 10
+    """)
+
+    top_products = cur.fetchall()
+
+    def make_period(row):
+        revenue = float(row["revenue"] or 0)
+        cost = float(row["cost"] or 0)
+
+        return {
+            "revenue": revenue,
+            "cost": cost,
+            "profit": revenue - cost
+        }
+
+    result = {
+        "today": make_period(today),
+        "week": make_period(week),
+        "month": make_period(month),
+        "top_products": []
+    }
+
+    for product in top_products:
+        revenue = float(product["revenue"] or 0)
+        cost = float(product["cost"] or 0)
+
+        result["top_products"].append({
+            "product_name": product["product_name"],
+            "quantity": float(product["quantity"] or 0),
+            "revenue": revenue,
+            "cost": cost,
+            "profit": revenue - cost
+        })
+
+    cur.close()
+    conn.close()
+
+    return jsonify(result)
+
+
+# =========================================================
+# RECIPE COST
+# =========================================================
+
+@app.get("/api/recipes/<int:recipe_id>/cost")
+def recipe_cost(recipe_id):
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute("""
+        SELECT
+            r.id,
+            r.name,
+            r.sale_unit,
+
+            COALESCE(
+                SUM(
+                    ri.quantity * i.price
+                ),
+                0
+            ) AS cost
+
+        FROM recipes r
+
+        LEFT JOIN recipe_items ri
+            ON ri.recipe_id = r.id
+
+        LEFT JOIN inventory i
+            ON i.id = ri.inventory_id
+
+        WHERE r.id = %s
+
+        GROUP BY
+            r.id,
+            r.name,
+            r.sale_unit
+    """, (recipe_id,))
+
+    recipe = cur.fetchone()
+
+    if not recipe:
+        cur.close()
+        conn.close()
+
+        return jsonify({
+            "error": "Retsept topilmadi"
+        }), 404
+
+    cur.execute("""
+        SELECT
+            i.name,
+            i.unit,
+            ri.quantity,
+            i.price,
+            ri.quantity * i.price AS cost
+        FROM recipe_items ri
+
+        JOIN inventory i
+            ON i.id = ri.inventory_id
+
+        WHERE ri.recipe_id = %s
+    """, (recipe_id,))
+
+    items = cur.fetchall()
+
+    recipe["items"] = items
+
+    recipe["cost"] = float(
+        recipe["cost"] or 0
+    )
+
+    cur.close()
+    conn.close()
+
+    return jsonify(recipe)
+
+
+# =========================================================
+# TOP SELLING PRODUCTS
+# =========================================================
+
+@app.get("/api/top-products")
+def top_products():
+    period = request.args.get("period", "today")
+
+    if period == "week":
+        condition = """
+            s.created_at >= CURRENT_DATE - INTERVAL '6 days'
+        """
+    elif period == "month":
+        condition = """
+            s.created_at >= DATE_TRUNC('month', CURRENT_DATE)
+        """
+    else:
+        condition = """
+            s.created_at >= CURRENT_DATE
+        """
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute(f"""
+        SELECT
+            s.product_name,
+            SUM(s.quantity) AS quantity,
+            SUM(s.total) AS revenue,
+
+            SUM(
+                s.quantity *
+                COALESCE(recipe_cost.cost, 0)
+            ) AS cost
+
+        FROM sales s
+
+        LEFT JOIN LATERAL (
+            SELECT
+                COALESCE(
+                    SUM(
+                        ri.quantity * i.price
+                    ),
+                    0
+                ) AS cost
+
+            FROM recipe_items ri
+
+            JOIN inventory i
+                ON i.id = ri.inventory_id
+
+            WHERE ri.recipe_id = s.recipe_id
+        ) recipe_cost
+        ON TRUE
+
+        WHERE {condition}
+
+        GROUP BY s.product_name
+
+        ORDER BY quantity DESC
+
+        LIMIT 20
+    """)
+
+    rows = cur.fetchall()
+
+    result = []
+
+    for row in rows:
+        revenue = float(row["revenue"] or 0)
+        cost = float(row["cost"] or 0)
+
+        result.append({
+            "product_name": row["product_name"],
+            "quantity": float(row["quantity"] or 0),
+            "revenue": revenue,
+            "cost": cost,
+            "profit": revenue - cost
+        })
+
+    cur.close()
+    conn.close()
+
+    return jsonify(result)
 
 
 # =========================================================
@@ -2151,13 +1929,7 @@ def delete_sale(sale_id):
 # =========================================================
 
 if __name__ == "__main__":
-
-    port = int(
-        os.environ.get(
-            "PORT",
-            5000
-        )
-    )
+    port = int(os.environ.get("PORT", 5000))
 
     app.run(
         host="0.0.0.0",
