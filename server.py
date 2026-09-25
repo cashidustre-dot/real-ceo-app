@@ -22,7 +22,10 @@ def init_db():
     conn = get_db()
     cur = conn.cursor()
 
-    # TRANSACTIONS TABLE
+    # =====================================================
+    # TRANSACTIONS
+    # =====================================================
+
     cur.execute("""
         CREATE TABLE IF NOT EXISTS transactions (
             id SERIAL PRIMARY KEY,
@@ -33,7 +36,10 @@ def init_db():
         )
     """)
 
-    # INVENTORY TABLE
+    # =====================================================
+    # INVENTORY
+    # =====================================================
+
     cur.execute("""
         CREATE TABLE IF NOT EXISTS inventory (
             id SERIAL PRIMARY KEY,
@@ -43,6 +49,16 @@ def init_db():
             min_quantity NUMERIC(15, 3) NOT NULL DEFAULT 0,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
+    """)
+
+    # =====================================================
+    # ADD PRICE COLUMN IF IT DOES NOT EXIST
+    # =====================================================
+
+    cur.execute("""
+        ALTER TABLE inventory
+        ADD COLUMN IF NOT EXISTS price NUMERIC(15, 2)
+        NOT NULL DEFAULT 0
     """)
 
     conn.commit()
@@ -365,6 +381,11 @@ def add_product():
         0
     )
 
+    price = data.get(
+        "price",
+        0
+    )
+
     if not name:
 
         return jsonify({
@@ -383,19 +404,34 @@ def add_product():
 
         quantity = float(quantity)
         min_quantity = float(min_quantity)
+        price = float(price)
 
     except (TypeError, ValueError):
 
         return jsonify({
             "success": False,
-            "error": "Miqdor noto'g'ri"
+            "error": "Miqdor yoki narx noto'g'ri"
         }), 400
 
-    if quantity < 0 or min_quantity < 0:
+    if quantity < 0:
 
         return jsonify({
             "success": False,
             "error": "Miqdor manfiy bo'lishi mumkin emas"
+        }), 400
+
+    if min_quantity < 0:
+
+        return jsonify({
+            "success": False,
+            "error": "Minimal qoldiq manfiy bo'lishi mumkin emas"
+        }), 400
+
+    if price < 0:
+
+        return jsonify({
+            "success": False,
+            "error": "Narx manfiy bo'lishi mumkin emas"
         }), 400
 
     conn = get_db()
@@ -404,15 +440,16 @@ def add_product():
     cur.execute(
         """
         INSERT INTO inventory
-        (name, unit, quantity, min_quantity)
-        VALUES (%s, %s, %s, %s)
+        (name, unit, quantity, min_quantity, price)
+        VALUES (%s, %s, %s, %s, %s)
         RETURNING id
         """,
         (
             name,
             unit,
             quantity,
-            min_quantity
+            min_quantity,
+            price
         )
     )
 
@@ -449,6 +486,7 @@ def get_inventory():
             unit,
             quantity,
             min_quantity,
+            price,
             created_at
         FROM inventory
         ORDER BY name ASC
@@ -463,18 +501,142 @@ def get_inventory():
 
     for row in rows:
 
+        quantity = float(row[3])
+        price = float(row[5])
+
         products.append({
             "id": row[0],
             "name": row[1],
             "unit": row[2],
-            "quantity": float(row[3]),
+            "quantity": quantity,
             "min_quantity": float(row[4]),
-            "created_at": row[5].isoformat()
+            "price": price,
+            "total_value": quantity * price,
+            "created_at": row[6].isoformat()
         })
 
     return jsonify({
         "success": True,
         "products": products
+    })
+
+
+# =========================================================
+# INVENTORY - SUMMARY / TOTAL VALUE
+# =========================================================
+
+@app.route(
+    "/api/inventory/summary",
+    methods=["GET"]
+)
+def inventory_summary():
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute("""
+        SELECT
+            COUNT(*),
+            COALESCE(
+                SUM(quantity * price),
+                0
+            )
+        FROM inventory
+    """)
+
+    product_count, total_value = cur.fetchone()
+
+    cur.execute("""
+        SELECT
+            COUNT(*)
+        FROM inventory
+        WHERE quantity <= min_quantity
+    """)
+
+    low_stock_count = cur.fetchone()[0]
+
+    cur.close()
+    conn.close()
+
+    return jsonify({
+        "success": True,
+        "product_count": product_count,
+        "total_value": float(total_value),
+        "low_stock_count": low_stock_count
+    })
+
+
+# =========================================================
+# INVENTORY - UPDATE PRICE
+# =========================================================
+
+@app.route(
+    "/api/inventory/<int:product_id>/price",
+    methods=["PUT"]
+)
+def update_price(product_id):
+
+    data = request.get_json() or {}
+
+    price = data.get("price")
+
+    try:
+
+        price = float(price)
+
+    except (TypeError, ValueError):
+
+        return jsonify({
+            "success": False,
+            "error": "Narx noto'g'ri"
+        }), 400
+
+    if price < 0:
+
+        return jsonify({
+            "success": False,
+            "error": "Narx manfiy bo'lishi mumkin emas"
+        }), 400
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute(
+        """
+        UPDATE inventory
+        SET price = %s
+        WHERE id = %s
+        RETURNING id, price
+        """,
+        (
+            price,
+            product_id
+        )
+    )
+
+    result = cur.fetchone()
+
+    if not result:
+
+        conn.rollback()
+
+        cur.close()
+        conn.close()
+
+        return jsonify({
+            "success": False,
+            "error": "Mahsulot topilmadi"
+        }), 404
+
+    conn.commit()
+
+    cur.close()
+    conn.close()
+
+    return jsonify({
+        "success": True,
+        "id": result[0],
+        "price": float(result[1])
     })
 
 
