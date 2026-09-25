@@ -14,7 +14,7 @@
             margin: 0;
             font-family: Arial, sans-serif;
             background: #f4f5f7;
-            color: #222;
+            color: #111827;
         }
 
         .header {
@@ -30,40 +30,49 @@
         }
 
         .header p {
-            margin: 6px 0 0;
-            opacity: 0.7;
+            margin: 7px 0 0;
+            opacity: 0.75;
         }
 
         .container {
             padding: 18px;
+            max-width: 600px;
+            margin: auto;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
         }
 
         .card {
             background: white;
             padding: 18px;
-            margin-bottom: 14px;
             border-radius: 18px;
+            margin-bottom: 12px;
             box-shadow: 0 3px 12px rgba(0,0,0,0.06);
         }
 
-        .card-title {
+        .title {
             font-size: 14px;
             color: #6b7280;
         }
 
         .amount {
-            font-size: 25px;
+            font-size: 22px;
             font-weight: bold;
-            margin-top: 6px;
+            margin-top: 7px;
         }
 
         .menu {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 12px;
+            margin-top: 6px;
         }
 
-        .menu button {
+        button {
             border: none;
             background: white;
             padding: 20px 10px;
@@ -73,57 +82,221 @@
             cursor: pointer;
         }
 
-        .menu button:active {
+        button:active {
             transform: scale(0.97);
+        }
+
+        .primary {
+            background: #111827;
+            color: white;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: white;
+            width: 100%;
+            max-width: 420px;
+            padding: 22px;
+            border-radius: 22px;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px;
+            margin: 8px 0;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            font-size: 16px;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .modal-buttons button {
+            flex: 1;
         }
     </style>
 </head>
 
 <body>
 
-    <div class="header">
-        <h1>REAL CEO 👔</h1>
-        <p>Real Choyxona M39</p>
-    </div>
+<div class="header">
+    <h1>REAL CEO 👔</h1>
+    <p>Real Choyxona M39</p>
+</div>
 
-    <div class="container">
+<div class="container">
+
+    <div class="stats">
 
         <div class="card">
-            <div class="card-title">💰 Bugungi tushum</div>
-            <div class="amount">0 so'm</div>
+            <div class="title">💰 Daromad</div>
+            <div class="amount" id="income">0 so'm</div>
         </div>
 
         <div class="card">
-            <div class="card-title">💸 Bugungi xarajat</div>
-            <div class="amount">0 so'm</div>
-        </div>
-
-        <div class="card">
-            <div class="card-title">📈 Bugungi foyda</div>
-            <div class="amount">0 so'm</div>
-        </div>
-
-        <div class="menu">
-
-            <button>💰<br>Daromad</button>
-
-            <button>💸<br>Xarajatlar</button>
-
-            <button>📦<br>Ombor</button>
-
-            <button>👥<br>Xodimlar</button>
-
-            <button>🍽️<br>Savdo</button>
-
-            <button>📊<br>Hisobot</button>
-
-            <button>🤖<br>AI CEO</button>
-
-            <button>⚙️<br>Sozlamalar</button>
-
+            <div class="title">💸 Xarajat</div>
+            <div class="amount" id="expense">0 so'm</div>
         </div>
 
     </div>
+
+    <div class="card">
+        <div class="title">📈 Foyda</div>
+        <div class="amount" id="profit">0 so'm</div>
+    </div>
+
+    <div class="menu">
+
+        <button class="primary" onclick="openModal('income')">
+            💰<br>Daromad qo‘shish
+        </button>
+
+        <button onclick="openModal('expense')">
+            💸<br>Xarajat qo‘shish
+        </button>
+
+        <button>
+            📦<br>Ombor
+        </button>
+
+        <button>
+            👥<br>Xodimlar
+        </button>
+
+        <button>
+            🍽️<br>Savdo
+        </button>
+
+        <button>
+            📊<br>Hisobot
+        </button>
+
+        <button>
+            🤖<br>AI CEO
+        </button>
+
+        <button>
+            ⚙️<br>Sozlamalar
+        </button>
+
+    </div>
+
+</div>
+
+<div class="modal" id="modal">
+
+    <div class="modal-content">
+
+        <h2 id="modalTitle">Daromad qo‘shish</h2>
+
+        <input
+            type="number"
+            id="amount"
+            placeholder="Summa, masalan: 500000"
+        >
+
+        <input
+            type="text"
+            id="description"
+            placeholder="Izoh"
+        >
+
+        <div class="modal-buttons">
+
+            <button onclick="closeModal()">
+                Bekor qilish
+            </button>
+
+            <button class="primary" onclick="saveData()">
+                Saqlash
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+let currentType = "";
+
+let income = 0;
+let expense = 0;
+
+function openModal(type) {
+
+    currentType = type;
+
+    document.getElementById("modal").style.display = "flex";
+
+    if (type === "income") {
+        document.getElementById("modalTitle").innerText =
+            "💰 Daromad qo‘shish";
+    } else {
+        document.getElementById("modalTitle").innerText =
+            "💸 Xarajat qo‘shish";
+    }
+}
+
+function closeModal() {
+
+    document.getElementById("modal").style.display = "none";
+
+    document.getElementById("amount").value = "";
+    document.getElementById("description").value = "";
+}
+
+function saveData() {
+
+    const amount = Number(
+        document.getElementById("amount").value
+    );
+
+    if (!amount || amount <= 0) {
+        alert("Iltimos, summani kiriting.");
+        return;
+    }
+
+    if (currentType === "income") {
+        income += amount;
+    } else {
+        expense += amount;
+    }
+
+    updateDashboard();
+
+    closeModal();
+}
+
+function updateDashboard() {
+
+    document.getElementById("income").innerText =
+        income.toLocaleString("uz-UZ") + " so'm";
+
+    document.getElementById("expense").innerText =
+        expense.toLocaleString("uz-UZ") + " so'm";
+
+    const profit = income - expense;
+
+    document.getElementById("profit").innerText =
+        profit.toLocaleString("uz-UZ") + " so'm";
+}
+
+</script>
 
 </body>
 </html>
