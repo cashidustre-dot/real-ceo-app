@@ -32,8 +32,16 @@ def init_db():
             type VARCHAR(20) NOT NULL,
             amount NUMERIC(15, 2) NOT NULL,
             description TEXT,
+            sale_id INTEGER,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
+    """)
+
+    # Eski bazada transactions allaqachon mavjud bo'lsa,
+    # sale_id ustunini qo'shamiz.
+    cur.execute("""
+        ALTER TABLE transactions
+        ADD COLUMN IF NOT EXISTS sale_id INTEGER
     """)
 
     # =====================================================
@@ -207,7 +215,7 @@ def get_transactions():
             created_at
         FROM transactions
         ORDER BY created_at DESC
-        LIMIT 50
+        LIMIT 100
     """)
 
     rows = cur.fetchall()
@@ -230,6 +238,52 @@ def get_transactions():
     return jsonify({
         "success": True,
         "transactions": transactions
+    })
+
+
+# =========================================================
+# TRANSACTIONS - DELETE
+# =========================================================
+
+@app.route(
+    "/api/transactions/<int:transaction_id>",
+    methods=["DELETE"]
+)
+def delete_transaction(transaction_id):
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute(
+        """
+        DELETE FROM transactions
+        WHERE id = %s
+        RETURNING id
+        """,
+        (transaction_id,)
+    )
+
+    result = cur.fetchone()
+
+    if not result:
+
+        conn.rollback()
+
+        cur.close()
+        conn.close()
+
+        return jsonify({
+            "success": False,
+            "error": "Tranzaksiya topilmadi"
+        }), 404
+
+    conn.commit()
+
+    cur.close()
+    conn.close()
+
+    return jsonify({
+        "success": True
     })
 
 
@@ -1285,6 +1339,7 @@ def add_sale():
     conn = get_db()
     cur = conn.cursor()
 
+    # Avval savdoni yaratamiz
     cur.execute(
         """
         INSERT INTO sales
@@ -1311,19 +1366,28 @@ def add_sale():
 
     sale_id = cur.fetchone()[0]
 
-    # Savdoni umumiy daromadga ham yozamiz
+    # Savdo daromadini aynan shu sale_id bilan bog'laymiz
     cur.execute(
         """
         INSERT INTO transactions
-        (type, amount, description)
-        VALUES (%s, %s, %s)
+        (
+            type,
+            amount,
+            description,
+            sale_id
+        )
+        VALUES (%s, %s, %s, %s)
+        RETURNING id
         """,
         (
             "income",
             total_amount,
-            f"Savdo: {product_name}"
+            f"Savdo: {product_name}",
+            sale_id
         )
     )
+
+    transaction_id = cur.fetchone()[0]
 
     conn.commit()
 
@@ -1333,6 +1397,7 @@ def add_sale():
     return jsonify({
         "success": True,
         "id": sale_id,
+        "transaction_id": transaction_id,
         "total_amount": total_amount
     })
 
@@ -1404,7 +1469,6 @@ def sales_summary():
     conn = get_db()
     cur = conn.cursor()
 
-    # Bugungi savdo
     cur.execute("""
         SELECT
             COALESCE(
@@ -1418,7 +1482,6 @@ def sales_summary():
 
     today_total, today_count = cur.fetchone()
 
-    # Haftalik savdo
     cur.execute("""
         SELECT
             COALESCE(
@@ -1432,7 +1495,6 @@ def sales_summary():
 
     week_total = cur.fetchone()[0]
 
-    # Oylik savdo
     cur.execute("""
         SELECT
             COALESCE(
@@ -1449,7 +1511,6 @@ def sales_summary():
 
     month_total = cur.fetchone()[0]
 
-    # Naqd
     cur.execute("""
         SELECT
             COALESCE(
@@ -1462,7 +1523,6 @@ def sales_summary():
 
     cash_total = cur.fetchone()[0]
 
-    # Karta
     cur.execute("""
         SELECT
             COALESCE(
@@ -1502,7 +1562,7 @@ def delete_sale(sale_id):
     conn = get_db()
     cur = conn.cursor()
 
-    # Avval savdoni topamiz
+    # Savdoni topamiz
     cur.execute(
         """
         SELECT
@@ -1529,6 +1589,41 @@ def delete_sale(sale_id):
     product_name = sale[0]
     total_amount = float(sale[1])
 
+    # Eng avval aynan sale_id bilan bog'langan
+    # transactionni o'chiramiz.
+    cur.execute(
+        """
+        DELETE FROM transactions
+        WHERE sale_id = %s
+        """,
+        (sale_id,)
+    )
+
+    # Eski versiyada yaratilgan savdolar uchun
+    # sale_id bo'lmagan bo'lishi mumkin.
+    # Ular uchun xavfsizroq fallback:
+    # aynan summa + savdo nomi bo'yicha eng oxirgi
+    # mos daromadni o'chiramiz.
+    cur.execute(
+        """
+        DELETE FROM transactions
+        WHERE id = (
+            SELECT id
+            FROM transactions
+            WHERE sale_id IS NULL
+              AND type = 'income'
+              AND amount = %s
+              AND description = %s
+            ORDER BY created_at DESC
+            LIMIT 1
+        )
+        """,
+        (
+            total_amount,
+            f"Savdo: {product_name}"
+        )
+    )
+
     # Savdoni o'chiramiz
     cur.execute(
         """
@@ -1537,24 +1632,6 @@ def delete_sale(sale_id):
         RETURNING id
         """,
         (sale_id,)
-    )
-
-    # Savdoga tegishli transactionni ham o'chiramiz.
-    cur.execute(
-        """
-        DELETE FROM transactions
-        WHERE id = (
-            SELECT id
-            FROM transactions
-            WHERE type = 'income'
-              AND description = %s
-            ORDER BY created_at DESC
-            LIMIT 1
-        )
-        """,
-        (
-            f"Savdo: {product_name}",
-        )
     )
 
     conn.commit()
