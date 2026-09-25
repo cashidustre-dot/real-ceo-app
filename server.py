@@ -138,11 +138,21 @@ def health():
     })
 
 
+# PostgreSQL jadvalini server ishga tushganda yaratish
+try:
+    init_db()
+    print("✅ PostgreSQL bazasi tayyor.")
+except Exception as error:
+    print("❌ PostgreSQL bazasini ishga tushirishda xatolik:")
+    print(error)
+    raise
+
+
 if __name__ == "__main__":
 
-    init_db()
-
-    port = int(os.environ.get("PORT", 8080))
+    port = int(
+        os.environ.get("PORT", 8080)
+    )
 
     app.run(
         host="0.0.0.0",
