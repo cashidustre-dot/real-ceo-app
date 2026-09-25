@@ -24,10 +24,6 @@
             color: #17202a;
         }
 
-        /* ================================================= */
-        /* HEADER */
-        /* ================================================= */
-
         header {
             background: #111827;
             color: white;
@@ -50,24 +46,16 @@
             opacity: .75;
         }
 
-        /* ================================================= */
-        /* CONTAINER */
-        /* ================================================= */
-
         .container {
             max-width: 1100px;
             margin: auto;
             padding: 20px;
         }
 
-        /* ================================================= */
-        /* CARDS */
-        /* ================================================= */
-
         .grid {
             display: grid;
             grid-template-columns:
-                repeat(auto-fit, minmax(220px, 1fr));
+                repeat(auto-fit, minmax(210px, 1fr));
             gap: 15px;
             margin-bottom: 20px;
         }
@@ -87,13 +75,9 @@
         }
 
         .card-value {
-            font-size: 26px;
+            font-size: 25px;
             font-weight: bold;
         }
-
-        /* ================================================= */
-        /* BUTTONS */
-        /* ================================================= */
 
         button {
             border: none;
@@ -138,12 +122,8 @@
             color: #111827;
         }
 
-        /* ================================================= */
-        /* SECTION */
-        /* ================================================= */
-
         .section {
-            margin-top: 25px;
+            margin-top: 28px;
         }
 
         .section-header {
@@ -160,10 +140,6 @@
             font-size: 20px;
         }
 
-        /* ================================================= */
-        /* TRANSACTIONS */
-        /* ================================================= */
-
         .transaction {
             display: flex;
             justify-content: space-between;
@@ -171,10 +147,6 @@
             gap: 10px;
             padding: 13px 0;
             border-bottom: 1px solid #eee;
-        }
-
-        .transaction:last-child {
-            border-bottom: none;
         }
 
         .income {
@@ -185,18 +157,18 @@
             color: #dc2626;
         }
 
-        /* ================================================= */
-        /* INVENTORY */
-        /* ================================================= */
-
-        .inventory-grid {
+        .inventory-grid,
+        .employee-grid,
+        .sales-grid {
             display: grid;
             grid-template-columns:
-                repeat(auto-fit, minmax(260px, 1fr));
+                repeat(auto-fit, minmax(270px, 1fr));
             gap: 15px;
         }
 
-        .product-card {
+        .product-card,
+        .employee-card,
+        .sale-card {
             background: white;
             border-radius: 16px;
             padding: 18px;
@@ -204,18 +176,23 @@
                 0 4px 15px rgba(0,0,0,.06);
         }
 
-        .product-name {
+        .product-name,
+        .employee-name,
+        .sale-name {
             font-size: 19px;
             font-weight: bold;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
 
-        .product-info {
+        .product-info,
+        .employee-position,
+        .sale-info {
             margin: 7px 0;
             color: #4b5563;
         }
 
-        .product-value {
+        .product-value,
+        .employee-salary {
             font-size: 18px;
             font-weight: bold;
             margin-top: 10px;
@@ -231,64 +208,28 @@
             font-weight: bold;
         }
 
-        .product-buttons {
+        .product-buttons,
+        .employee-buttons {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 8px;
             margin-top: 14px;
         }
 
-        /* ================================================= */
-        /* EMPLOYEES */
-        /* ================================================= */
-
-        .employee-grid {
-            display: grid;
-            grid-template-columns:
-                repeat(auto-fit, minmax(280px, 1fr));
-            gap: 15px;
+        .sale-buttons {
+            margin-top: 12px;
         }
 
-        .employee-card {
-            background: white;
-            border-radius: 16px;
-            padding: 18px;
-            box-shadow:
-                0 4px 15px rgba(0,0,0,.06);
-        }
-
-        .employee-name {
-            font-size: 19px;
+        .payment-badge {
+            display: inline-block;
+            padding: 6px 9px;
+            border-radius: 8px;
+            background: #eef2ff;
+            color: #3730a3;
+            font-size: 12px;
             font-weight: bold;
-            margin-bottom: 5px;
+            margin-top: 5px;
         }
-
-        .employee-position {
-            color: #6b7280;
-            margin-bottom: 15px;
-        }
-
-        .employee-salary {
-            font-size: 20px;
-            font-weight: bold;
-            margin-bottom: 8px;
-        }
-
-        .employee-date {
-            font-size: 13px;
-            color: #6b7280;
-            margin-bottom: 15px;
-        }
-
-        .employee-buttons {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-        }
-
-        /* ================================================= */
-        /* MODAL */
-        /* ================================================= */
 
         .modal {
             display: none;
@@ -312,10 +253,6 @@
             margin-top: 0;
         }
 
-        /* ================================================= */
-        /* INPUT */
-        /* ================================================= */
-
         label {
             display: block;
             margin-top: 12px;
@@ -335,6 +272,11 @@
             outline: none;
         }
 
+        textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
         input:focus,
         select:focus,
         textarea:focus {
@@ -348,19 +290,11 @@
             margin-top: 20px;
         }
 
-        /* ================================================= */
-        /* EMPTY */
-        /* ================================================= */
-
         .empty {
             text-align: center;
             padding: 25px;
             color: #6b7280;
         }
-
-        /* ================================================= */
-        /* MOBILE */
-        /* ================================================= */
 
         @media (max-width: 600px) {
 
@@ -377,7 +311,7 @@
             }
 
             .card-value {
-                font-size: 23px;
+                font-size: 22px;
             }
 
             .section-header h2 {
@@ -396,6 +330,7 @@
 
 <body>
 
+
 <!-- ===================================================== -->
 <!-- HEADER -->
 <!-- ===================================================== -->
@@ -403,11 +338,18 @@
 <header>
 
     <div>
+
         <h1>👑 Real CEO</h1>
-        <span>Real Choyxona M39</span>
+
+        <span>
+            Real Choyxona M39
+        </span>
+
     </div>
 
-    <span>CEO Dashboard</span>
+    <span>
+        CEO Dashboard
+    </span>
 
 </header>
 
@@ -415,21 +357,141 @@
 <div class="container">
 
 
-    <!-- ================================================= -->
-    <!-- MAIN SUMMARY -->
-    <!-- ================================================= -->
+<!-- ===================================================== -->
+<!-- MAIN SUMMARY -->
+<!-- ===================================================== -->
+
+<div class="grid">
+
+    <div class="card">
+
+        <div class="card-title">
+            🛒 Bugungi savdo
+        </div>
+
+        <div
+            class="card-value income"
+            id="todaySales"
+        >
+            0 so'm
+        </div>
+
+    </div>
+
+
+    <div class="card">
+
+        <div class="card-title">
+            💰 Jami daromad
+        </div>
+
+        <div
+            class="card-value income"
+            id="totalIncome"
+        >
+            0 so'm
+        </div>
+
+    </div>
+
+
+    <div class="card">
+
+        <div class="card-title">
+            💸 Jami xarajat
+        </div>
+
+        <div
+            class="card-value expense"
+            id="totalExpense"
+        >
+            0 so'm
+        </div>
+
+    </div>
+
+
+    <div class="card">
+
+        <div class="card-title">
+            📊 Foyda
+        </div>
+
+        <div
+            class="card-value"
+            id="totalProfit"
+        >
+            0 so'm
+        </div>
+
+    </div>
+
+
+    <div class="card">
+
+        <div class="card-title">
+            📦 Ombor qiymati
+        </div>
+
+        <div
+            class="card-value"
+            id="inventoryTotalValue"
+        >
+            0 so'm
+        </div>
+
+    </div>
+
+
+    <div class="card">
+
+        <div class="card-title">
+            👥 Xodimlar
+        </div>
+
+        <div
+            class="card-value"
+            id="employeeCount"
+        >
+            0
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ===================================================== -->
+<!-- SALES -->
+<!-- ===================================================== -->
+
+<div class="section">
+
+    <div class="section-header">
+
+        <h2>🛒 Savdo</h2>
+
+        <button
+            class="btn-primary"
+            onclick="openSaleModal()"
+        >
+            + Savdo qo'shish
+        </button>
+
+    </div>
+
 
     <div class="grid">
 
         <div class="card">
 
             <div class="card-title">
-                💰 Jami daromad
+                🛒 Bugungi savdo
             </div>
 
             <div
                 class="card-value income"
-                id="totalIncome"
+                id="salesToday"
             >
                 0 so'm
             </div>
@@ -440,12 +502,195 @@
         <div class="card">
 
             <div class="card-title">
-                💸 Jami xarajat
+                📅 Haftalik savdo
+            </div>
+
+            <div
+                class="card-value"
+                id="salesWeek"
+            >
+                0 so'm
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="card-title">
+                📅 Oylik savdo
+            </div>
+
+            <div
+                class="card-value"
+                id="salesMonth"
+            >
+                0 so'm
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="card-title">
+                💵 Naqd savdo
+            </div>
+
+            <div
+                class="card-value"
+                id="salesCash"
+            >
+                0 so'm
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="card-title">
+                💳 Karta savdo
+            </div>
+
+            <div
+                class="card-value"
+                id="salesCard"
+            >
+                0 so'm
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="card-title">
+                🔢 Bugungi savdolar
+            </div>
+
+            <div
+                class="card-value"
+                id="salesCount"
+            >
+                0
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div
+        class="sales-grid"
+        id="salesList"
+    >
+
+    </div>
+
+</div>
+
+
+<!-- ===================================================== -->
+<!-- FINANCE -->
+<!-- ===================================================== -->
+
+<div class="section">
+
+    <div class="section-header">
+
+        <h2>💰 Moliyaviy boshqaruv</h2>
+
+        <button
+            class="btn-primary"
+            onclick="openTransactionModal()"
+        >
+            + Tranzaksiya
+        </button>
+
+    </div>
+
+
+    <div class="card">
+
+        <div id="transactionList">
+
+            <div class="empty">
+                Hozircha tranzaksiyalar yo'q
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ===================================================== -->
+<!-- REPORTS -->
+<!-- ===================================================== -->
+
+<div class="section">
+
+    <div class="section-header">
+
+        <h2>📊 Hisobotlar</h2>
+
+        <div>
+
+            <button
+                class="btn-gray"
+                onclick="loadReport('today')"
+            >
+                Bugun
+            </button>
+
+            <button
+                class="btn-gray"
+                onclick="loadReport('week')"
+            >
+                Hafta
+            </button>
+
+            <button
+                class="btn-gray"
+                onclick="loadReport('month')"
+            >
+                Oy
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <div class="grid">
+
+        <div class="card">
+
+            <div class="card-title">
+                Daromad
+            </div>
+
+            <div
+                class="card-value income"
+                id="reportIncome"
+            >
+                0 so'm
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="card-title">
+                Xarajat
             </div>
 
             <div
                 class="card-value expense"
-                id="totalExpense"
+                id="reportExpense"
             >
                 0 so'm
             </div>
@@ -456,12 +701,12 @@
         <div class="card">
 
             <div class="card-title">
-                📊 Foyda
+                Foyda
             </div>
 
             <div
                 class="card-value"
-                id="totalProfit"
+                id="reportProfit"
             >
                 0 so'm
             </div>
@@ -472,28 +717,54 @@
         <div class="card">
 
             <div class="card-title">
-                📦 Ombor qiymati
+                Tranzaksiyalar
             </div>
 
             <div
                 class="card-value"
-                id="inventoryTotalValue"
+                id="reportCount"
             >
-                0 so'm
+                0
             </div>
 
         </div>
 
+    </div>
+
+</div>
+
+
+<!-- ===================================================== -->
+<!-- INVENTORY -->
+<!-- ===================================================== -->
+
+<div class="section">
+
+    <div class="section-header">
+
+        <h2>📦 Ombor</h2>
+
+        <button
+            class="btn-primary"
+            onclick="openProductModal()"
+        >
+            + Mahsulot
+        </button>
+
+    </div>
+
+
+    <div class="grid">
 
         <div class="card">
 
             <div class="card-title">
-                👥 Xodimlar
+                Mahsulotlar soni
             </div>
 
             <div
                 class="card-value"
-                id="employeeCount"
+                id="inventoryProductCount"
             >
                 0
             </div>
@@ -504,7 +775,89 @@
         <div class="card">
 
             <div class="card-title">
-                💵 Oylik fondi
+                Ombor qiymati
+            </div>
+
+            <div
+                class="card-value"
+                id="inventoryValue2"
+            >
+                0 so'm
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="card-title">
+                Kam qolganlar
+            </div>
+
+            <div
+                class="card-value"
+                id="inventoryLowCount"
+            >
+                0
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div
+        class="inventory-grid"
+        id="inventoryList"
+    >
+
+    </div>
+
+</div>
+
+
+<!-- ===================================================== -->
+<!-- EMPLOYEES -->
+<!-- ===================================================== -->
+
+<div class="section">
+
+    <div class="section-header">
+
+        <h2>👥 Xodimlar</h2>
+
+        <button
+            class="btn-primary"
+            onclick="openEmployeeModal()"
+        >
+            + Xodim qo'shish
+        </button>
+
+    </div>
+
+
+    <div class="grid">
+
+        <div class="card">
+
+            <div class="card-title">
+                👤 Xodimlar soni
+            </div>
+
+            <div
+                class="card-value"
+                id="employeeCount2"
+            >
+                0
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="card-title">
+                💵 Umumiy oylik fondi
             </div>
 
             <div
@@ -519,295 +872,14 @@
     </div>
 
 
-    <!-- ================================================= -->
-    <!-- TRANSACTIONS -->
-    <!-- ================================================= -->
-
-    <div class="section">
-
-        <div class="section-header">
-
-            <h2>💰 Moliyaviy boshqaruv</h2>
-
-            <button
-                class="btn-primary"
-                onclick="openTransactionModal()"
-            >
-                + Tranzaksiya
-            </button>
-
-        </div>
-
-
-        <div class="card">
-
-            <div id="transactionList">
-
-                <div class="empty">
-                    Hozircha tranzaksiyalar yo'q
-                </div>
-
-            </div>
-
-        </div>
+    <div
+        class="employee-grid"
+        id="employeeList"
+    >
 
     </div>
 
-
-    <!-- ================================================= -->
-    <!-- REPORTS -->
-    <!-- ================================================= -->
-
-    <div class="section">
-
-        <div class="section-header">
-
-            <h2>📊 Hisobotlar</h2>
-
-            <div>
-
-                <button
-                    class="btn-gray"
-                    onclick="loadReport('today')"
-                >
-                    Bugun
-                </button>
-
-                <button
-                    class="btn-gray"
-                    onclick="loadReport('week')"
-                >
-                    Hafta
-                </button>
-
-                <button
-                    class="btn-gray"
-                    onclick="loadReport('month')"
-                >
-                    Oy
-                </button>
-
-            </div>
-
-        </div>
-
-
-        <div class="grid">
-
-            <div class="card">
-
-                <div class="card-title">
-                    Daromad
-                </div>
-
-                <div
-                    class="card-value income"
-                    id="reportIncome"
-                >
-                    0 so'm
-                </div>
-
-            </div>
-
-
-            <div class="card">
-
-                <div class="card-title">
-                    Xarajat
-                </div>
-
-                <div
-                    class="card-value expense"
-                    id="reportExpense"
-                >
-                    0 so'm
-                </div>
-
-            </div>
-
-
-            <div class="card">
-
-                <div class="card-title">
-                    Foyda
-                </div>
-
-                <div
-                    class="card-value"
-                    id="reportProfit"
-                >
-                    0 so'm
-                </div>
-
-            </div>
-
-
-            <div class="card">
-
-                <div class="card-title">
-                    Tranzaksiyalar
-                </div>
-
-                <div
-                    class="card-value"
-                    id="reportCount"
-                >
-                    0
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <!-- ================================================= -->
-    <!-- INVENTORY -->
-    <!-- ================================================= -->
-
-    <div class="section">
-
-        <div class="section-header">
-
-            <h2>📦 Ombor</h2>
-
-            <button
-                class="btn-primary"
-                onclick="openProductModal()"
-            >
-                + Mahsulot
-            </button>
-
-        </div>
-
-
-        <div class="grid">
-
-            <div class="card">
-
-                <div class="card-title">
-                    Mahsulotlar soni
-                </div>
-
-                <div
-                    class="card-value"
-                    id="inventoryProductCount"
-                >
-                    0
-                </div>
-
-            </div>
-
-
-            <div class="card">
-
-                <div class="card-title">
-                    Ombor qiymati
-                </div>
-
-                <div
-                    class="card-value"
-                    id="inventoryValue2"
-                >
-                    0 so'm
-                </div>
-
-            </div>
-
-
-            <div class="card">
-
-                <div class="card-title">
-                    Kam qolganlar
-                </div>
-
-                <div
-                    class="card-value"
-                    id="inventoryLowCount"
-                >
-                    0
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <div
-            class="inventory-grid"
-            id="inventoryList"
-        >
-
-        </div>
-
-    </div>
-
-
-    <!-- ================================================= -->
-    <!-- EMPLOYEES -->
-    <!-- ================================================= -->
-
-    <div class="section">
-
-        <div class="section-header">
-
-            <h2>👥 Xodimlar</h2>
-
-            <button
-                class="btn-primary"
-                onclick="openEmployeeModal()"
-            >
-                + Xodim qo'shish
-            </button>
-
-        </div>
-
-
-        <div class="grid">
-
-            <div class="card">
-
-                <div class="card-title">
-                    👤 Xodimlar soni
-                </div>
-
-                <div
-                    class="card-value"
-                    id="employeeCount2"
-                >
-                    0
-                </div>
-
-            </div>
-
-
-            <div class="card">
-
-                <div class="card-title">
-                    💵 Umumiy oylik fondi
-                </div>
-
-                <div
-                    class="card-value"
-                    id="employeeSalaryTotal2"
-                >
-                    0 so'm
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <div
-            class="employee-grid"
-            id="employeeList"
-        >
-
-        </div>
-
-    </div>
+</div>
 
 
 </div>
@@ -825,7 +897,6 @@
     <div class="modal-content">
 
         <h2>💰 Tranzaksiya</h2>
-
 
         <label>
             Turi
@@ -851,7 +922,7 @@
         <input
             type="number"
             id="transactionAmount"
-            placeholder="Masalan: 500000"
+            placeholder="500000"
         >
 
 
@@ -890,6 +961,127 @@
 
 
 <!-- ===================================================== -->
+<!-- SALE MODAL -->
+<!-- ===================================================== -->
+
+<div
+    class="modal"
+    id="saleModal"
+>
+
+    <div class="modal-content">
+
+        <h2>🛒 Savdo qo'shish</h2>
+
+
+        <label>
+            Mahsulot / taom nomi
+        </label>
+
+        <input
+            type="text"
+            id="saleProductName"
+            placeholder="Masalan: Osh"
+        >
+
+
+        <label>
+            Miqdor
+        </label>
+
+        <input
+            type="number"
+            id="saleQuantity"
+            step="0.001"
+            value="1"
+        >
+
+
+        <label>
+            Birlik narxi
+        </label>
+
+        <input
+            type="number"
+            id="saleUnitPrice"
+            placeholder="Masalan: 50000"
+        >
+
+
+        <label>
+            To'lov turi
+        </label>
+
+        <select id="salePayment">
+
+            <option value="cash">
+                💵 Naqd
+            </option>
+
+            <option value="card">
+                💳 Karta
+            </option>
+
+            <option value="other">
+                🔄 Boshqa
+            </option>
+
+        </select>
+
+
+        <label>
+            Izoh
+        </label>
+
+        <textarea
+            id="saleDescription"
+            placeholder="Masalan: Stol 5"
+        ></textarea>
+
+
+        <div
+            class="card"
+            style="margin-top:15px;"
+        >
+
+            <div class="card-title">
+                Jami summa
+            </div>
+
+            <div
+                class="card-value"
+                id="saleTotalPreview"
+            >
+                0 so'm
+            </div>
+
+        </div>
+
+
+        <div class="modal-buttons">
+
+            <button
+                class="btn-gray"
+                onclick="closeSaleModal()"
+            >
+                Bekor qilish
+            </button>
+
+            <button
+                class="btn-success"
+                onclick="saveSale()"
+            >
+                Saqlash
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ===================================================== -->
 <!-- PRODUCT MODAL -->
 <!-- ===================================================== -->
 
@@ -901,7 +1093,6 @@
     <div class="modal-content">
 
         <h2>📦 Mahsulot qo'shish</h2>
-
 
         <label>
             Mahsulot nomi
@@ -933,7 +1124,6 @@
             type="number"
             id="productQuantity"
             step="0.001"
-            placeholder="0"
         >
 
 
@@ -945,7 +1135,6 @@
             type="number"
             id="productMinQuantity"
             step="0.001"
-            placeholder="0"
         >
 
 
@@ -956,7 +1145,6 @@
         <input
             type="number"
             id="productPrice"
-            placeholder="Masalan: 18000"
         >
 
 
@@ -998,7 +1186,6 @@
             📦 Ombor
         </h2>
 
-
         <label>
             Miqdor
         </label>
@@ -1007,7 +1194,6 @@
             type="number"
             id="stockAmount"
             step="0.001"
-            placeholder="Masalan: 10"
         >
 
 
@@ -1047,7 +1233,6 @@
 
         <h2>💵 Narxni o'zgartirish</h2>
 
-
         <label>
             1 birlik narxi
         </label>
@@ -1055,7 +1240,6 @@
         <input
             type="number"
             id="newPrice"
-            placeholder="Masalan: 18000"
         >
 
 
@@ -1097,7 +1281,6 @@
             👤 Xodim qo'shish
         </h2>
 
-
         <label>
             Xodim ismi
         </label>
@@ -1105,7 +1288,7 @@
         <input
             type="text"
             id="employeeName"
-            placeholder="Masalan: Ali Valiyev"
+            placeholder="Masalan: Ali"
         >
 
 
@@ -1127,7 +1310,7 @@
         <input
             type="number"
             id="employeeSalary"
-            placeholder="Masalan: 5000000"
+            placeholder="5000000"
         >
 
 
@@ -1173,13 +1356,14 @@
 function formatMoney(value) {
 
     return Number(value || 0)
-        .toLocaleString("uz-UZ") + " so'm";
+        .toLocaleString("uz-UZ")
+        + " so'm";
 
 }
 
 
 /* ========================================================= */
-/* TRANSACTIONS */
+/* SUMMARY */
 /* ========================================================= */
 
 async function loadSummary() {
@@ -1216,6 +1400,10 @@ async function loadSummary() {
 }
 
 
+/* ========================================================= */
+/* TRANSACTIONS */
+/* ========================================================= */
+
 async function loadTransactions() {
 
     try {
@@ -1243,7 +1431,6 @@ async function loadTransactions() {
 
         }
 
-
         list.innerHTML =
             data.transactions.map(item => {
 
@@ -1261,7 +1448,6 @@ async function loadTransactions() {
                     item.type === "income"
                         ? "Daromad"
                         : "Xarajat";
-
 
                 return `
 
@@ -1339,7 +1525,6 @@ async function saveTransaction() {
             "transactionDescription"
         ).value;
 
-
     if (!amount) {
 
         alert("Summani kiriting");
@@ -1347,7 +1532,6 @@ async function saveTransaction() {
         return;
 
     }
-
 
     try {
 
@@ -1370,22 +1554,21 @@ async function saveTransaction() {
                 }
             );
 
-
         const data =
             await response.json();
 
-
         if (!data.success) {
 
-            alert(data.error || "Xatolik");
+            alert(
+                data.error ||
+                "Xatolik"
+            );
 
             return;
 
         }
 
-
         closeTransactionModal();
-
 
         document.getElementById(
             "transactionAmount"
@@ -1395,16 +1578,17 @@ async function saveTransaction() {
             "transactionDescription"
         ).value = "";
 
-
         await loadSummary();
-        await loadTransactions();
 
+        await loadTransactions();
 
     } catch (error) {
 
         console.error(error);
 
-        alert("Server bilan bog'lanishda xatolik");
+        alert(
+            "Server bilan bog'lanishda xatolik"
+        );
 
     }
 
@@ -1427,7 +1611,6 @@ async function loadReport(period) {
         const data =
             await response.json();
 
-
         if (!data.success) {
 
             alert(data.error);
@@ -1436,24 +1619,20 @@ async function loadReport(period) {
 
         }
 
-
         document.getElementById(
             "reportIncome"
         ).textContent =
             formatMoney(data.income);
-
 
         document.getElementById(
             "reportExpense"
         ).textContent =
             formatMoney(data.expense);
 
-
         document.getElementById(
             "reportProfit"
         ).textContent =
             formatMoney(data.profit);
-
 
         document.getElementById(
             "reportCount"
@@ -1463,6 +1642,478 @@ async function loadReport(period) {
     } catch (error) {
 
         console.error(error);
+
+    }
+
+}
+
+
+/* ========================================================= */
+/* SALES */
+/* ========================================================= */
+
+async function loadSales() {
+
+    try {
+
+        const [
+            salesResponse,
+            summaryResponse
+        ] = await Promise.all([
+
+            fetch("/api/sales"),
+
+            fetch("/api/sales/summary")
+
+        ]);
+
+        const salesData =
+            await salesResponse.json();
+
+        const summaryData =
+            await summaryResponse.json();
+
+
+        document.getElementById(
+            "todaySales"
+        ).textContent =
+            formatMoney(
+                summaryData.today_total
+            );
+
+
+        document.getElementById(
+            "salesToday"
+        ).textContent =
+            formatMoney(
+                summaryData.today_total
+            );
+
+
+        document.getElementById(
+            "salesWeek"
+        ).textContent =
+            formatMoney(
+                summaryData.week_total
+            );
+
+
+        document.getElementById(
+            "salesMonth"
+        ).textContent =
+            formatMoney(
+                summaryData.month_total
+            );
+
+
+        document.getElementById(
+            "salesCash"
+        ).textContent =
+            formatMoney(
+                summaryData.cash_total
+            );
+
+
+        document.getElementById(
+            "salesCard"
+        ).textContent =
+            formatMoney(
+                summaryData.card_total
+            );
+
+
+        document.getElementById(
+            "salesCount"
+        ).textContent =
+            summaryData.today_count;
+
+
+        const list =
+            document.getElementById(
+                "salesList"
+            );
+
+
+        if (
+            !salesData.sales ||
+            salesData.sales.length === 0
+        ) {
+
+            list.innerHTML =
+                '<div class="card"><div class="empty">Hozircha savdolar yo\'q</div></div>';
+
+            return;
+
+        }
+
+
+        list.innerHTML =
+            salesData.sales.map(
+                sale => {
+
+                    let paymentText =
+                        "Boshqa";
+
+                    if (
+                        sale.payment_method ===
+                        "cash"
+                    ) {
+
+                        paymentText =
+                            "💵 Naqd";
+
+                    } else if (
+                        sale.payment_method ===
+                        "card"
+                    ) {
+
+                        paymentText =
+                            "💳 Karta";
+
+                    }
+
+
+                    return `
+
+                        <div class="sale-card">
+
+                            <div class="sale-name">
+                                🛒 ${sale.product_name}
+                            </div>
+
+                            <div class="sale-info">
+                                Miqdor:
+                                <strong>
+                                    ${sale.quantity}
+                                </strong>
+                            </div>
+
+                            <div class="sale-info">
+                                Birlik narxi:
+                                <strong>
+                                    ${formatMoney(
+                                        sale.unit_price
+                                    )}
+                                </strong>
+                            </div>
+
+                            <div class="sale-info">
+                                Jami:
+                                <strong>
+                                    ${formatMoney(
+                                        sale.total_amount
+                                    )}
+                                </strong>
+                            </div>
+
+                            <div>
+                                <span class="payment-badge">
+                                    ${paymentText}
+                                </span>
+                            </div>
+
+                            <div class="sale-info">
+                                ${sale.description || ""}
+                            </div>
+
+                            <small>
+                                ${new Date(
+                                    sale.created_at
+                                ).toLocaleString("uz-UZ")}
+                            </small>
+
+                            <div class="sale-buttons">
+
+                                <button
+                                    class="btn-danger"
+                                    onclick="deleteSale(
+                                        ${sale.id}
+                                    )"
+                                >
+                                    🗑️ O'chirish
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    `;
+
+                }
+            ).join("");
+
+
+    } catch (error) {
+
+        console.error(error);
+
+    }
+
+}
+
+
+function openSaleModal() {
+
+    document.getElementById(
+        "saleModal"
+    ).style.display = "block";
+
+    updateSalePreview();
+
+}
+
+
+function closeSaleModal() {
+
+    document.getElementById(
+        "saleModal"
+    ).style.display = "none";
+
+}
+
+
+function updateSalePreview() {
+
+    const quantity =
+        Number(
+            document.getElementById(
+                "saleQuantity"
+            ).value
+        ) || 0;
+
+    const price =
+        Number(
+            document.getElementById(
+                "saleUnitPrice"
+            ).value
+        ) || 0;
+
+    const total =
+        quantity * price;
+
+    document.getElementById(
+        "saleTotalPreview"
+    ).textContent =
+        formatMoney(total);
+
+}
+
+
+async function saveSale() {
+
+    const productName =
+        document.getElementById(
+            "saleProductName"
+        ).value.trim();
+
+    const quantity =
+        document.getElementById(
+            "saleQuantity"
+        ).value;
+
+    const unitPrice =
+        document.getElementById(
+            "saleUnitPrice"
+        ).value;
+
+    const paymentMethod =
+        document.getElementById(
+            "salePayment"
+        ).value;
+
+    const description =
+        document.getElementById(
+            "saleDescription"
+        ).value;
+
+
+    if (!productName) {
+
+        alert(
+            "Mahsulot yoki taom nomini kiriting"
+        );
+
+        return;
+
+    }
+
+
+    if (
+        !quantity ||
+        Number(quantity) <= 0
+    ) {
+
+        alert("Miqdorni kiriting");
+
+        return;
+
+    }
+
+
+    if (
+        unitPrice === "" ||
+        Number(unitPrice) < 0
+    ) {
+
+        alert("Narxni kiriting");
+
+        return;
+
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/sales",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+
+                        product_name:
+                            productName,
+
+                        quantity,
+
+                        unit_price:
+                            unitPrice,
+
+                        payment_method:
+                            paymentMethod,
+
+                        description
+
+                    })
+
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!data.success) {
+
+            alert(
+                data.error ||
+                "Xatolik"
+            );
+
+            return;
+
+        }
+
+
+        closeSaleModal();
+
+
+        document.getElementById(
+            "saleProductName"
+        ).value = "";
+
+        document.getElementById(
+            "saleQuantity"
+        ).value = "1";
+
+        document.getElementById(
+            "saleUnitPrice"
+        ).value = "";
+
+        document.getElementById(
+            "saleDescription"
+        ).value = "";
+
+
+        await loadSales();
+
+        await loadSummary();
+
+        await loadTransactions();
+
+        await loadReport("today");
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(
+            "Server bilan bog'lanishda xatolik"
+        );
+
+    }
+
+}
+
+
+async function deleteSale(
+    saleId
+) {
+
+    const confirmed =
+        confirm(
+            "Bu savdoni o'chirishni xohlaysizmi?"
+        );
+
+
+    if (!confirmed) {
+
+        return;
+
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                `/api/sales/${saleId}`,
+                {
+                    method: "DELETE"
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!data.success) {
+
+            alert(
+                data.error ||
+                "Xatolik"
+            );
+
+            return;
+
+        }
+
+
+        await loadSales();
+
+        await loadSummary();
+
+        await loadTransactions();
+
+        await loadReport("today");
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(
+            "Server bilan bog'lanishda xatolik"
+        );
 
     }
 
@@ -1563,7 +2214,9 @@ async function loadInventory() {
                                 <div class="product-info">
                                     1 ${product.unit}:
                                     <strong>
-                                        ${formatMoney(product.price)}
+                                        ${formatMoney(
+                                            product.price
+                                        )}
                                     </strong>
                                 </div>
 
@@ -1761,7 +2414,10 @@ async function saveProduct() {
 
         if (!data.success) {
 
-            alert(data.error || "Xatolik");
+            alert(
+                data.error ||
+                "Xatolik"
+            );
 
             return;
 
@@ -1798,7 +2454,9 @@ async function saveProduct() {
 
         console.error(error);
 
-        alert("Server bilan bog'lanishda xatolik");
+        alert(
+            "Server bilan bog'lanishda xatolik"
+        );
 
     }
 
@@ -1854,7 +2512,10 @@ async function saveStock() {
         ).value;
 
 
-    if (!amount || Number(amount) <= 0) {
+    if (
+        !amount ||
+        Number(amount) <= 0
+    ) {
 
         alert("Miqdorni kiriting");
 
@@ -1889,7 +2550,10 @@ async function saveStock() {
 
         if (!data.success) {
 
-            alert(data.error || "Xatolik");
+            alert(
+                data.error ||
+                "Xatolik"
+            );
 
             return;
 
@@ -1905,16 +2569,14 @@ async function saveStock() {
 
         console.error(error);
 
-        alert("Server bilan bog'lanishda xatolik");
+        alert(
+            "Server bilan bog'lanishda xatolik"
+        );
 
     }
 
 }
 
-
-/* ========================================================= */
-/* PRICE */
-/* ========================================================= */
 
 function openPriceModal(
     productId,
@@ -1927,7 +2589,8 @@ function openPriceModal(
 
     document.getElementById(
         "newPrice"
-    ).value = price || "";
+    ).value =
+        price || "";
 
 
     document.getElementById(
@@ -1959,7 +2622,9 @@ async function savePrice() {
         Number(price) < 0
     ) {
 
-        alert("Narxni to'g'ri kiriting");
+        alert(
+            "Narxni to'g'ri kiriting"
+        );
 
         return;
 
@@ -1992,7 +2657,10 @@ async function savePrice() {
 
         if (!data.success) {
 
-            alert(data.error || "Xatolik");
+            alert(
+                data.error ||
+                "Xatolik"
+            );
 
             return;
 
@@ -2008,16 +2676,14 @@ async function savePrice() {
 
         console.error(error);
 
-        alert("Server bilan bog'lanishda xatolik");
+        alert(
+            "Server bilan bog'lanishda xatolik"
+        );
 
     }
 
 }
 
-
-/* ========================================================= */
-/* DELETE PRODUCT */
-/* ========================================================= */
 
 async function deleteProduct(
     productId
@@ -2053,7 +2719,10 @@ async function deleteProduct(
 
         if (!data.success) {
 
-            alert(data.error || "Xatolik");
+            alert(
+                data.error ||
+                "Xatolik"
+            );
 
             return;
 
@@ -2067,7 +2736,9 @@ async function deleteProduct(
 
         console.error(error);
 
-        alert("Server bilan bog'lanishda xatolik");
+        alert(
+            "Server bilan bog'lanishda xatolik"
+        );
 
     }
 
@@ -2142,9 +2813,8 @@ async function loadEmployees() {
                                     )}
                                 </div>
 
-                                <div class="employee-date">
-                                    📅 Ishga kirgan sana:
-                                    ${
+                                <div class="employee-position">
+                                    📅 ${
                                         employee.hire_date
                                         ||
                                         "Ko'rsatilmagan"
@@ -2197,14 +2867,6 @@ async function loadEmployees() {
 
         document.getElementById(
             "employeeSalaryTotal"
-        ).textContent =
-            formatMoney(
-                summaryData.total_salary
-            );
-
-
-        document.getElementById(
-            "employeeSalaryTotal2"
         ).textContent =
             formatMoney(
                 summaryData.total_salary
@@ -2272,7 +2934,8 @@ function openEmployeeModal(
 
     document.getElementById(
         "employeeModal"
-    ).style.display = "block";
+    ).style.display =
+        "block";
 
 }
 
@@ -2281,7 +2944,8 @@ function closeEmployeeModal() {
 
     document.getElementById(
         "employeeModal"
-    ).style.display = "none";
+    ).style.display =
+        "none";
 
 }
 
@@ -2311,7 +2975,9 @@ async function saveEmployee() {
 
     if (!name) {
 
-        alert("Xodim ismini kiriting");
+        alert(
+            "Xodim ismini kiriting"
+        );
 
         return;
 
@@ -2320,7 +2986,9 @@ async function saveEmployee() {
 
     if (!position) {
 
-        alert("Lavozimni kiriting");
+        alert(
+            "Lavozimni kiriting"
+        );
 
         return;
 
@@ -2332,7 +3000,9 @@ async function saveEmployee() {
         Number(salary) < 0
     ) {
 
-        alert("Oylik maoshini to'g'ri kiriting");
+        alert(
+            "Oylik maoshini to'g'ri kiriting"
+        );
 
         return;
 
@@ -2387,7 +3057,10 @@ async function saveEmployee() {
 
         if (!data.success) {
 
-            alert(data.error || "Xatolik");
+            alert(
+                data.error ||
+                "Xatolik"
+            );
 
             return;
 
@@ -2403,7 +3076,9 @@ async function saveEmployee() {
 
         console.error(error);
 
-        alert("Server bilan bog'lanishda xatolik");
+        alert(
+            "Server bilan bog'lanishda xatolik"
+        );
 
     }
 
@@ -2421,7 +3096,6 @@ async function editEmployee(
                 "/api/employees"
             );
 
-
         const data =
             await response.json();
 
@@ -2435,7 +3109,9 @@ async function editEmployee(
 
         if (!employee) {
 
-            alert("Xodim topilmadi");
+            alert(
+                "Xodim topilmadi"
+            );
 
             return;
 
@@ -2451,7 +3127,9 @@ async function editEmployee(
 
         console.error(error);
 
-        alert("Xodim ma'lumotlarini olishda xatolik");
+        alert(
+            "Xodim ma'lumotlarini olishda xatolik"
+        );
 
     }
 
@@ -2492,7 +3170,10 @@ async function deleteEmployee(
 
         if (!data.success) {
 
-            alert(data.error || "Xatolik");
+            alert(
+                data.error ||
+                "Xatolik"
+            );
 
             return;
 
@@ -2506,7 +3187,9 @@ async function deleteEmployee(
 
         console.error(error);
 
-        alert("Server bilan bog'lanishda xatolik");
+        alert(
+            "Server bilan bog'lanishda xatolik"
+        );
 
     }
 
@@ -2521,14 +3204,9 @@ window.addEventListener(
     "click",
     function(event) {
 
-        const modals =
-            document.querySelectorAll(
-                ".modal"
-            );
-
-
-        modals.forEach(
-            modal => {
+        document
+            .querySelectorAll(".modal")
+            .forEach(modal => {
 
                 if (
                     event.target === modal
@@ -2539,8 +3217,49 @@ window.addEventListener(
 
                 }
 
-            }
-        );
+            });
+
+    }
+);
+
+
+/* ========================================================= */
+/* SALE PREVIEW EVENTS */
+/* ========================================================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function() {
+
+        const quantity =
+            document.getElementById(
+                "saleQuantity"
+            );
+
+        const price =
+            document.getElementById(
+                "saleUnitPrice"
+            );
+
+
+        if (quantity) {
+
+            quantity.addEventListener(
+                "input",
+                updateSalePreview
+            );
+
+        }
+
+
+        if (price) {
+
+            price.addEventListener(
+                "input",
+                updateSalePreview
+            );
+
+        }
 
     }
 );
@@ -2561,6 +3280,8 @@ async function loadAll() {
     await loadInventory();
 
     await loadEmployees();
+
+    await loadSales();
 
 }
 
