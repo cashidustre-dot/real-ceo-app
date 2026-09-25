@@ -1,8 +1,7 @@
+from flask import Flask, request, jsonify
 import os
-
-from flask import Flask, request, jsonify, send_from_directory
 import psycopg2
-
+from psycopg2.extras import RealDictCursor
 
 app = Flask(__name__)
 
@@ -11,329 +10,304 @@ app = Flask(__name__)
 # DATABASE
 # =========================================================
 
+DATABASE_URL = os.environ.get("DATABASE_URL")
+
+
 def get_db():
+    if not DATABASE_URL:
+        raise RuntimeError("DATABASE_URL topilmadi!")
+
     return psycopg2.connect(
-        os.environ["DATABASE_URL"]
+        DATABASE_URL,
+        cursor_factory=RealDictCursor
     )
 
 
-def init_db():
+# =========================================================
+# DATABASE INIT
+# =========================================================
 
+def init_db():
     conn = get_db()
     cur = conn.cursor()
 
-    # =====================================================
+    # -------------------------
     # TRANSACTIONS
-    # =====================================================
-
+    # -------------------------
     cur.execute("""
         CREATE TABLE IF NOT EXISTS transactions (
             id SERIAL PRIMARY KEY,
             type VARCHAR(20) NOT NULL,
-            amount NUMERIC(15, 2) NOT NULL,
+            amount NUMERIC(14,2) NOT NULL,
             description TEXT,
-            sale_id INTEGER,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     """)
 
-    # Eski bazada transactions allaqachon mavjud bo'lsa,
-    # sale_id ustunini qo'shamiz.
     cur.execute("""
         ALTER TABLE transactions
         ADD COLUMN IF NOT EXISTS sale_id INTEGER
     """)
 
-    # =====================================================
+    # -------------------------
     # INVENTORY
-    # =====================================================
-
+    # -------------------------
     cur.execute("""
         CREATE TABLE IF NOT EXISTS inventory (
             id SERIAL PRIMARY KEY,
-            name VARCHAR(150) NOT NULL,
-            unit VARCHAR(30) NOT NULL,
-            quantity NUMERIC(15, 3) NOT NULL DEFAULT 0,
-            min_quantity NUMERIC(15, 3) NOT NULL DEFAULT 0,
+            name VARCHAR(255) NOT NULL,
+            unit VARCHAR(50) NOT NULL,
+            quantity NUMERIC(14,3) DEFAULT 0,
+            min_quantity NUMERIC(14,3) DEFAULT 0,
+            price NUMERIC(14,2) DEFAULT 0,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     """)
 
     cur.execute("""
         ALTER TABLE inventory
-        ADD COLUMN IF NOT EXISTS price NUMERIC(15, 2)
-        NOT NULL DEFAULT 0
+        ADD COLUMN IF NOT EXISTS price NUMERIC(14,2) DEFAULT 0
     """)
 
-    # =====================================================
+    # -------------------------
     # EMPLOYEES
-    # =====================================================
-
+    # -------------------------
     cur.execute("""
         CREATE TABLE IF NOT EXISTS employees (
             id SERIAL PRIMARY KEY,
-            name VARCHAR(150) NOT NULL,
-            position VARCHAR(100) NOT NULL,
-            salary NUMERIC(15, 2) NOT NULL DEFAULT 0,
-            hire_date DATE DEFAULT CURRENT_DATE,
+            name VARCHAR(255) NOT NULL,
+            phone VARCHAR(50),
+            position VARCHAR(255),
+            salary NUMERIC(14,2) DEFAULT 0,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     """)
 
-    # =====================================================
+    # -------------------------
     # SALES
-    # =====================================================
-
+    # -------------------------
     cur.execute("""
         CREATE TABLE IF NOT EXISTS sales (
             id SERIAL PRIMARY KEY,
-            product_name VARCHAR(150) NOT NULL,
-            quantity NUMERIC(15, 3) NOT NULL DEFAULT 1,
-            unit_price NUMERIC(15, 2) NOT NULL DEFAULT 0,
-            total_amount NUMERIC(15, 2) NOT NULL DEFAULT 0,
-            payment_method VARCHAR(30) NOT NULL DEFAULT 'cash',
-            description TEXT,
+            product_name VARCHAR(255) NOT NULL,
+            quantity NUMERIC(14,3) NOT NULL,
+            unit_price NUMERIC(14,2) NOT NULL,
+            total NUMERIC(14,2) NOT NULL,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     """)
 
-    conn.commit()
-
-    cur.close()
-    conn.close()
-
-
-# =========================================================
-# HOME
-# =========================================================
-
-@app.route("/")
-def home():
-
-    return send_from_directory(
-        ".",
-        "index.html"
-    )
-
-
-# =========================================================
-# TRANSACTIONS - ADD
-# =========================================================
-
-@app.route(
-    "/api/transactions",
-    methods=["POST"]
-)
-def add_transaction():
-
-    data = request.get_json() or {}
-
-    transaction_type = data.get("type")
-    amount = data.get("amount")
-    description = data.get(
-        "description",
-        ""
-    )
-
-    if transaction_type not in [
-        "income",
-        "expense"
-    ]:
-
-        return jsonify({
-            "success": False,
-            "error": "Noto'g'ri transaction turi"
-        }), 400
-
-    try:
-
-        amount = float(amount)
-
-    except (TypeError, ValueError):
-
-        return jsonify({
-            "success": False,
-            "error": "Summa noto'g'ri"
-        }), 400
-
-    if amount <= 0:
-
-        return jsonify({
-            "success": False,
-            "error": "Summa 0 dan katta bo'lishi kerak"
-        }), 400
-
-    conn = get_db()
-    cur = conn.cursor()
-
-    cur.execute(
-        """
-        INSERT INTO transactions
-        (type, amount, description)
-        VALUES (%s, %s, %s)
-        RETURNING id
-        """,
-        (
-            transaction_type,
-            amount,
-            description
-        )
-    )
-
-    transaction_id = cur.fetchone()[0]
-
-    conn.commit()
-
-    cur.close()
-    conn.close()
-
-    return jsonify({
-        "success": True,
-        "id": transaction_id
-    })
-
-
-# =========================================================
-# TRANSACTIONS - GET
-# =========================================================
-
-@app.route(
-    "/api/transactions",
-    methods=["GET"]
-)
-def get_transactions():
-
-    conn = get_db()
-    cur = conn.cursor()
-
+    # -------------------------
+    # RECIPES
+    # -------------------------
     cur.execute("""
-        SELECT
-            id,
-            type,
-            amount,
-            description,
-            created_at
-        FROM transactions
-        ORDER BY created_at DESC
-        LIMIT 100
+        CREATE TABLE IF NOT EXISTS recipes (
+            id SERIAL PRIMARY KEY,
+            name VARCHAR(255) NOT NULL UNIQUE,
+            sale_unit VARCHAR(50) DEFAULT 'dona',
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
     """)
 
-    rows = cur.fetchall()
+    # -------------------------
+    # RECIPE ITEMS
+    # -------------------------
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS recipe_items (
+            id SERIAL PRIMARY KEY,
+            recipe_id INTEGER NOT NULL
+                REFERENCES recipes(id) ON DELETE CASCADE,
+            inventory_id INTEGER NOT NULL
+                REFERENCES inventory(id) ON DELETE CASCADE,
+            quantity NUMERIC(14,4) NOT NULL
+        )
+    """)
 
+    conn.commit()
     cur.close()
     conn.close()
 
-    transactions = []
 
-    for row in rows:
+try:
+    init_db()
+except Exception as e:
+    print("DATABASE INIT ERROR:", e)
 
-        transactions.append({
-            "id": row[0],
-            "type": row[1],
-            "amount": float(row[2]),
-            "description": row[3] or "",
-            "created_at": row[4].isoformat()
-        })
 
+# =========================================================
+# HEALTH
+# =========================================================
+
+@app.get("/")
+def home():
     return jsonify({
-        "success": True,
-        "transactions": transactions
+        "status": "ok",
+        "message": "Real CEO API ishlayapti"
     })
 
 
-# =========================================================
-# TRANSACTIONS - DELETE
-# =========================================================
-
-@app.route(
-    "/api/transactions/<int:transaction_id>",
-    methods=["DELETE"]
-)
-def delete_transaction(transaction_id):
-
-    conn = get_db()
-    cur = conn.cursor()
-
-    cur.execute(
-        """
-        DELETE FROM transactions
-        WHERE id = %s
-        RETURNING id
-        """,
-        (transaction_id,)
-    )
-
-    result = cur.fetchone()
-
-    if not result:
-
-        conn.rollback()
-
-        cur.close()
+@app.get("/api/health")
+def health():
+    try:
+        conn = get_db()
         conn.close()
 
         return jsonify({
-            "success": False,
-            "error": "Tranzaksiya topilmadi"
-        }), 404
-
-    conn.commit()
-
-    cur.close()
-    conn.close()
-
-    return jsonify({
-        "success": True
-    })
+            "status": "ok",
+            "database": "connected"
+        })
+    except Exception as e:
+        return jsonify({
+            "status": "error",
+            "message": str(e)
+        }), 500
 
 
 # =========================================================
 # SUMMARY
 # =========================================================
 
-@app.route(
-    "/api/summary",
-    methods=["GET"]
-)
+@app.get("/api/summary")
 def summary():
 
     conn = get_db()
     cur = conn.cursor()
 
     cur.execute("""
-        SELECT
-            COALESCE(
-                SUM(
-                    CASE
-                        WHEN type = 'income'
-                        THEN amount
-                        ELSE 0
-                    END
-                ),
-                0
-            ),
-            COALESCE(
-                SUM(
-                    CASE
-                        WHEN type = 'expense'
-                        THEN amount
-                        ELSE 0
-                    END
-                ),
-                0
-            )
+        SELECT COALESCE(SUM(amount),0) AS total
         FROM transactions
+        WHERE type='income'
     """)
+    income = float(cur.fetchone()["total"])
 
-    income, expense = cur.fetchone()
+    cur.execute("""
+        SELECT COALESCE(SUM(amount),0) AS total
+        FROM transactions
+        WHERE type='expense'
+    """)
+    expense = float(cur.fetchone()["total"])
+
+    cur.execute("""
+        SELECT COALESCE(SUM(quantity * price),0) AS total
+        FROM inventory
+    """)
+    inventory_value = float(cur.fetchone()["total"])
+
+    cur.execute("""
+        SELECT COUNT(*) AS count
+        FROM inventory
+        WHERE quantity <= min_quantity
+    """)
+    low_stock = int(cur.fetchone()["count"])
 
     cur.close()
     conn.close()
 
     return jsonify({
-        "income": float(income),
-        "expense": float(expense),
-        "profit": float(income - expense)
+        "income": income,
+        "expense": expense,
+        "profit": income - expense,
+        "inventory": inventory_value,
+        "low_stock": low_stock
+    })
+
+
+# =========================================================
+# TRANSACTIONS
+# =========================================================
+
+@app.get("/api/transactions")
+def get_transactions():
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute("""
+        SELECT *
+        FROM transactions
+        ORDER BY created_at DESC
+    """)
+
+    data = cur.fetchall()
+
+    cur.close()
+    conn.close()
+
+    return jsonify(data)
+
+
+@app.post("/api/transactions")
+def add_transaction():
+
+    data = request.json or {}
+
+    transaction_type = data.get("type")
+    amount = data.get("amount")
+    description = data.get("description", "")
+
+    if transaction_type not in ["income", "expense"]:
+        return jsonify({
+            "error": "type income yoki expense bo'lishi kerak"
+        }), 400
+
+    if amount is None:
+        return jsonify({
+            "error": "amount kerak"
+        }), 400
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute("""
+        INSERT INTO transactions
+        (type, amount, description)
+        VALUES (%s,%s,%s)
+        RETURNING *
+    """, (
+        transaction_type,
+        amount,
+        description
+    ))
+
+    result = cur.fetchone()
+
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    return jsonify(result), 201
+
+
+@app.delete("/api/transactions/<int:transaction_id>")
+def delete_transaction(transaction_id):
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute("""
+        DELETE FROM transactions
+        WHERE id=%s
+        RETURNING *
+    """, (transaction_id,))
+
+    result = cur.fetchone()
+
+    if not result:
+        conn.rollback()
+        cur.close()
+        conn.close()
+
+        return jsonify({
+            "error": "transaction topilmadi"
+        }), 404
+
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    return jsonify({
+        "success": True,
+        "deleted": result
     })
 
 
@@ -341,262 +315,365 @@ def summary():
 # REPORT
 # =========================================================
 
-@app.route(
-    "/api/report",
-    methods=["GET"]
-)
+@app.get("/api/report")
 def report():
 
-    period = request.args.get(
-        "period",
-        "today"
-    )
+    period = request.args.get("period", "today")
+
+    if period == "today":
+        condition = "created_at >= CURRENT_DATE"
+
+    elif period == "week":
+        condition = "created_at >= CURRENT_DATE - INTERVAL '7 days'"
+
+    elif period == "month":
+        condition = "created_at >= CURRENT_DATE - INTERVAL '30 days'"
+
+    else:
+        return jsonify({
+            "error": "period today, week yoki month bo'lishi kerak"
+        }), 400
 
     conn = get_db()
     cur = conn.cursor()
 
-    if period == "today":
-
-        condition = """
-            created_at >= CURRENT_DATE
-        """
-
-    elif period == "week":
-
-        condition = """
-            created_at >= CURRENT_DATE - INTERVAL '6 days'
-        """
-
-    elif period == "month":
-
-        condition = """
-            created_at >= DATE_TRUNC(
-                'month',
-                CURRENT_DATE
-            )
-        """
-
-    else:
-
-        cur.close()
-        conn.close()
-
-        return jsonify({
-            "success": False,
-            "error": "Noto'g'ri hisobot davri"
-        }), 400
-
-    query = f"""
+    cur.execute(f"""
         SELECT
-            COALESCE(
-                SUM(
-                    CASE
-                        WHEN type = 'income'
-                        THEN amount
-                        ELSE 0
-                    END
-                ),
-                0
-            ),
-            COALESCE(
-                SUM(
-                    CASE
-                        WHEN type = 'expense'
-                        THEN amount
-                        ELSE 0
-                    END
-                ),
-                0
-            ),
-            COUNT(*)
+            COALESCE(SUM(
+                CASE WHEN type='income'
+                THEN amount ELSE 0 END
+            ),0) AS income,
+
+            COALESCE(SUM(
+                CASE WHEN type='expense'
+                THEN amount ELSE 0 END
+            ),0) AS expense
+
         FROM transactions
         WHERE {condition}
-    """
+    """)
 
-    cur.execute(query)
+    result = cur.fetchone()
 
-    income, expense, transaction_count = cur.fetchone()
+    income = float(result["income"])
+    expense = float(result["expense"])
 
     cur.close()
     conn.close()
 
-    income = float(income)
-    expense = float(expense)
-
     return jsonify({
-        "success": True,
         "period": period,
         "income": income,
         "expense": expense,
-        "profit": income - expense,
-        "transaction_count": transaction_count
+        "profit": income - expense
     })
 
 
 # =========================================================
-# INVENTORY - ADD
+# INVENTORY
 # =========================================================
 
-@app.route(
-    "/api/inventory",
-    methods=["POST"]
-)
-def add_product():
-
-    data = request.get_json() or {}
-
-    name = str(
-        data.get("name", "")
-    ).strip()
-
-    unit = str(
-        data.get("unit", "")
-    ).strip()
-
-    quantity = data.get(
-        "quantity",
-        0
-    )
-
-    min_quantity = data.get(
-        "min_quantity",
-        0
-    )
-
-    price = data.get(
-        "price",
-        0
-    )
-
-    if not name:
-
-        return jsonify({
-            "success": False,
-            "error": "Mahsulot nomini kiriting"
-        }), 400
-
-    if not unit:
-
-        return jsonify({
-            "success": False,
-            "error": "O'lchov birligini kiriting"
-        }), 400
-
-    try:
-
-        quantity = float(quantity)
-        min_quantity = float(min_quantity)
-        price = float(price)
-
-    except (TypeError, ValueError):
-
-        return jsonify({
-            "success": False,
-            "error": "Miqdor yoki narx noto'g'ri"
-        }), 400
-
-    if quantity < 0 or min_quantity < 0 or price < 0:
-
-        return jsonify({
-            "success": False,
-            "error": "Qiymatlar manfiy bo'lishi mumkin emas"
-        }), 400
-
-    conn = get_db()
-    cur = conn.cursor()
-
-    cur.execute(
-        """
-        INSERT INTO inventory
-        (name, unit, quantity, min_quantity, price)
-        VALUES (%s, %s, %s, %s, %s)
-        RETURNING id
-        """,
-        (
-            name,
-            unit,
-            quantity,
-            min_quantity,
-            price
-        )
-    )
-
-    product_id = cur.fetchone()[0]
-
-    conn.commit()
-
-    cur.close()
-    conn.close()
-
-    return jsonify({
-        "success": True,
-        "id": product_id
-    })
-
-
-# =========================================================
-# INVENTORY - GET
-# =========================================================
-
-@app.route(
-    "/api/inventory",
-    methods=["GET"]
-)
+@app.get("/api/inventory")
 def get_inventory():
 
     conn = get_db()
     cur = conn.cursor()
 
     cur.execute("""
-        SELECT
-            id,
-            name,
-            unit,
-            quantity,
-            min_quantity,
-            price,
-            created_at
+        SELECT *,
+               CASE
+                   WHEN quantity <= min_quantity
+                   THEN TRUE
+                   ELSE FALSE
+               END AS low_stock
         FROM inventory
-        ORDER BY name ASC
+        ORDER BY name
     """)
 
-    rows = cur.fetchall()
+    data = cur.fetchall()
 
     cur.close()
     conn.close()
 
-    products = []
+    return jsonify(data)
 
-    for row in rows:
 
-        quantity = float(row[3])
-        price = float(row[5])
+@app.post("/api/inventory")
+def add_inventory():
 
-        products.append({
-            "id": row[0],
-            "name": row[1],
-            "unit": row[2],
-            "quantity": quantity,
-            "min_quantity": float(row[4]),
-            "price": price,
-            "total_value": quantity * price,
-            "created_at": row[6].isoformat()
-        })
+    data = request.json or {}
+
+    name = data.get("name")
+    unit = data.get("unit")
+    quantity = data.get("quantity", 0)
+    min_quantity = data.get("min_quantity", 0)
+    price = data.get("price", 0)
+
+    if not name or not unit:
+        return jsonify({
+            "error": "name va unit kerak"
+        }), 400
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute("""
+        INSERT INTO inventory
+        (name, unit, quantity, min_quantity, price)
+        VALUES (%s,%s,%s,%s,%s)
+        RETURNING *
+    """, (
+        name,
+        unit,
+        quantity,
+        min_quantity,
+        price
+    ))
+
+    result = cur.fetchone()
+
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    return jsonify(result), 201
+
+
+@app.put("/api/inventory/<int:item_id>")
+def update_inventory(item_id):
+
+    data = request.json or {}
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute("""
+        UPDATE inventory
+        SET
+            name=COALESCE(%s,name),
+            unit=COALESCE(%s,unit),
+            quantity=COALESCE(%s,quantity),
+            min_quantity=COALESCE(%s,min_quantity),
+            price=COALESCE(%s,price)
+        WHERE id=%s
+        RETURNING *
+    """, (
+        data.get("name"),
+        data.get("unit"),
+        data.get("quantity"),
+        data.get("min_quantity"),
+        data.get("price"),
+        item_id
+    ))
+
+    result = cur.fetchone()
+
+    if not result:
+        conn.rollback()
+        cur.close()
+        conn.close()
+
+        return jsonify({
+            "error": "mahsulot topilmadi"
+        }), 404
+
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    return jsonify(result)
+
+
+@app.delete("/api/inventory/<int:item_id>")
+def delete_inventory(item_id):
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute("""
+        DELETE FROM inventory
+        WHERE id=%s
+        RETURNING *
+    """, (item_id,))
+
+    result = cur.fetchone()
+
+    if not result:
+        conn.rollback()
+        cur.close()
+        conn.close()
+
+        return jsonify({
+            "error": "mahsulot topilmadi"
+        }), 404
+
+    conn.commit()
+    cur.close()
+    conn.close()
 
     return jsonify({
         "success": True,
-        "products": products
+        "deleted": result
     })
 
 
 # =========================================================
-# INVENTORY - SUMMARY
+# INVENTORY STOCK IN
 # =========================================================
 
-@app.route(
-    "/api/inventory/summary",
-    methods=["GET"]
-)
+@app.post("/api/inventory/<int:item_id>/in")
+def inventory_in(item_id):
+
+    data = request.json or {}
+    amount = data.get("quantity")
+
+    if amount is None or float(amount) <= 0:
+        return jsonify({
+            "error": "quantity noto'g'ri"
+        }), 400
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute("""
+        UPDATE inventory
+        SET quantity = quantity + %s
+        WHERE id=%s
+        RETURNING *
+    """, (
+        amount,
+        item_id
+    ))
+
+    result = cur.fetchone()
+
+    if not result:
+        conn.rollback()
+        cur.close()
+        conn.close()
+
+        return jsonify({
+            "error": "mahsulot topilmadi"
+        }), 404
+
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    return jsonify(result)
+
+
+# =========================================================
+# INVENTORY STOCK OUT
+# =========================================================
+
+@app.post("/api/inventory/<int:item_id>/out")
+def inventory_out(item_id):
+
+    data = request.json or {}
+    amount = data.get("quantity")
+
+    if amount is None or float(amount) <= 0:
+        return jsonify({
+            "error": "quantity noto'g'ri"
+        }), 400
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute("""
+        SELECT *
+        FROM inventory
+        WHERE id=%s
+        FOR UPDATE
+    """, (item_id,))
+
+    item = cur.fetchone()
+
+    if not item:
+        conn.rollback()
+        cur.close()
+        conn.close()
+
+        return jsonify({
+            "error": "mahsulot topilmadi"
+        }), 404
+
+    if float(item["quantity"]) < float(amount):
+        conn.rollback()
+        cur.close()
+        conn.close()
+
+        return jsonify({
+            "error": "omborda yetarli mahsulot yo'q"
+        }), 400
+
+    cur.execute("""
+        UPDATE inventory
+        SET quantity = quantity - %s
+        WHERE id=%s
+        RETURNING *
+    """, (
+        amount,
+        item_id
+    ))
+
+    result = cur.fetchone()
+
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    return jsonify(result)
+
+
+# =========================================================
+# INVENTORY PRICE
+# =========================================================
+
+@app.put("/api/inventory/<int:item_id>/price")
+def update_inventory_price(item_id):
+
+    data = request.json or {}
+    price = data.get("price")
+
+    if price is None:
+        return jsonify({
+            "error": "price kerak"
+        }), 400
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute("""
+        UPDATE inventory
+        SET price=%s
+        WHERE id=%s
+        RETURNING *
+    """, (
+        price,
+        item_id
+    ))
+
+    result = cur.fetchone()
+
+    if not result:
+        conn.rollback()
+        cur.close()
+        conn.close()
+
+        return jsonify({
+            "error": "mahsulot topilmadi"
+        }), 404
+
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    return jsonify(result)
+
+
+@app.get("/api/inventory/summary")
 def inventory_summary():
 
     conn = get_db()
@@ -604,477 +681,166 @@ def inventory_summary():
 
     cur.execute("""
         SELECT
-            COUNT(*),
-            COALESCE(
-                SUM(quantity * price),
-                0
-            )
+            COALESCE(SUM(quantity * price),0) AS total_value,
+            COUNT(*) AS products,
+            COUNT(*) FILTER (
+                WHERE quantity <= min_quantity
+            ) AS low_stock
         FROM inventory
     """)
 
-    product_count, total_value = cur.fetchone()
-
-    cur.execute("""
-        SELECT
-            COUNT(*)
-        FROM inventory
-        WHERE quantity <= min_quantity
-    """)
-
-    low_stock_count = cur.fetchone()[0]
-
-    cur.close()
-    conn.close()
-
-    return jsonify({
-        "success": True,
-        "product_count": product_count,
-        "total_value": float(total_value),
-        "low_stock_count": low_stock_count
-    })
-
-
-# =========================================================
-# INVENTORY - UPDATE PRICE
-# =========================================================
-
-@app.route(
-    "/api/inventory/<int:product_id>/price",
-    methods=["PUT"]
-)
-def update_price(product_id):
-
-    data = request.get_json() or {}
-
-    price = data.get("price")
-
-    try:
-
-        price = float(price)
-
-    except (TypeError, ValueError):
-
-        return jsonify({
-            "success": False,
-            "error": "Narx noto'g'ri"
-        }), 400
-
-    if price < 0:
-
-        return jsonify({
-            "success": False,
-            "error": "Narx manfiy bo'lishi mumkin emas"
-        }), 400
-
-    conn = get_db()
-    cur = conn.cursor()
-
-    cur.execute(
-        """
-        UPDATE inventory
-        SET price = %s
-        WHERE id = %s
-        RETURNING id, price
-        """,
-        (
-            price,
-            product_id
-        )
-    )
-
     result = cur.fetchone()
 
-    if not result:
-
-        conn.rollback()
-        cur.close()
-        conn.close()
-
-        return jsonify({
-            "success": False,
-            "error": "Mahsulot topilmadi"
-        }), 404
-
-    conn.commit()
-
     cur.close()
     conn.close()
 
     return jsonify({
-        "success": True,
-        "id": result[0],
-        "price": float(result[1])
+        "total_value": float(result["total_value"]),
+        "products": int(result["products"]),
+        "low_stock": int(result["low_stock"])
     })
 
 
 # =========================================================
-# INVENTORY - STOCK IN
+# EMPLOYEES
 # =========================================================
 
-@app.route(
-    "/api/inventory/<int:product_id>/in",
-    methods=["POST"]
-)
-def stock_in(product_id):
-
-    data = request.get_json() or {}
-
-    amount = data.get("amount")
-
-    try:
-
-        amount = float(amount)
-
-    except (TypeError, ValueError):
-
-        return jsonify({
-            "success": False,
-            "error": "Kirim miqdori noto'g'ri"
-        }), 400
-
-    if amount <= 0:
-
-        return jsonify({
-            "success": False,
-            "error": "Miqdor 0 dan katta bo'lishi kerak"
-        }), 400
-
-    conn = get_db()
-    cur = conn.cursor()
-
-    cur.execute(
-        """
-        UPDATE inventory
-        SET quantity = quantity + %s
-        WHERE id = %s
-        RETURNING id, quantity
-        """,
-        (
-            amount,
-            product_id
-        )
-    )
-
-    result = cur.fetchone()
-
-    if not result:
-
-        conn.rollback()
-        cur.close()
-        conn.close()
-
-        return jsonify({
-            "success": False,
-            "error": "Mahsulot topilmadi"
-        }), 404
-
-    conn.commit()
-
-    new_quantity = float(result[1])
-
-    cur.close()
-    conn.close()
-
-    return jsonify({
-        "success": True,
-        "id": result[0],
-        "quantity": new_quantity
-    })
-
-
-# =========================================================
-# INVENTORY - STOCK OUT
-# =========================================================
-
-@app.route(
-    "/api/inventory/<int:product_id>/out",
-    methods=["POST"]
-)
-def stock_out(product_id):
-
-    data = request.get_json() or {}
-
-    amount = data.get("amount")
-
-    try:
-
-        amount = float(amount)
-
-    except (TypeError, ValueError):
-
-        return jsonify({
-            "success": False,
-            "error": "Chiqim miqdori noto'g'ri"
-        }), 400
-
-    if amount <= 0:
-
-        return jsonify({
-            "success": False,
-            "error": "Miqdor 0 dan katta bo'lishi kerak"
-        }), 400
-
-    conn = get_db()
-    cur = conn.cursor()
-
-    cur.execute(
-        """
-        UPDATE inventory
-        SET quantity = quantity - %s
-        WHERE id = %s
-        AND quantity >= %s
-        RETURNING id, quantity
-        """,
-        (
-            amount,
-            product_id,
-            amount
-        )
-    )
-
-    result = cur.fetchone()
-
-    if not result:
-
-        conn.rollback()
-        cur.close()
-        conn.close()
-
-        return jsonify({
-            "success": False,
-            "error": "Omborda yetarli mahsulot mavjud emas"
-        }), 400
-
-    conn.commit()
-
-    new_quantity = float(result[1])
-
-    cur.close()
-    conn.close()
-
-    return jsonify({
-        "success": True,
-        "id": result[0],
-        "quantity": new_quantity
-    })
-
-
-# =========================================================
-# INVENTORY - DELETE
-# =========================================================
-
-@app.route(
-    "/api/inventory/<int:product_id>",
-    methods=["DELETE"]
-)
-def delete_product(product_id):
-
-    conn = get_db()
-    cur = conn.cursor()
-
-    cur.execute(
-        """
-        DELETE FROM inventory
-        WHERE id = %s
-        RETURNING id
-        """,
-        (product_id,)
-    )
-
-    result = cur.fetchone()
-
-    if not result:
-
-        conn.rollback()
-        cur.close()
-        conn.close()
-
-        return jsonify({
-            "success": False,
-            "error": "Mahsulot topilmadi"
-        }), 404
-
-    conn.commit()
-
-    cur.close()
-    conn.close()
-
-    return jsonify({
-        "success": True
-    })
-
-
-# =========================================================
-# EMPLOYEES - ADD
-# =========================================================
-
-@app.route(
-    "/api/employees",
-    methods=["POST"]
-)
-def add_employee():
-
-    data = request.get_json() or {}
-
-    name = str(
-        data.get("name", "")
-    ).strip()
-
-    position = str(
-        data.get("position", "")
-    ).strip()
-
-    salary = data.get(
-        "salary",
-        0
-    )
-
-    hire_date = data.get(
-        "hire_date"
-    )
-
-    if not name:
-
-        return jsonify({
-            "success": False,
-            "error": "Xodim ismini kiriting"
-        }), 400
-
-    if not position:
-
-        return jsonify({
-            "success": False,
-            "error": "Lavozimni kiriting"
-        }), 400
-
-    try:
-
-        salary = float(salary)
-
-    except (TypeError, ValueError):
-
-        return jsonify({
-            "success": False,
-            "error": "Oylik maoshi noto'g'ri"
-        }), 400
-
-    if salary < 0:
-
-        return jsonify({
-            "success": False,
-            "error": "Oylik maoshi manfiy bo'lishi mumkin emas"
-        }), 400
-
-    conn = get_db()
-    cur = conn.cursor()
-
-    if hire_date:
-
-        cur.execute(
-            """
-            INSERT INTO employees
-            (name, position, salary, hire_date)
-            VALUES (%s, %s, %s, %s)
-            RETURNING id
-            """,
-            (
-                name,
-                position,
-                salary,
-                hire_date
-            )
-        )
-
-    else:
-
-        cur.execute(
-            """
-            INSERT INTO employees
-            (name, position, salary)
-            VALUES (%s, %s, %s)
-            RETURNING id
-            """,
-            (
-                name,
-                position,
-                salary
-            )
-        )
-
-    employee_id = cur.fetchone()[0]
-
-    conn.commit()
-
-    cur.close()
-    conn.close()
-
-    return jsonify({
-        "success": True,
-        "id": employee_id
-    })
-
-
-# =========================================================
-# EMPLOYEES - GET
-# =========================================================
-
-@app.route(
-    "/api/employees",
-    methods=["GET"]
-)
+@app.get("/api/employees")
 def get_employees():
 
     conn = get_db()
     cur = conn.cursor()
 
     cur.execute("""
-        SELECT
-            id,
-            name,
-            position,
-            salary,
-            hire_date,
-            created_at
+        SELECT *
         FROM employees
-        ORDER BY name ASC
+        ORDER BY name
     """)
 
-    rows = cur.fetchall()
+    data = cur.fetchall()
 
     cur.close()
     conn.close()
 
-    employees = []
+    return jsonify(data)
 
-    for row in rows:
 
-        employees.append({
-            "id": row[0],
-            "name": row[1],
-            "position": row[2],
-            "salary": float(row[3]),
-            "hire_date": (
-                row[4].isoformat()
-                if row[4]
-                else None
-            ),
-            "created_at": row[5].isoformat()
-        })
+@app.post("/api/employees")
+def add_employee():
+
+    data = request.json or {}
+
+    name = data.get("name")
+    phone = data.get("phone", "")
+    position = data.get("position", "")
+    salary = data.get("salary", 0)
+
+    if not name:
+        return jsonify({
+            "error": "name kerak"
+        }), 400
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute("""
+        INSERT INTO employees
+        (name, phone, position, salary)
+        VALUES (%s,%s,%s,%s)
+        RETURNING *
+    """, (
+        name,
+        phone,
+        position,
+        salary
+    ))
+
+    result = cur.fetchone()
+
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    return jsonify(result), 201
+
+
+@app.put("/api/employees/<int:employee_id>")
+def update_employee(employee_id):
+
+    data = request.json or {}
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute("""
+        UPDATE employees
+        SET
+            name=COALESCE(%s,name),
+            phone=COALESCE(%s,phone),
+            position=COALESCE(%s,position),
+            salary=COALESCE(%s,salary)
+        WHERE id=%s
+        RETURNING *
+    """, (
+        data.get("name"),
+        data.get("phone"),
+        data.get("position"),
+        data.get("salary"),
+        employee_id
+    ))
+
+    result = cur.fetchone()
+
+    if not result:
+        conn.rollback()
+        cur.close()
+        conn.close()
+
+        return jsonify({
+            "error": "xodim topilmadi"
+        }), 404
+
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    return jsonify(result)
+
+
+@app.delete("/api/employees/<int:employee_id>")
+def delete_employee(employee_id):
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute("""
+        DELETE FROM employees
+        WHERE id=%s
+        RETURNING *
+    """, (employee_id,))
+
+    result = cur.fetchone()
+
+    if not result:
+        conn.rollback()
+        cur.close()
+        conn.close()
+
+        return jsonify({
+            "error": "xodim topilmadi"
+        }), 404
+
+    conn.commit()
+    cur.close()
+    conn.close()
 
     return jsonify({
         "success": True,
-        "employees": employees
+        "deleted": result
     })
 
 
-# =========================================================
-# EMPLOYEES - SUMMARY
-# =========================================================
-
-@app.route(
-    "/api/employees/summary",
-    methods=["GET"]
-)
+@app.get("/api/employees/summary")
 def employees_summary():
 
     conn = get_db()
@@ -1082,388 +848,498 @@ def employees_summary():
 
     cur.execute("""
         SELECT
-            COUNT(*),
-            COALESCE(
-                SUM(salary),
-                0
-            )
+            COUNT(*) AS count,
+            COALESCE(SUM(salary),0) AS salaries
         FROM employees
     """)
 
-    employee_count, total_salary = cur.fetchone()
-
-    cur.close()
-    conn.close()
-
-    return jsonify({
-        "success": True,
-        "employee_count": employee_count,
-        "total_salary": float(total_salary)
-    })
-
-
-# =========================================================
-# EMPLOYEES - UPDATE
-# =========================================================
-
-@app.route(
-    "/api/employees/<int:employee_id>",
-    methods=["PUT"]
-)
-def update_employee(employee_id):
-
-    data = request.get_json() or {}
-
-    name = str(
-        data.get("name", "")
-    ).strip()
-
-    position = str(
-        data.get("position", "")
-    ).strip()
-
-    salary = data.get(
-        "salary",
-        0
-    )
-
-    hire_date = data.get(
-        "hire_date"
-    )
-
-    if not name or not position:
-
-        return jsonify({
-            "success": False,
-            "error": "Ism va lavozimni kiriting"
-        }), 400
-
-    try:
-
-        salary = float(salary)
-
-    except (TypeError, ValueError):
-
-        return jsonify({
-            "success": False,
-            "error": "Oylik maoshi noto'g'ri"
-        }), 400
-
-    if salary < 0:
-
-        return jsonify({
-            "success": False,
-            "error": "Oylik manfiy bo'lishi mumkin emas"
-        }), 400
-
-    conn = get_db()
-    cur = conn.cursor()
-
-    cur.execute(
-        """
-        UPDATE employees
-        SET
-            name = %s,
-            position = %s,
-            salary = %s,
-            hire_date = COALESCE(%s, hire_date)
-        WHERE id = %s
-        RETURNING id
-        """,
-        (
-            name,
-            position,
-            salary,
-            hire_date,
-            employee_id
-        )
-    )
-
     result = cur.fetchone()
 
-    if not result:
-
-        conn.rollback()
-        cur.close()
-        conn.close()
-
-        return jsonify({
-            "success": False,
-            "error": "Xodim topilmadi"
-        }), 404
-
-    conn.commit()
-
     cur.close()
     conn.close()
 
     return jsonify({
-        "success": True,
-        "id": result[0]
+        "count": int(result["count"]),
+        "salaries": float(result["salaries"])
     })
 
 
 # =========================================================
-# EMPLOYEES - DELETE
+# RECIPES
 # =========================================================
 
-@app.route(
-    "/api/employees/<int:employee_id>",
-    methods=["DELETE"]
-)
-def delete_employee(employee_id):
-
-    conn = get_db()
-    cur = conn.cursor()
-
-    cur.execute(
-        """
-        DELETE FROM employees
-        WHERE id = %s
-        RETURNING id
-        """,
-        (employee_id,)
-    )
-
-    result = cur.fetchone()
-
-    if not result:
-
-        conn.rollback()
-        cur.close()
-        conn.close()
-
-        return jsonify({
-            "success": False,
-            "error": "Xodim topilmadi"
-        }), 404
-
-    conn.commit()
-
-    cur.close()
-    conn.close()
-
-    return jsonify({
-        "success": True
-    })
-
-
-# =========================================================
-# SALES - ADD
-# =========================================================
-
-@app.route(
-    "/api/sales",
-    methods=["POST"]
-)
-def add_sale():
-
-    data = request.get_json() or {}
-
-    product_name = str(
-        data.get("product_name", "")
-    ).strip()
-
-    quantity = data.get(
-        "quantity",
-        1
-    )
-
-    unit_price = data.get(
-        "unit_price",
-        0
-    )
-
-    payment_method = str(
-        data.get(
-            "payment_method",
-            "cash"
-        )
-    ).strip()
-
-    description = str(
-        data.get(
-            "description",
-            ""
-        )
-    ).strip()
-
-    if not product_name:
-
-        return jsonify({
-            "success": False,
-            "error": "Mahsulot yoki taom nomini kiriting"
-        }), 400
-
-    try:
-
-        quantity = float(quantity)
-        unit_price = float(unit_price)
-
-    except (TypeError, ValueError):
-
-        return jsonify({
-            "success": False,
-            "error": "Miqdor yoki narx noto'g'ri"
-        }), 400
-
-    if quantity <= 0:
-
-        return jsonify({
-            "success": False,
-            "error": "Miqdor 0 dan katta bo'lishi kerak"
-        }), 400
-
-    if unit_price < 0:
-
-        return jsonify({
-            "success": False,
-            "error": "Narx manfiy bo'lishi mumkin emas"
-        }), 400
-
-    allowed_payments = [
-        "cash",
-        "card",
-        "other"
-    ]
-
-    if payment_method not in allowed_payments:
-
-        return jsonify({
-            "success": False,
-            "error": "To'lov turi noto'g'ri"
-        }), 400
-
-    total_amount = quantity * unit_price
-
-    conn = get_db()
-    cur = conn.cursor()
-
-    # Avval savdoni yaratamiz
-    cur.execute(
-        """
-        INSERT INTO sales
-        (
-            product_name,
-            quantity,
-            unit_price,
-            total_amount,
-            payment_method,
-            description
-        )
-        VALUES (%s, %s, %s, %s, %s, %s)
-        RETURNING id
-        """,
-        (
-            product_name,
-            quantity,
-            unit_price,
-            total_amount,
-            payment_method,
-            description
-        )
-    )
-
-    sale_id = cur.fetchone()[0]
-
-    # Savdo daromadini aynan shu sale_id bilan bog'laymiz
-    cur.execute(
-        """
-        INSERT INTO transactions
-        (
-            type,
-            amount,
-            description,
-            sale_id
-        )
-        VALUES (%s, %s, %s, %s)
-        RETURNING id
-        """,
-        (
-            "income",
-            total_amount,
-            f"Savdo: {product_name}",
-            sale_id
-        )
-    )
-
-    transaction_id = cur.fetchone()[0]
-
-    conn.commit()
-
-    cur.close()
-    conn.close()
-
-    return jsonify({
-        "success": True,
-        "id": sale_id,
-        "transaction_id": transaction_id,
-        "total_amount": total_amount
-    })
-
-
-# =========================================================
-# SALES - GET
-# =========================================================
-
-@app.route(
-    "/api/sales",
-    methods=["GET"]
-)
-def get_sales():
+@app.get("/api/recipes")
+def get_recipes():
 
     conn = get_db()
     cur = conn.cursor()
 
     cur.execute("""
         SELECT
-            id,
-            product_name,
-            quantity,
-            unit_price,
-            total_amount,
-            payment_method,
-            description,
-            created_at
-        FROM sales
-        ORDER BY created_at DESC
-        LIMIT 100
+            r.id,
+            r.name,
+            r.sale_unit,
+            r.created_at,
+            COUNT(ri.id) AS ingredient_count
+        FROM recipes r
+        LEFT JOIN recipe_items ri
+            ON ri.recipe_id = r.id
+        GROUP BY r.id
+        ORDER BY r.name
     """)
 
-    rows = cur.fetchall()
+    data = cur.fetchall()
 
     cur.close()
     conn.close()
 
-    sales = []
+    return jsonify(data)
 
-    for row in rows:
 
-        sales.append({
-            "id": row[0],
-            "product_name": row[1],
-            "quantity": float(row[2]),
-            "unit_price": float(row[3]),
-            "total_amount": float(row[4]),
-            "payment_method": row[5],
-            "description": row[6] or "",
-            "created_at": row[7].isoformat()
-        })
+# =========================================================
+# CREATE RECIPE
+# =========================================================
+
+@app.post("/api/recipes")
+def create_recipe():
+
+    data = request.json or {}
+
+    name = data.get("name")
+    sale_unit = data.get("sale_unit", "dona")
+
+    if not name:
+        return jsonify({
+            "error": "recipe name kerak"
+        }), 400
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    try:
+
+        cur.execute("""
+            INSERT INTO recipes
+            (name, sale_unit)
+            VALUES (%s,%s)
+            RETURNING *
+        """, (
+            name,
+            sale_unit
+        ))
+
+        recipe = cur.fetchone()
+
+        ingredients = data.get("ingredients", [])
+
+        for item in ingredients:
+
+            inventory_id = item.get("inventory_id")
+            quantity = item.get("quantity")
+
+            if not inventory_id or quantity is None:
+                continue
+
+            cur.execute("""
+                INSERT INTO recipe_items
+                (recipe_id, inventory_id, quantity)
+                VALUES (%s,%s,%s)
+            """, (
+                recipe["id"],
+                inventory_id,
+                quantity
+            ))
+
+        conn.commit()
+
+        return jsonify(recipe), 201
+
+    except Exception as e:
+
+        conn.rollback()
+
+        return jsonify({
+            "error": str(e)
+        }), 400
+
+    finally:
+
+        cur.close()
+        conn.close()
+
+
+# =========================================================
+# GET ONE RECIPE
+# =========================================================
+
+@app.get("/api/recipes/<int:recipe_id>")
+def get_recipe(recipe_id):
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute("""
+        SELECT *
+        FROM recipes
+        WHERE id=%s
+    """, (recipe_id,))
+
+    recipe = cur.fetchone()
+
+    if not recipe:
+        cur.close()
+        conn.close()
+
+        return jsonify({
+            "error": "retsept topilmadi"
+        }), 404
+
+    cur.execute("""
+        SELECT
+            ri.id,
+            ri.inventory_id,
+            i.name AS inventory_name,
+            i.unit,
+            ri.quantity
+        FROM recipe_items ri
+        JOIN inventory i
+            ON i.id = ri.inventory_id
+        WHERE ri.recipe_id=%s
+        ORDER BY i.name
+    """, (recipe_id,))
+
+    ingredients = cur.fetchall()
+
+    cur.close()
+    conn.close()
+
+    recipe["ingredients"] = ingredients
+
+    return jsonify(recipe)
+
+
+# =========================================================
+# DELETE RECIPE
+# =========================================================
+
+@app.delete("/api/recipes/<int:recipe_id>")
+def delete_recipe(recipe_id):
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute("""
+        DELETE FROM recipes
+        WHERE id=%s
+        RETURNING *
+    """, (recipe_id,))
+
+    result = cur.fetchone()
+
+    if not result:
+        conn.rollback()
+        cur.close()
+        conn.close()
+
+        return jsonify({
+            "error": "retsept topilmadi"
+        }), 404
+
+    conn.commit()
+    cur.close()
+    conn.close()
 
     return jsonify({
         "success": True,
-        "sales": sales
+        "deleted": result
     })
 
 
 # =========================================================
-# SALES - SUMMARY
+# UPDATE RECIPE
 # =========================================================
 
-@app.route(
-    "/api/sales/summary",
-    methods=["GET"]
-)
+@app.put("/api/recipes/<int:recipe_id>")
+def update_recipe(recipe_id):
+
+    data = request.json or {}
+
+    name = data.get("name")
+    sale_unit = data.get("sale_unit")
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    try:
+
+        cur.execute("""
+            UPDATE recipes
+            SET
+                name=COALESCE(%s,name),
+                sale_unit=COALESCE(%s,sale_unit)
+            WHERE id=%s
+            RETURNING *
+        """, (
+            name,
+            sale_unit,
+            recipe_id
+        ))
+
+        recipe = cur.fetchone()
+
+        if not recipe:
+            conn.rollback()
+
+            return jsonify({
+                "error": "retsept topilmadi"
+            }), 404
+
+        if "ingredients" in data:
+
+            cur.execute("""
+                DELETE FROM recipe_items
+                WHERE recipe_id=%s
+            """, (recipe_id,))
+
+            for item in data["ingredients"]:
+
+                inventory_id = item.get("inventory_id")
+                quantity = item.get("quantity")
+
+                if not inventory_id or quantity is None:
+                    continue
+
+                cur.execute("""
+                    INSERT INTO recipe_items
+                    (recipe_id, inventory_id, quantity)
+                    VALUES (%s,%s,%s)
+                """, (
+                    recipe_id,
+                    inventory_id,
+                    quantity
+                ))
+
+        conn.commit()
+
+        return jsonify(recipe)
+
+    except Exception as e:
+
+        conn.rollback()
+
+        return jsonify({
+            "error": str(e)
+        }), 400
+
+    finally:
+
+        cur.close()
+        conn.close()
+
+
+# =========================================================
+# SALES
+# =========================================================
+
+@app.get("/api/sales")
+def get_sales():
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute("""
+        SELECT *
+        FROM sales
+        ORDER BY created_at DESC
+    """)
+
+    data = cur.fetchall()
+
+    cur.close()
+    conn.close()
+
+    return jsonify(data)
+
+
+# =========================================================
+# ADD SALE
+# =========================================================
+
+@app.post("/api/sales")
+def add_sale():
+
+    data = request.json or {}
+
+    product_name = data.get("product_name")
+    quantity = data.get("quantity")
+    unit_price = data.get("unit_price")
+
+    recipe_id = data.get("recipe_id")
+
+    if not product_name:
+        return jsonify({
+            "error": "product_name kerak"
+        }), 400
+
+    if quantity is None or float(quantity) <= 0:
+        return jsonify({
+            "error": "quantity noto'g'ri"
+        }), 400
+
+    if unit_price is None or float(unit_price) < 0:
+        return jsonify({
+            "error": "unit_price noto'g'ri"
+        }), 400
+
+    quantity = float(quantity)
+    unit_price = float(unit_price)
+
+    total = quantity * unit_price
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    try:
+
+        # ---------------------------------------------
+        # Agar retsept tanlangan bo'lsa,
+        # avval ombordagi mahsulotlarni tekshiramiz.
+        # ---------------------------------------------
+
+        recipe_items = []
+
+        if recipe_id:
+
+            cur.execute("""
+                SELECT
+                    ri.inventory_id,
+                    ri.quantity,
+                    i.name,
+                    i.unit,
+                    i.quantity AS stock
+                FROM recipe_items ri
+                JOIN inventory i
+                    ON i.id = ri.inventory_id
+                WHERE ri.recipe_id=%s
+                FOR UPDATE
+            """, (recipe_id,))
+
+            recipe_items = cur.fetchall()
+
+            if not recipe_items:
+                raise Exception(
+                    "Bu retseptda mahsulotlar mavjud emas"
+                )
+
+            # -----------------------------------------
+            # Yetarlilikni tekshirish
+            # -----------------------------------------
+
+            for item in recipe_items:
+
+                needed = float(item["quantity"]) * quantity
+                stock = float(item["stock"])
+
+                if stock < needed:
+
+                    raise Exception(
+                        f"{item['name']} yetarli emas. "
+                        f"Kerak: {needed} {item['unit']}, "
+                        f"omborda: {stock} {item['unit']}"
+                    )
+
+        # ---------------------------------------------
+        # SALE YARATISH
+        # ---------------------------------------------
+
+        cur.execute("""
+            INSERT INTO sales
+            (product_name, quantity, unit_price, total)
+            VALUES (%s,%s,%s,%s)
+            RETURNING *
+        """, (
+            product_name,
+            quantity,
+            unit_price,
+            total
+        ))
+
+        sale = cur.fetchone()
+
+        # ---------------------------------------------
+        # INCOME TRANSACTION
+        # ---------------------------------------------
+
+        cur.execute("""
+            INSERT INTO transactions
+            (type, amount, description, sale_id)
+            VALUES ('income',%s,%s,%s)
+            RETURNING id
+        """, (
+            total,
+            f"Sotuv: {product_name}",
+            sale["id"]
+        ))
+
+        transaction = cur.fetchone()
+
+        # ---------------------------------------------
+        # OMBORDAN RETSEPT BO'YICHA YECHISH
+        # ---------------------------------------------
+
+        used_inventory = []
+
+        for item in recipe_items:
+
+            needed = float(item["quantity"]) * quantity
+
+            cur.execute("""
+                UPDATE inventory
+                SET quantity = quantity - %s
+                WHERE id=%s
+                RETURNING *
+            """, (
+                needed,
+                item["inventory_id"]
+            ))
+
+            updated = cur.fetchone()
+
+            used_inventory.append({
+                "inventory_id": item["inventory_id"],
+                "name": item["name"],
+                "used": needed,
+                "remaining": float(updated["quantity"])
+            })
+
+        conn.commit()
+
+        return jsonify({
+            "success": True,
+            "sale": sale,
+            "transaction_id": transaction["id"],
+            "inventory_used": used_inventory
+        }), 201
+
+    except Exception as e:
+
+        conn.rollback()
+
+        return jsonify({
+            "error": str(e)
+        }), 400
+
+    finally:
+
+        cur.close()
+        conn.close()
+
+
+# =========================================================
+# SALES SUMMARY
+# =========================================================
+
+@app.get("/api/sales/summary")
 def sales_summary():
 
     conn = get_db()
@@ -1471,227 +1347,94 @@ def sales_summary():
 
     cur.execute("""
         SELECT
-            COALESCE(
-                SUM(total_amount),
-                0
-            ),
-            COUNT(*)
+            COALESCE(SUM(total),0) AS total_sales,
+            COUNT(*) AS sales_count
         FROM sales
         WHERE created_at >= CURRENT_DATE
     """)
 
-    today_total, today_count = cur.fetchone()
-
-    cur.execute("""
-        SELECT
-            COALESCE(
-                SUM(total_amount),
-                0
-            )
-        FROM sales
-        WHERE created_at >=
-            CURRENT_DATE - INTERVAL '6 days'
-    """)
-
-    week_total = cur.fetchone()[0]
-
-    cur.execute("""
-        SELECT
-            COALESCE(
-                SUM(total_amount),
-                0
-            )
-        FROM sales
-        WHERE created_at >=
-            DATE_TRUNC(
-                'month',
-                CURRENT_DATE
-            )
-    """)
-
-    month_total = cur.fetchone()[0]
-
-    cur.execute("""
-        SELECT
-            COALESCE(
-                SUM(total_amount),
-                0
-            )
-        FROM sales
-        WHERE payment_method = 'cash'
-    """)
-
-    cash_total = cur.fetchone()[0]
-
-    cur.execute("""
-        SELECT
-            COALESCE(
-                SUM(total_amount),
-                0
-            )
-        FROM sales
-        WHERE payment_method = 'card'
-    """)
-
-    card_total = cur.fetchone()[0]
+    result = cur.fetchone()
 
     cur.close()
     conn.close()
 
     return jsonify({
-        "success": True,
-        "today_total": float(today_total),
-        "today_count": today_count,
-        "week_total": float(week_total),
-        "month_total": float(month_total),
-        "cash_total": float(cash_total),
-        "card_total": float(card_total)
+        "total_sales": float(result["total_sales"]),
+        "sales_count": int(result["sales_count"])
     })
 
 
 # =========================================================
-# SALES - DELETE
+# DELETE SALE
 # =========================================================
 
-@app.route(
-    "/api/sales/<int:sale_id>",
-    methods=["DELETE"]
-)
+@app.delete("/api/sales/<int:sale_id>")
 def delete_sale(sale_id):
 
     conn = get_db()
     cur = conn.cursor()
 
-    # Savdoni topamiz
-    cur.execute(
-        """
-        SELECT
-            product_name,
-            total_amount
-        FROM sales
-        WHERE id = %s
-        """,
-        (sale_id,)
-    )
+    try:
 
-    sale = cur.fetchone()
+        cur.execute("""
+            SELECT *
+            FROM sales
+            WHERE id=%s
+        """, (sale_id,))
 
-    if not sale:
+        sale = cur.fetchone()
+
+        if not sale:
+            return jsonify({
+                "error": "sotuv topilmadi"
+            }), 404
+
+        # ---------------------------------------------
+        # LINKED TRANSACTION
+        # ---------------------------------------------
+
+        cur.execute("""
+            DELETE FROM transactions
+            WHERE sale_id=%s
+        """, (sale_id,))
+
+        # ---------------------------------------------
+        # SALE DELETE
+        # ---------------------------------------------
+
+        cur.execute("""
+            DELETE FROM sales
+            WHERE id=%s
+        """, (sale_id,))
+
+        conn.commit()
+
+        return jsonify({
+            "success": True,
+            "deleted": sale
+        })
+
+    except Exception as e:
+
+        conn.rollback()
+
+        return jsonify({
+            "error": str(e)
+        }), 400
+
+    finally:
 
         cur.close()
         conn.close()
 
-        return jsonify({
-            "success": False,
-            "error": "Savdo topilmadi"
-        }), 404
-
-    product_name = sale[0]
-    total_amount = float(sale[1])
-
-    # Eng avval aynan sale_id bilan bog'langan
-    # transactionni o'chiramiz.
-    cur.execute(
-        """
-        DELETE FROM transactions
-        WHERE sale_id = %s
-        """,
-        (sale_id,)
-    )
-
-    # Eski versiyada yaratilgan savdolar uchun
-    # sale_id bo'lmagan bo'lishi mumkin.
-    # Ular uchun xavfsizroq fallback:
-    # aynan summa + savdo nomi bo'yicha eng oxirgi
-    # mos daromadni o'chiramiz.
-    cur.execute(
-        """
-        DELETE FROM transactions
-        WHERE id = (
-            SELECT id
-            FROM transactions
-            WHERE sale_id IS NULL
-              AND type = 'income'
-              AND amount = %s
-              AND description = %s
-            ORDER BY created_at DESC
-            LIMIT 1
-        )
-        """,
-        (
-            total_amount,
-            f"Savdo: {product_name}"
-        )
-    )
-
-    # Savdoni o'chiramiz
-    cur.execute(
-        """
-        DELETE FROM sales
-        WHERE id = %s
-        RETURNING id
-        """,
-        (sale_id,)
-    )
-
-    conn.commit()
-
-    cur.close()
-    conn.close()
-
-    return jsonify({
-        "success": True
-    })
-
 
 # =========================================================
-# HEALTH
-# =========================================================
-
-@app.route("/api/health")
-def health():
-
-    return jsonify({
-        "status": "ok",
-        "service": "Real CEO"
-    })
-
-
-# =========================================================
-# DATABASE INITIALIZATION
-# =========================================================
-
-try:
-
-    init_db()
-
-    print(
-        "PostgreSQL bazasi tayyor."
-    )
-
-except Exception as error:
-
-    print(
-        "PostgreSQL bazasini ishga tushirishda xatolik:"
-    )
-
-    print(error)
-
-    raise
-
-
-# =========================================================
-# LOCAL START
+# RUN
 # =========================================================
 
 if __name__ == "__main__":
 
-    port = int(
-        os.environ.get(
-            "PORT",
-            8080
-        )
-    )
+    port = int(os.environ.get("PORT", 5000))
 
     app.run(
         host="0.0.0.0",
