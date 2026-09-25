@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="uz">
-
 <head>
 
     <meta charset="UTF-8">
@@ -22,73 +21,160 @@
             margin: 0;
             font-family: Arial, sans-serif;
             background: #f4f6f8;
-            color: #1f2937;
+            color: #17202a;
         }
 
-        button,
-        input,
-        select {
-            font-family: inherit;
-        }
+        /* ================================================= */
+        /* HEADER */
+        /* ================================================= */
 
-        button {
-            cursor: pointer;
-            border: none;
-        }
-
-        .header {
+        header {
             background: #111827;
             color: white;
-            padding: 22px 18px;
-            text-align: center;
+            padding: 18px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
-        .header h1 {
+        header h1 {
             margin: 0;
-            font-size: 28px;
+            font-size: 22px;
         }
 
-        .header p {
-            margin: 7px 0 0;
-            color: #d1d5db;
-            font-size: 14px;
+        header span {
+            font-size: 13px;
+            opacity: .75;
         }
+
+        /* ================================================= */
+        /* CONTAINER */
+        /* ================================================= */
 
         .container {
-            width: 100%;
-            max-width: 900px;
+            max-width: 1100px;
             margin: auto;
-            padding: 16px;
+            padding: 20px;
         }
 
-        /* =================================================
-           DASHBOARD
-        ================================================= */
+        /* ================================================= */
+        /* CARDS */
+        /* ================================================= */
 
-        .stats {
+        .grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin-bottom: 16px;
+            grid-template-columns:
+                repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
         }
 
-        .stat {
+        .card {
             background: white;
             border-radius: 16px;
-            padding: 16px 10px;
-            text-align: center;
-            box-shadow: 0 3px 12px rgba(0,0,0,0.06);
+            padding: 20px;
+            box-shadow:
+                0 4px 15px rgba(0,0,0,.06);
         }
 
-        .stat-title {
-            font-size: 13px;
+        .card-title {
+            font-size: 14px;
             color: #6b7280;
             margin-bottom: 8px;
         }
 
-        .stat-value {
-            font-size: 17px;
+        .card-value {
+            font-size: 26px;
             font-weight: bold;
+        }
+
+        /* ================================================= */
+        /* BUTTONS */
+        /* ================================================= */
+
+        button {
+            border: none;
+            border-radius: 10px;
+            padding: 11px 16px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        button:active {
+            transform: scale(.98);
+        }
+
+        .btn-primary {
+            background: #111827;
+            color: white;
+        }
+
+        .btn-success {
+            background: #16a34a;
+            color: white;
+        }
+
+        .btn-danger {
+            background: #dc2626;
+            color: white;
+        }
+
+        .btn-warning {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .btn-blue {
+            background: #2563eb;
+            color: white;
+        }
+
+        .btn-gray {
+            background: #e5e7eb;
+            color: #111827;
+        }
+
+        /* ================================================= */
+        /* SECTION */
+        /* ================================================= */
+
+        .section {
+            margin-top: 25px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .section-header h2 {
+            margin: 0;
+            font-size: 20px;
+        }
+
+        /* ================================================= */
+        /* TRANSACTIONS */
+        /* ================================================= */
+
+        .transaction {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            padding: 13px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .transaction:last-child {
+            border-bottom: none;
         }
 
         .income {
@@ -99,373 +185,159 @@
             color: #dc2626;
         }
 
-        .profit {
-            color: #2563eb;
+        /* ================================================= */
+        /* INVENTORY */
+        /* ================================================= */
+
+        .inventory-grid {
+            display: grid;
+            grid-template-columns:
+                repeat(auto-fit, minmax(260px, 1fr));
+            gap: 15px;
         }
 
-        .card {
+        .product-card {
             background: white;
-            border-radius: 18px;
+            border-radius: 16px;
             padding: 18px;
-            margin-bottom: 16px;
-            box-shadow: 0 3px 12px rgba(0,0,0,0.06);
-        }
-
-        .title {
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 15px;
-        }
-
-        .menu {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-        }
-
-        .menu button {
-            background: #f3f4f6;
-            border-radius: 14px;
-            padding: 17px 10px;
-            font-size: 15px;
-            font-weight: 600;
-            color: #111827;
-        }
-
-        .menu button:active {
-            transform: scale(0.98);
-        }
-
-        .primary {
-            background: #111827 !important;
-            color: white !important;
-        }
-
-        /* =================================================
-           TRANSACTIONS
-        ================================================= */
-
-        .transaction {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 10px;
-            padding: 13px 0;
-            border-bottom: 1px solid #e5e7eb;
-        }
-
-        .transaction:last-child {
-            border-bottom: none;
-        }
-
-        .transaction-left {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            min-width: 0;
-        }
-
-        .transaction-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #f3f4f6;
-            font-size: 19px;
-            flex-shrink: 0;
-        }
-
-        .transaction-info {
-            min-width: 0;
-        }
-
-        .transaction-description {
-            font-weight: 600;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .transaction-date {
-            color: #9ca3af;
-            font-size: 12px;
-            margin-top: 3px;
-        }
-
-        .transaction-amount {
-            font-weight: bold;
-            white-space: nowrap;
-        }
-
-        .empty {
-            text-align: center;
-            color: #9ca3af;
-            padding: 20px 10px;
-        }
-
-        /* =================================================
-           REPORT
-        ================================================= */
-
-        .report-tabs {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-            margin-bottom: 18px;
-        }
-
-        .report-tab {
-            padding: 12px 5px;
-            border-radius: 12px;
-            background: #f3f4f6;
-            color: #374151;
-            font-weight: bold;
-            font-size: 14px;
-        }
-
-        .report-tab.active {
-            background: #111827;
-            color: white;
-        }
-
-        .report-box {
-            background: #f9fafb;
-            border-radius: 14px;
-            padding: 15px;
-            margin-bottom: 10px;
-        }
-
-        .report-label {
-            color: #6b7280;
-            font-size: 13px;
-            margin-bottom: 6px;
-        }
-
-        .report-number {
-            font-size: 22px;
-            font-weight: bold;
-        }
-
-        .report-profit {
-            background: #eff6ff;
-        }
-
-        .report-income {
-            background: #f0fdf4;
-        }
-
-        .report-expense {
-            background: #fef2f2;
-        }
-
-        .report-count {
-            background: #f9fafb;
-        }
-
-        /* =================================================
-           INVENTORY SUMMARY
-        ================================================= */
-
-        .inventory-summary {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-
-        .inventory-summary-box {
-            background: #f9fafb;
-            border-radius: 14px;
-            padding: 15px;
-        }
-
-        .inventory-summary-label {
-            color: #6b7280;
-            font-size: 12px;
-            margin-bottom: 7px;
-        }
-
-        .inventory-summary-value {
-            font-size: 20px;
-            font-weight: bold;
-        }
-
-        .inventory-total {
-            color: #2563eb;
-        }
-
-        .inventory-warning {
-            color: #dc2626;
-        }
-
-        /* =================================================
-           INVENTORY
-        ================================================= */
-
-        .inventory-card {
-            border: 1px solid #e5e7eb;
-            border-radius: 15px;
-            padding: 15px;
-            margin-bottom: 12px;
-        }
-
-        .inventory-top {
-            display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
-            gap: 10px;
+            box-shadow:
+                0 4px 15px rgba(0,0,0,.06);
         }
 
         .product-name {
-            font-size: 17px;
+            font-size: 19px;
             font-weight: bold;
+            margin-bottom: 10px;
         }
 
-        .product-unit {
-            color: #6b7280;
-            font-size: 13px;
-            margin-top: 4px;
+        .product-info {
+            margin: 7px 0;
+            color: #4b5563;
         }
 
-        .product-quantity {
-            text-align: right;
+        .product-value {
             font-size: 18px;
             font-weight: bold;
+            margin-top: 10px;
         }
 
         .low-stock {
-            color: #dc2626;
-        }
-
-        .normal-stock {
-            color: #16a34a;
-        }
-
-        .warning {
-            display: inline-block;
-            margin-top: 8px;
-            padding: 5px 9px;
-            border-radius: 8px;
-            background: #fef2f2;
-            color: #dc2626;
-            font-size: 12px;
-            font-weight: bold;
-        }
-
-        .price-row {
-            display: flex;
-            justify-content: space-between;
-            gap: 10px;
-            margin-top: 13px;
-            padding-top: 12px;
-            border-top: 1px solid #e5e7eb;
-            font-size: 14px;
-        }
-
-        .price-label {
-            color: #6b7280;
-        }
-
-        .price-value {
-            font-weight: bold;
-        }
-
-        .total-value {
-            color: #2563eb;
-        }
-
-        .inventory-actions {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr 1fr;
-            gap: 7px;
-            margin-top: 13px;
-        }
-
-        .inventory-actions button {
-            padding: 10px 4px;
-            border-radius: 10px;
-            font-size: 12px;
-            font-weight: bold;
-        }
-
-        .stock-in-btn {
-            background: #dcfce7;
-            color: #15803d;
-        }
-
-        .stock-out-btn {
             background: #fee2e2;
             color: #b91c1c;
-        }
-
-        .price-btn {
-            background: #dbeafe;
-            color: #1d4ed8;
-        }
-
-        .delete-btn {
-            background: #f3f4f6;
-            color: #374151;
-        }
-
-        .add-product-btn {
-            width: 100%;
-            background: #111827;
-            color: white;
-            padding: 15px;
-            border-radius: 13px;
-            font-size: 16px;
+            padding: 8px 10px;
+            border-radius: 8px;
+            font-size: 13px;
+            margin: 10px 0;
             font-weight: bold;
+        }
+
+        .product-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 14px;
+        }
+
+        /* ================================================= */
+        /* EMPLOYEES */
+        /* ================================================= */
+
+        .employee-grid {
+            display: grid;
+            grid-template-columns:
+                repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+        }
+
+        .employee-card {
+            background: white;
+            border-radius: 16px;
+            padding: 18px;
+            box-shadow:
+                0 4px 15px rgba(0,0,0,.06);
+        }
+
+        .employee-name {
+            font-size: 19px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .employee-position {
+            color: #6b7280;
             margin-bottom: 15px;
         }
 
-        /* =================================================
-           MODAL
-        ================================================= */
+        .employee-salary {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .employee-date {
+            font-size: 13px;
+            color: #6b7280;
+            margin-bottom: 15px;
+        }
+
+        .employee-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        /* ================================================= */
+        /* MODAL */
+        /* ================================================= */
 
         .modal {
             display: none;
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.55);
-            align-items: center;
-            justify-content: center;
-            padding: 18px;
+            background: rgba(0,0,0,.55);
             z-index: 1000;
-        }
-
-        .modal-content {
-            width: 100%;
-            max-width: 430px;
-            background: white;
-            border-radius: 20px;
-            padding: 22px;
-            max-height: 90vh;
+            padding: 20px;
             overflow-y: auto;
         }
 
-        .modal-title {
-            font-size: 21px;
+        .modal-content {
+            background: white;
+            max-width: 500px;
+            margin: 40px auto;
+            border-radius: 18px;
+            padding: 22px;
+        }
+
+        .modal-content h2 {
+            margin-top: 0;
+        }
+
+        /* ================================================= */
+        /* INPUT */
+        /* ================================================= */
+
+        label {
+            display: block;
+            margin-top: 12px;
+            margin-bottom: 6px;
+            font-size: 14px;
             font-weight: bold;
-            margin-bottom: 18px;
         }
 
         input,
-        select {
+        select,
+        textarea {
             width: 100%;
-            padding: 14px;
+            padding: 12px;
             border: 1px solid #d1d5db;
-            border-radius: 12px;
-            margin-bottom: 12px;
-            font-size: 16px;
+            border-radius: 10px;
+            font-size: 15px;
             outline: none;
-            background: white;
         }
 
         input:focus,
-        select:focus {
+        select:focus,
+        textarea:focus {
             border-color: #2563eb;
         }
 
@@ -473,60 +345,47 @@
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 10px;
-            margin-top: 5px;
+            margin-top: 20px;
         }
 
-        .modal-buttons button {
-            padding: 14px;
-            border-radius: 12px;
-            font-size: 15px;
-            font-weight: bold;
-        }
+        /* ================================================= */
+        /* EMPTY */
+        /* ================================================= */
 
-        .cancel {
-            background: #e5e7eb;
-            color: #374151;
-        }
-
-        .save {
-            background: #111827;
-            color: white;
-        }
-
-        .loading {
+        .empty {
             text-align: center;
+            padding: 25px;
             color: #6b7280;
-            padding: 15px;
         }
 
-        /* =================================================
-           MOBILE
-        ================================================= */
+        /* ================================================= */
+        /* MOBILE */
+        /* ================================================= */
 
         @media (max-width: 600px) {
-
-            .stats {
-                gap: 7px;
-            }
-
-            .stat {
-                padding: 13px 6px;
-            }
-
-            .stat-value {
-                font-size: 14px;
-            }
-
-            .stat-title {
-                font-size: 11px;
-            }
 
             .container {
                 padding: 12px;
             }
 
-            .inventory-actions {
-                grid-template-columns: 1fr 1fr;
+            header {
+                padding: 15px;
+            }
+
+            header h1 {
+                font-size: 19px;
+            }
+
+            .card-value {
+                font-size: 23px;
+            }
+
+            .section-header h2 {
+                font-size: 18px;
+            }
+
+            .modal-content {
+                margin: 20px auto;
             }
 
         }
@@ -535,198 +394,194 @@
 
 </head>
 
-
 <body>
 
+<!-- ===================================================== -->
+<!-- HEADER -->
+<!-- ===================================================== -->
 
-    <!-- =================================================
-         HEADER
-    ================================================= -->
+<header>
 
-    <div class="header">
+    <div>
+        <h1>👑 Real CEO</h1>
+        <span>Real Choyxona M39</span>
+    </div>
 
-        <h1>
-            REAL CEO 👔
-        </h1>
+    <span>CEO Dashboard</span>
 
-        <p>
-            Real Choyxona M39
-        </p>
+</header>
+
+
+<div class="container">
+
+
+    <!-- ================================================= -->
+    <!-- MAIN SUMMARY -->
+    <!-- ================================================= -->
+
+    <div class="grid">
+
+        <div class="card">
+
+            <div class="card-title">
+                💰 Jami daromad
+            </div>
+
+            <div
+                class="card-value income"
+                id="totalIncome"
+            >
+                0 so'm
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="card-title">
+                💸 Jami xarajat
+            </div>
+
+            <div
+                class="card-value expense"
+                id="totalExpense"
+            >
+                0 so'm
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="card-title">
+                📊 Foyda
+            </div>
+
+            <div
+                class="card-value"
+                id="totalProfit"
+            >
+                0 so'm
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="card-title">
+                📦 Ombor qiymati
+            </div>
+
+            <div
+                class="card-value"
+                id="inventoryTotalValue"
+            >
+                0 so'm
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="card-title">
+                👥 Xodimlar
+            </div>
+
+            <div
+                class="card-value"
+                id="employeeCount"
+            >
+                0
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="card-title">
+                💵 Oylik fondi
+            </div>
+
+            <div
+                class="card-value"
+                id="employeeSalaryTotal"
+            >
+                0 so'm
+            </div>
+
+        </div>
 
     </div>
 
 
-    <div class="container">
+    <!-- ================================================= -->
+    <!-- TRANSACTIONS -->
+    <!-- ================================================= -->
 
+    <div class="section">
 
-        <!-- =================================================
-             MAIN STATS
-        ================================================= -->
+        <div class="section-header">
 
-        <div class="stats">
+            <h2>💰 Moliyaviy boshqaruv</h2>
 
-            <div class="stat">
-
-                <div class="stat-title">
-                    💰 Daromad
-                </div>
-
-                <div
-                    id="income"
-                    class="stat-value income"
-                >
-                    0 so‘m
-                </div>
-
-            </div>
-
-
-            <div class="stat">
-
-                <div class="stat-title">
-                    💸 Xarajat
-                </div>
-
-                <div
-                    id="expense"
-                    class="stat-value expense"
-                >
-                    0 so‘m
-                </div>
-
-            </div>
-
-
-            <div class="stat">
-
-                <div class="stat-title">
-                    📈 Foyda
-                </div>
-
-                <div
-                    id="profit"
-                    class="stat-value profit"
-                >
-                    0 so‘m
-                </div>
-
-            </div>
+            <button
+                class="btn-primary"
+                onclick="openTransactionModal()"
+            >
+                + Tranzaksiya
+            </button>
 
         </div>
 
-
-        <!-- =================================================
-             QUICK ACTIONS
-        ================================================= -->
 
         <div class="card">
 
-            <div class="title">
-                ⚡ Tezkor amallar
-            </div>
+            <div id="transactionList">
 
-            <div class="menu">
-
-                <button
-                    class="primary"
-                    onclick="openTransactionModal('income')"
-                >
-                    💰 Daromad qo‘shish
-                </button>
-
-
-                <button
-                    class="primary"
-                    onclick="openTransactionModal('expense')"
-                >
-                    💸 Xarajat qo‘shish
-                </button>
-
-
-                <button
-                    onclick="showReport()"
-                >
-                    📊 Hisobot
-                </button>
-
-
-                <button
-                    onclick="showInventory()"
-                >
-                    📦 Ombor
-                </button>
-
-
-                <button
-                    onclick="alert('🚧 Xodimlar moduli tez orada qo‘shiladi')"
-                >
-                    👨‍🍳 Xodimlar
-                </button>
-
-
-                <button
-                    onclick="alert('🚧 Savdo moduli tez orada qo‘shiladi')"
-                >
-                    🛒 Savdo
-                </button>
-
-
-                <button
-                    onclick="alert('🤖 AI CEO tez orada qo‘shiladi')"
-                >
-                    🤖 AI CEO
-                </button>
-
-
-                <button
-                    onclick="alert('⚙️ Sozlamalar tez orada qo‘shiladi')"
-                >
-                    ⚙️ Sozlamalar
-                </button>
+                <div class="empty">
+                    Hozircha tranzaksiyalar yo'q
+                </div>
 
             </div>
 
         </div>
 
-
-        <!-- =================================================
-             REPORT
-        ================================================= -->
-
-        <div
-            id="reportCard"
-            class="card"
-            style="display:none;"
-        >
-
-            <div class="title">
-                📊 Hisobot
-            </div>
+    </div>
 
 
-            <div class="report-tabs">
+    <!-- ================================================= -->
+    <!-- REPORTS -->
+    <!-- ================================================= -->
+
+    <div class="section">
+
+        <div class="section-header">
+
+            <h2>📊 Hisobotlar</h2>
+
+            <div>
 
                 <button
-                    id="todayTab"
-                    class="report-tab active"
+                    class="btn-gray"
                     onclick="loadReport('today')"
                 >
                     Bugun
                 </button>
 
-
                 <button
-                    id="weekTab"
-                    class="report-tab"
+                    class="btn-gray"
                     onclick="loadReport('week')"
                 >
                     Hafta
                 </button>
 
-
                 <button
-                    id="monthTab"
-                    class="report-tab"
+                    class="btn-gray"
                     onclick="loadReport('month')"
                 >
                     Oy
@@ -734,82 +589,144 @@
 
             </div>
 
+        </div>
 
-            <div
-                id="reportContent"
-                class="loading"
-            >
-                Hisobot yuklanmoqda...
+
+        <div class="grid">
+
+            <div class="card">
+
+                <div class="card-title">
+                    Daromad
+                </div>
+
+                <div
+                    class="card-value income"
+                    id="reportIncome"
+                >
+                    0 so'm
+                </div>
+
+            </div>
+
+
+            <div class="card">
+
+                <div class="card-title">
+                    Xarajat
+                </div>
+
+                <div
+                    class="card-value expense"
+                    id="reportExpense"
+                >
+                    0 so'm
+                </div>
+
+            </div>
+
+
+            <div class="card">
+
+                <div class="card-title">
+                    Foyda
+                </div>
+
+                <div
+                    class="card-value"
+                    id="reportProfit"
+                >
+                    0 so'm
+                </div>
+
+            </div>
+
+
+            <div class="card">
+
+                <div class="card-title">
+                    Tranzaksiyalar
+                </div>
+
+                <div
+                    class="card-value"
+                    id="reportCount"
+                >
+                    0
+                </div>
+
             </div>
 
         </div>
 
-
-        <!-- =================================================
-             INVENTORY
-        ================================================= -->
-
-        <div
-            id="inventoryCard"
-            class="card"
-            style="display:none;"
-        >
-
-            <div class="title">
-                📦 Ombor
-            </div>
+    </div>
 
 
-            <!-- INVENTORY SUMMARY -->
+    <!-- ================================================= -->
+    <!-- INVENTORY -->
+    <!-- ================================================= -->
 
-            <div class="inventory-summary">
+    <div class="section">
 
-                <div class="inventory-summary-box">
+        <div class="section-header">
 
-                    <div class="inventory-summary-label">
-                        💰 Umumiy qiymat
-                    </div>
-
-                    <div
-                        id="inventoryTotalValue"
-                        class="inventory-summary-value inventory-total"
-                    >
-                        0 so‘m
-                    </div>
-
-                </div>
-
-
-                <div class="inventory-summary-box">
-
-                    <div class="inventory-summary-label">
-                        ⚠️ Qoldig‘i kam
-                    </div>
-
-                    <div
-                        id="inventoryLowCount"
-                        class="inventory-summary-value inventory-warning"
-                    >
-                        0 ta
-                    </div>
-
-                </div>
-
-            </div>
-
+            <h2>📦 Ombor</h2>
 
             <button
-                class="add-product-btn"
+                class="btn-primary"
                 onclick="openProductModal()"
             >
-                ➕ Yangi mahsulot qo‘shish
+                + Mahsulot
             </button>
 
+        </div>
 
-            <div id="inventoryList">
 
-                <div class="loading">
-                    Ombor yuklanmoqda...
+        <div class="grid">
+
+            <div class="card">
+
+                <div class="card-title">
+                    Mahsulotlar soni
+                </div>
+
+                <div
+                    class="card-value"
+                    id="inventoryProductCount"
+                >
+                    0
+                </div>
+
+            </div>
+
+
+            <div class="card">
+
+                <div class="card-title">
+                    Ombor qiymati
+                </div>
+
+                <div
+                    class="card-value"
+                    id="inventoryValue2"
+                >
+                    0 so'm
+                </div>
+
+            </div>
+
+
+            <div class="card">
+
+                <div class="card-title">
+                    Kam qolganlar
+                </div>
+
+                <div
+                    class="card-value"
+                    id="inventoryLowCount"
+                >
+                    0
                 </div>
 
             </div>
@@ -817,21 +734,65 @@
         </div>
 
 
-        <!-- =================================================
-             TRANSACTION HISTORY
-        ================================================= -->
+        <div
+            class="inventory-grid"
+            id="inventoryList"
+        >
 
-        <div class="card">
+        </div>
 
-            <div class="title">
-                📋 So‘nggi operatsiyalar
+    </div>
+
+
+    <!-- ================================================= -->
+    <!-- EMPLOYEES -->
+    <!-- ================================================= -->
+
+    <div class="section">
+
+        <div class="section-header">
+
+            <h2>👥 Xodimlar</h2>
+
+            <button
+                class="btn-primary"
+                onclick="openEmployeeModal()"
+            >
+                + Xodim qo'shish
+            </button>
+
+        </div>
+
+
+        <div class="grid">
+
+            <div class="card">
+
+                <div class="card-title">
+                    👤 Xodimlar soni
+                </div>
+
+                <div
+                    class="card-value"
+                    id="employeeCount2"
+                >
+                    0
+                </div>
+
             </div>
 
 
-            <div id="transactions">
+            <div class="card">
 
-                <div class="empty">
-                    Ma'lumotlar yuklanmoqda...
+                <div class="card-title">
+                    💵 Umumiy oylik fondi
+                </div>
+
+                <div
+                    class="card-value"
+                    id="employeeSalaryTotal2"
+                >
+                    0 so'm
                 </div>
 
             </div>
@@ -839,1932 +800,1774 @@
         </div>
 
 
-    </div>
-
-
-    <!-- =================================================
-         TRANSACTION MODAL
-    ================================================= -->
-
-    <div
-        id="transactionModal"
-        class="modal"
-    >
-
-        <div class="modal-content">
-
-            <div
-                id="transactionModalTitle"
-                class="modal-title"
-            >
-                💰 Daromad qo‘shish
-            </div>
-
-
-            <input
-                id="transactionAmount"
-                type="number"
-                placeholder="Summa"
-                min="1"
-            >
-
-
-            <input
-                id="transactionDescription"
-                type="text"
-                placeholder="Izoh"
-            >
-
-
-            <div class="modal-buttons">
-
-                <button
-                    class="cancel"
-                    onclick="closeTransactionModal()"
-                >
-                    Bekor qilish
-                </button>
-
-
-                <button
-                    class="save"
-                    onclick="saveTransaction()"
-                >
-                    Saqlash
-                </button>
-
-            </div>
+        <div
+            class="employee-grid"
+            id="employeeList"
+        >
 
         </div>
 
     </div>
 
 
-    <!-- =================================================
-         PRODUCT MODAL
-    ================================================= -->
-
-    <div
-        id="productModal"
-        class="modal"
-    >
-
-        <div class="modal-content">
-
-            <div class="modal-title">
-                📦 Yangi mahsulot
-            </div>
+</div>
 
 
-            <input
-                id="productName"
-                type="text"
-                placeholder="Mahsulot nomi"
+<!-- ===================================================== -->
+<!-- TRANSACTION MODAL -->
+<!-- ===================================================== -->
+
+<div
+    class="modal"
+    id="transactionModal"
+>
+
+    <div class="modal-content">
+
+        <h2>💰 Tranzaksiya</h2>
+
+
+        <label>
+            Turi
+        </label>
+
+        <select id="transactionType">
+
+            <option value="income">
+                💰 Daromad
+            </option>
+
+            <option value="expense">
+                💸 Xarajat
+            </option>
+
+        </select>
+
+
+        <label>
+            Summa
+        </label>
+
+        <input
+            type="number"
+            id="transactionAmount"
+            placeholder="Masalan: 500000"
+        >
+
+
+        <label>
+            Izoh
+        </label>
+
+        <input
+            type="text"
+            id="transactionDescription"
+            placeholder="Izoh"
+        >
+
+
+        <div class="modal-buttons">
+
+            <button
+                class="btn-gray"
+                onclick="closeTransactionModal()"
             >
+                Bekor qilish
+            </button>
 
-
-            <select id="productUnit">
-
-                <option value="">
-                    O‘lchov birligini tanlang
-                </option>
-
-                <option value="kg">
-                    Kilogramm (kg)
-                </option>
-
-                <option value="dona">
-                    Dona
-                </option>
-
-                <option value="litr">
-                    Litr
-                </option>
-
-                <option value="gramm">
-                    Gramm
-                </option>
-
-                <option value="quti">
-                    Quti
-                </option>
-
-                <option value="bosh">
-                    Bosh
-                </option>
-
-            </select>
-
-
-            <input
-                id="productQuantity"
-                type="number"
-                placeholder="Boshlang‘ich miqdor"
-                min="0"
-                step="0.001"
+            <button
+                class="btn-success"
+                onclick="saveTransaction()"
             >
-
-
-            <input
-                id="productMinQuantity"
-                type="number"
-                placeholder="Minimal qoldiq"
-                min="0"
-                step="0.001"
-            >
-
-
-            <input
-                id="productPrice"
-                type="number"
-                placeholder="1 birlik narxi (so‘m)"
-                min="0"
-                step="0.01"
-            >
-
-
-            <div class="modal-buttons">
-
-                <button
-                    class="cancel"
-                    onclick="closeProductModal()"
-                >
-                    Bekor qilish
-                </button>
-
-
-                <button
-                    class="save"
-                    onclick="saveProduct()"
-                >
-                    Saqlash
-                </button>
-
-            </div>
+                Saqlash
+            </button>
 
         </div>
 
     </div>
 
+</div>
 
-    <!-- =================================================
-         STOCK MODAL
-    ================================================= -->
 
-    <div
-        id="stockModal"
-        class="modal"
-    >
+<!-- ===================================================== -->
+<!-- PRODUCT MODAL -->
+<!-- ===================================================== -->
 
-        <div class="modal-content">
+<div
+    class="modal"
+    id="productModal"
+>
 
-            <div
-                id="stockModalTitle"
-                class="modal-title"
+    <div class="modal-content">
+
+        <h2>📦 Mahsulot qo'shish</h2>
+
+
+        <label>
+            Mahsulot nomi
+        </label>
+
+        <input
+            type="text"
+            id="productName"
+            placeholder="Masalan: Guruch"
+        >
+
+
+        <label>
+            O'lchov birligi
+        </label>
+
+        <input
+            type="text"
+            id="productUnit"
+            placeholder="kg / dona / litr"
+        >
+
+
+        <label>
+            Boshlang'ich miqdor
+        </label>
+
+        <input
+            type="number"
+            id="productQuantity"
+            step="0.001"
+            placeholder="0"
+        >
+
+
+        <label>
+            Minimal qoldiq
+        </label>
+
+        <input
+            type="number"
+            id="productMinQuantity"
+            step="0.001"
+            placeholder="0"
+        >
+
+
+        <label>
+            1 birlik narxi
+        </label>
+
+        <input
+            type="number"
+            id="productPrice"
+            placeholder="Masalan: 18000"
+        >
+
+
+        <div class="modal-buttons">
+
+            <button
+                class="btn-gray"
+                onclick="closeProductModal()"
             >
-                📦 Miqdor
-            </div>
+                Bekor qilish
+            </button>
 
-
-            <input
-                id="stockAmount"
-                type="number"
-                placeholder="Miqdor"
-                min="0.001"
-                step="0.001"
+            <button
+                class="btn-success"
+                onclick="saveProduct()"
             >
-
-
-            <div class="modal-buttons">
-
-                <button
-                    class="cancel"
-                    onclick="closeStockModal()"
-                >
-                    Bekor qilish
-                </button>
-
-
-                <button
-                    class="save"
-                    onclick="saveStock()"
-                >
-                    Saqlash
-                </button>
-
-            </div>
+                Saqlash
+            </button>
 
         </div>
 
     </div>
 
+</div>
 
-    <!-- =================================================
-         PRICE MODAL
-    ================================================= -->
 
-    <div
-        id="priceModal"
-        class="modal"
-    >
+<!-- ===================================================== -->
+<!-- STOCK MODAL -->
+<!-- ===================================================== -->
 
-        <div class="modal-content">
+<div
+    class="modal"
+    id="stockModal"
+>
 
-            <div
-                id="priceModalTitle"
-                class="modal-title"
+    <div class="modal-content">
+
+        <h2 id="stockModalTitle">
+            📦 Ombor
+        </h2>
+
+
+        <label>
+            Miqdor
+        </label>
+
+        <input
+            type="number"
+            id="stockAmount"
+            step="0.001"
+            placeholder="Masalan: 10"
+        >
+
+
+        <div class="modal-buttons">
+
+            <button
+                class="btn-gray"
+                onclick="closeStockModal()"
             >
-                💵 Narxni o‘zgartirish
-            </div>
+                Bekor qilish
+            </button>
 
-
-            <input
-                id="newPrice"
-                type="number"
-                placeholder="1 birlik narxi"
-                min="0"
-                step="0.01"
+            <button
+                class="btn-success"
+                onclick="saveStock()"
             >
-
-
-            <div class="modal-buttons">
-
-                <button
-                    class="cancel"
-                    onclick="closePriceModal()"
-                >
-                    Bekor qilish
-                </button>
-
-
-                <button
-                    class="save"
-                    onclick="savePrice()"
-                >
-                    Saqlash
-                </button>
-
-            </div>
+                Saqlash
+            </button>
 
         </div>
 
     </div>
 
-
-    <script>
-
-        // =================================================
-        // GLOBAL VARIABLES
-        // =================================================
-
-        let currentTransactionType = "income";
-
-        let currentReportPeriod = "today";
-
-        let currentStockProductId = null;
-
-        let currentStockType = null;
-
-        let currentPriceProductId = null;
+</div>
 
 
-        // =================================================
-        // MONEY FORMAT
-        // =================================================
+<!-- ===================================================== -->
+<!-- PRICE MODAL -->
+<!-- ===================================================== -->
 
-        function formatMoney(amount) {
+<div
+    class="modal"
+    id="priceModal"
+>
 
-            return new Intl.NumberFormat(
-                "uz-UZ"
-            ).format(
-                Math.round(amount)
-            ) + " so‘m";
+    <div class="modal-content">
+
+        <h2>💵 Narxni o'zgartirish</h2>
+
+
+        <label>
+            1 birlik narxi
+        </label>
+
+        <input
+            type="number"
+            id="newPrice"
+            placeholder="Masalan: 18000"
+        >
+
+
+        <div class="modal-buttons">
+
+            <button
+                class="btn-gray"
+                onclick="closePriceModal()"
+            >
+                Bekor qilish
+            </button>
+
+            <button
+                class="btn-success"
+                onclick="savePrice()"
+            >
+                Saqlash
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ===================================================== -->
+<!-- EMPLOYEE MODAL -->
+<!-- ===================================================== -->
+
+<div
+    class="modal"
+    id="employeeModal"
+>
+
+    <div class="modal-content">
+
+        <h2 id="employeeModalTitle">
+            👤 Xodim qo'shish
+        </h2>
+
+
+        <label>
+            Xodim ismi
+        </label>
+
+        <input
+            type="text"
+            id="employeeName"
+            placeholder="Masalan: Ali Valiyev"
+        >
+
+
+        <label>
+            Lavozimi
+        </label>
+
+        <input
+            type="text"
+            id="employeePosition"
+            placeholder="Masalan: Oshpaz"
+        >
+
+
+        <label>
+            Oylik maoshi
+        </label>
+
+        <input
+            type="number"
+            id="employeeSalary"
+            placeholder="Masalan: 5000000"
+        >
+
+
+        <label>
+            Ishga kirgan sana
+        </label>
+
+        <input
+            type="date"
+            id="employeeHireDate"
+        >
+
+
+        <div class="modal-buttons">
+
+            <button
+                class="btn-gray"
+                onclick="closeEmployeeModal()"
+            >
+                Bekor qilish
+            </button>
+
+            <button
+                class="btn-success"
+                onclick="saveEmployee()"
+            >
+                Saqlash
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* ========================================================= */
+/* HELPERS */
+/* ========================================================= */
+
+function formatMoney(value) {
+
+    return Number(value || 0)
+        .toLocaleString("uz-UZ") + " so'm";
+
+}
+
+
+/* ========================================================= */
+/* TRANSACTIONS */
+/* ========================================================= */
+
+async function loadSummary() {
+
+    try {
+
+        const response =
+            await fetch("/api/summary");
+
+        const data =
+            await response.json();
+
+        document.getElementById(
+            "totalIncome"
+        ).textContent =
+            formatMoney(data.income);
+
+        document.getElementById(
+            "totalExpense"
+        ).textContent =
+            formatMoney(data.expense);
+
+        document.getElementById(
+            "totalProfit"
+        ).textContent =
+            formatMoney(data.profit);
+
+    } catch (error) {
+
+        console.error(error);
+
+    }
+
+}
+
+
+async function loadTransactions() {
+
+    try {
+
+        const response =
+            await fetch("/api/transactions");
+
+        const data =
+            await response.json();
+
+        const list =
+            document.getElementById(
+                "transactionList"
+            );
+
+        if (
+            !data.transactions ||
+            data.transactions.length === 0
+        ) {
+
+            list.innerHTML =
+                '<div class="empty">Hozircha tranzaksiyalar yo\'q</div>';
+
+            return;
 
         }
 
 
-        // =================================================
-        // NUMBER FORMAT
-        // =================================================
+        list.innerHTML =
+            data.transactions.map(item => {
 
-        function formatNumber(number) {
+                const typeClass =
+                    item.type === "income"
+                        ? "income"
+                        : "expense";
 
-            return new Intl.NumberFormat(
-                "uz-UZ",
+                const sign =
+                    item.type === "income"
+                        ? "+"
+                        : "-";
+
+                const title =
+                    item.type === "income"
+                        ? "Daromad"
+                        : "Xarajat";
+
+
+                return `
+
+                    <div class="transaction">
+
+                        <div>
+
+                            <strong class="${typeClass}">
+                                ${title}
+                            </strong>
+
+                            <div>
+                                ${item.description || ""}
+                            </div>
+
+                            <small>
+                                ${new Date(
+                                    item.created_at
+                                ).toLocaleString("uz-UZ")}
+                            </small>
+
+                        </div>
+
+                        <strong class="${typeClass}">
+                            ${sign}${formatMoney(item.amount)}
+                        </strong>
+
+                    </div>
+
+                `;
+
+            }).join("");
+
+    } catch (error) {
+
+        console.error(error);
+
+    }
+
+}
+
+
+function openTransactionModal() {
+
+    document.getElementById(
+        "transactionModal"
+    ).style.display = "block";
+
+}
+
+
+function closeTransactionModal() {
+
+    document.getElementById(
+        "transactionModal"
+    ).style.display = "none";
+
+}
+
+
+async function saveTransaction() {
+
+    const type =
+        document.getElementById(
+            "transactionType"
+        ).value;
+
+    const amount =
+        document.getElementById(
+            "transactionAmount"
+        ).value;
+
+    const description =
+        document.getElementById(
+            "transactionDescription"
+        ).value;
+
+
+    if (!amount) {
+
+        alert("Summani kiriting");
+
+        return;
+
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/transactions",
                 {
-                    maximumFractionDigits: 3
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        type,
+                        amount,
+                        description
+                    })
                 }
-            ).format(number);
-
-        }
-
-
-        // =================================================
-        // TRANSACTION MODAL
-        // =================================================
-
-        function openTransactionModal(type) {
-
-            currentTransactionType = type;
-
-
-            document.getElementById(
-                "transactionModal"
-            ).style.display = "flex";
-
-
-            document.getElementById(
-                "transactionAmount"
-            ).value = "";
-
-
-            document.getElementById(
-                "transactionDescription"
-            ).value = "";
-
-
-            if (type === "income") {
-
-                document.getElementById(
-                    "transactionModalTitle"
-                ).innerText =
-                    "💰 Daromad qo‘shish";
-
-            } else {
-
-                document.getElementById(
-                    "transactionModalTitle"
-                ).innerText =
-                    "💸 Xarajat qo‘shish";
-
-            }
-
-
-            document.getElementById(
-                "transactionAmount"
-            ).focus();
-
-        }
-
-
-        function closeTransactionModal() {
-
-            document.getElementById(
-                "transactionModal"
-            ).style.display = "none";
-
-        }
-
-
-        // =================================================
-        // SAVE TRANSACTION
-        // =================================================
-
-        async function saveTransaction() {
-
-            const amount =
-                document.getElementById(
-                    "transactionAmount"
-                ).value;
-
-
-            const description =
-                document.getElementById(
-                    "transactionDescription"
-                ).value;
-
-
-            if (
-                !amount ||
-                Number(amount) <= 0
-            ) {
-
-                alert(
-                    "Iltimos, summani kiriting."
-                );
-
-                return;
-
-            }
-
-
-            try {
-
-                const response =
-                    await fetch(
-                        "/api/transactions",
-                        {
-                            method: "POST",
-
-                            headers: {
-                                "Content-Type":
-                                    "application/json"
-                            },
-
-                            body: JSON.stringify({
-
-                                type:
-                                    currentTransactionType,
-
-                                amount:
-                                    Number(amount),
-
-                                description:
-                                    description
-
-                            })
-
-                        }
-                    );
-
-
-                const data =
-                    await response.json();
-
-
-                if (!data.success) {
-
-                    alert(
-                        data.error ||
-                        "Xatolik yuz berdi."
-                    );
-
-                    return;
-
-                }
-
-
-                closeTransactionModal();
-
-                await loadDashboard();
-
-                await loadTransactions();
-
-
-                const reportCard =
-                    document.getElementById(
-                        "reportCard"
-                    );
-
-
-                if (
-                    reportCard.style.display !==
-                    "none"
-                ) {
-
-                    loadReport(
-                        currentReportPeriod
-                    );
-
-                }
-
-            } catch (error) {
-
-                console.error(error);
-
-                alert(
-                    "Server bilan bog‘lanishda xatolik."
-                );
-
-            }
-
-        }
-
-
-        // =================================================
-        // DASHBOARD
-        // =================================================
-
-        async function loadDashboard() {
-
-            try {
-
-                const response =
-                    await fetch(
-                        "/api/summary"
-                    );
-
-
-                const data =
-                    await response.json();
-
-
-                document.getElementById(
-                    "income"
-                ).innerText =
-                    formatMoney(
-                        data.income
-                    );
-
-
-                document.getElementById(
-                    "expense"
-                ).innerText =
-                    formatMoney(
-                        data.expense
-                    );
-
-
-                document.getElementById(
-                    "profit"
-                ).innerText =
-                    formatMoney(
-                        data.profit
-                    );
-
-            } catch (error) {
-
-                console.error(
-                    "Dashboard xatosi:",
-                    error
-                );
-
-            }
-
-        }
-
-
-        // =================================================
-        // TRANSACTIONS
-        // =================================================
-
-        async function loadTransactions() {
-
-            const container =
-                document.getElementById(
-                    "transactions"
-                );
-
-
-            try {
-
-                const response =
-                    await fetch(
-                        "/api/transactions"
-                    );
-
-
-                const data =
-                    await response.json();
-
-
-                if (
-                    !data.success ||
-                    data.transactions.length === 0
-                ) {
-
-                    container.innerHTML = `
-                        <div class="empty">
-                            Hozircha operatsiyalar yo‘q.
-                        </div>
-                    `;
-
-                    return;
-
-                }
-
-
-                container.innerHTML = "";
-
-
-                data.transactions.forEach(
-                    transaction => {
-
-                        const isIncome =
-                            transaction.type ===
-                            "income";
-
-
-                        const icon =
-                            isIncome
-                                ? "💰"
-                                : "💸";
-
-
-                        const sign =
-                            isIncome
-                                ? "+"
-                                : "-";
-
-
-                        const color =
-                            isIncome
-                                ? "#16a34a"
-                                : "#dc2626";
-
-
-                        const date =
-                            new Date(
-                                transaction.created_at
-                            );
-
-
-                        const dateText =
-                            date.toLocaleString(
-                                "uz-UZ"
-                            );
-
-
-                        const item =
-                            document.createElement(
-                                "div"
-                            );
-
-
-                        item.className =
-                            "transaction";
-
-
-                        item.innerHTML = `
-
-                            <div class="transaction-left">
-
-                                <div class="transaction-icon">
-                                    ${icon}
-                                </div>
-
-                                <div class="transaction-info">
-
-                                    <div class="transaction-description">
-                                        ${
-                                            transaction.description ||
-                                            (
-                                                isIncome
-                                                    ? "Daromad"
-                                                    : "Xarajat"
-                                            )
-                                        }
-                                    </div>
-
-                                    <div class="transaction-date">
-                                        ${dateText}
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-
-                            <div
-                                class="transaction-amount"
-                                style="color:${color};"
-                            >
-                                ${sign}${formatMoney(
-                                    transaction.amount
-                                )}
-                            </div>
-
-                        `;
-
-
-                        container.appendChild(
-                            item
-                        );
-
-                    }
-                );
-
-            } catch (error) {
-
-                console.error(error);
-
-                container.innerHTML = `
-                    <div class="empty">
-                        Ma'lumotlarni yuklashda xatolik.
-                    </div>
-                `;
-
-            }
-
-        }
-
-
-        // =================================================
-        // REPORT
-        // =================================================
-
-        function showReport() {
-
-            const reportCard =
-                document.getElementById(
-                    "reportCard"
-                );
-
-
-            reportCard.style.display =
-                "block";
-
-
-            reportCard.scrollIntoView({
-                behavior: "smooth",
-                block: "start"
-            });
-
-
-            loadReport(
-                currentReportPeriod
-            );
-
-        }
-
-
-        async function loadReport(period) {
-
-            currentReportPeriod = period;
-
-
-            document.getElementById(
-                "todayTab"
-            ).classList.remove(
-                "active"
             );
 
 
-            document.getElementById(
-                "weekTab"
-            ).classList.remove(
-                "active"
-            );
+        const data =
+            await response.json();
 
 
-            document.getElementById(
-                "monthTab"
-            ).classList.remove(
-                "active"
-            );
+        if (!data.success) {
 
+            alert(data.error || "Xatolik");
 
-            if (period === "today") {
-
-                document.getElementById(
-                    "todayTab"
-                ).classList.add(
-                    "active"
-                );
-
-            }
-
-
-            if (period === "week") {
-
-                document.getElementById(
-                    "weekTab"
-                ).classList.add(
-                    "active"
-                );
-
-            }
-
-
-            if (period === "month") {
-
-                document.getElementById(
-                    "monthTab"
-                ).classList.add(
-                    "active"
-                );
-
-            }
-
-
-            const content =
-                document.getElementById(
-                    "reportContent"
-                );
-
-
-            content.innerHTML =
-                "Hisobot yuklanmoqda...";
-
-
-            try {
-
-                const response =
-                    await fetch(
-                        "/api/report?period=" +
-                        period
-                    );
-
-
-                const data =
-                    await response.json();
-
-
-                if (!data.success) {
-
-                    content.innerHTML =
-                        "Hisobotni yuklashda xatolik.";
-
-                    return;
-
-                }
-
-
-                let periodName =
-                    "Bugun";
-
-
-                if (period === "week") {
-
-                    periodName =
-                        "Oxirgi 7 kun";
-
-                }
-
-
-                if (period === "month") {
-
-                    periodName =
-                        "Joriy oy";
-
-                }
-
-
-                content.innerHTML = `
-
-                    <div class="report-box report-income">
-
-                        <div class="report-label">
-                            💰 Daromad
-                        </div>
-
-                        <div class="report-number income">
-                            ${formatMoney(
-                                data.income
-                            )}
-                        </div>
-
-                    </div>
-
-
-                    <div class="report-box report-expense">
-
-                        <div class="report-label">
-                            💸 Xarajat
-                        </div>
-
-                        <div class="report-number expense">
-                            ${formatMoney(
-                                data.expense
-                            )}
-                        </div>
-
-                    </div>
-
-
-                    <div class="report-box report-profit">
-
-                        <div class="report-label">
-                            📈 Sof foyda
-                        </div>
-
-                        <div class="report-number profit">
-                            ${formatMoney(
-                                data.profit
-                            )}
-                        </div>
-
-                    </div>
-
-
-                    <div class="report-box report-count">
-
-                        <div class="report-label">
-                            🧾 Operatsiyalar
-                        </div>
-
-                        <div class="report-number">
-                            ${data.transaction_count} ta
-                        </div>
-
-                    </div>
-
-
-                    <div
-                        style="
-                            text-align:center;
-                            color:#6b7280;
-                            font-size:13px;
-                            margin-top:12px;
-                        "
-                    >
-                        📅 ${periodName}
-                    </div>
-
-                `;
-
-            } catch (error) {
-
-                console.error(error);
-
-                content.innerHTML = `
-                    <div class="empty">
-                        Server bilan bog‘lanishda xatolik.
-                    </div>
-                `;
-
-            }
+            return;
 
         }
 
 
-        // =================================================
-        // SHOW INVENTORY
-        // =================================================
-
-        function showInventory() {
-
-            const inventoryCard =
-                document.getElementById(
-                    "inventoryCard"
-                );
+        closeTransactionModal();
 
 
-            inventoryCard.style.display =
-                "block";
+        document.getElementById(
+            "transactionAmount"
+        ).value = "";
+
+        document.getElementById(
+            "transactionDescription"
+        ).value = "";
 
 
-            inventoryCard.scrollIntoView({
-                behavior: "smooth",
-                block: "start"
-            });
+        await loadSummary();
+        await loadTransactions();
 
 
-            loadInventory();
+    } catch (error) {
+
+        console.error(error);
+
+        alert("Server bilan bog'lanishda xatolik");
+
+    }
+
+}
+
+
+/* ========================================================= */
+/* REPORTS */
+/* ========================================================= */
+
+async function loadReport(period) {
+
+    try {
+
+        const response =
+            await fetch(
+                `/api/report?period=${period}`
+            );
+
+        const data =
+            await response.json();
+
+
+        if (!data.success) {
+
+            alert(data.error);
+
+            return;
 
         }
 
 
-        // =================================================
-        // LOAD INVENTORY
-        // =================================================
-
-        async function loadInventory() {
-
-            const container =
-                document.getElementById(
-                    "inventoryList"
-                );
+        document.getElementById(
+            "reportIncome"
+        ).textContent =
+            formatMoney(data.income);
 
 
-            container.innerHTML = `
-                <div class="loading">
-                    Ombor yuklanmoqda...
-                </div>
-            `;
+        document.getElementById(
+            "reportExpense"
+        ).textContent =
+            formatMoney(data.expense);
 
 
-            try {
-
-                const [
-                    inventoryResponse,
-                    summaryResponse
-                ] = await Promise.all([
-
-                    fetch(
-                        "/api/inventory"
-                    ),
-
-                    fetch(
-                        "/api/inventory/summary"
-                    )
-
-                ]);
+        document.getElementById(
+            "reportProfit"
+        ).textContent =
+            formatMoney(data.profit);
 
 
-                const data =
-                    await inventoryResponse.json();
+        document.getElementById(
+            "reportCount"
+        ).textContent =
+            data.transaction_count;
+
+    } catch (error) {
+
+        console.error(error);
+
+    }
+
+}
 
 
-                const summary =
-                    await summaryResponse.json();
+/* ========================================================= */
+/* INVENTORY */
+/* ========================================================= */
+
+let selectedProductId = null;
+
+let stockAction = null;
 
 
-                // =================================================
-                // SUMMARY
-                // =================================================
+async function loadInventory() {
 
-                if (summary.success) {
+    try {
 
-                    document.getElementById(
-                        "inventoryTotalValue"
-                    ).innerText =
-                        formatMoney(
-                            summary.total_value
-                        );
+        const [
+            inventoryResponse,
+            summaryResponse
+        ] = await Promise.all([
 
+            fetch("/api/inventory"),
 
-                    document.getElementById(
-                        "inventoryLowCount"
-                    ).innerText =
-                        summary.low_stock_count +
-                        " ta";
+            fetch("/api/inventory/summary")
 
-                }
+        ]);
 
 
-                // =================================================
-                // PRODUCTS
-                // =================================================
+        const inventoryData =
+            await inventoryResponse.json();
 
-                if (
-                    !data.success ||
-                    data.products.length === 0
-                ) {
-
-                    container.innerHTML = `
-                        <div class="empty">
-                            Omborda hozircha mahsulot yo‘q.
-                        </div>
-                    `;
-
-                    return;
-
-                }
+        const summaryData =
+            await summaryResponse.json();
 
 
-                container.innerHTML = "";
+        const list =
+            document.getElementById(
+                "inventoryList"
+            );
 
 
-                data.products.forEach(
+        if (
+            !inventoryData.products ||
+            inventoryData.products.length === 0
+        ) {
+
+            list.innerHTML =
+                '<div class="card"><div class="empty">Omborda mahsulot yo\'q</div></div>';
+
+        } else {
+
+            list.innerHTML =
+                inventoryData.products.map(
                     product => {
 
-                        const isLow =
+                        const low =
                             product.quantity <=
                             product.min_quantity;
 
 
-                        const card =
-                            document.createElement(
-                                "div"
-                            );
+                        return `
 
+                            <div class="product-card">
 
-                        card.className =
-                            "inventory-card";
-
-
-                        card.innerHTML = `
-
-                            <div class="inventory-top">
-
-                                <div>
-
-                                    <div class="product-name">
-                                        📦 ${escapeHtml(
-                                            product.name
-                                        )}
-                                    </div>
-
-                                    <div class="product-unit">
-                                        Birlik:
-                                        ${escapeHtml(
-                                            product.unit
-                                        )}
-                                    </div>
-
+                                <div class="product-name">
+                                    📦 ${product.name}
                                 </div>
 
+                                <div class="product-info">
+                                    Qoldiq:
+                                    <strong>
+                                        ${product.quantity}
+                                        ${product.unit}
+                                    </strong>
+                                </div>
 
-                                <div
-                                    class="
-                                        product-quantity
-                                        ${
-                                            isLow
-                                                ? "low-stock"
-                                                : "normal-stock"
-                                        }
-                                    "
-                                >
+                                <div class="product-info">
+                                    Minimal:
+                                    ${product.min_quantity}
+                                    ${product.unit}
+                                </div>
 
-                                    ${formatNumber(
-                                        product.quantity
+                                ${
+                                    low
+                                    ?
+                                    `
+                                    <div class="low-stock">
+                                        ⚠️ Mahsulot kamaygan
+                                    </div>
+                                    `
+                                    :
+                                    ""
+                                }
+
+                                <div class="product-info">
+                                    1 ${product.unit}:
+                                    <strong>
+                                        ${formatMoney(product.price)}
+                                    </strong>
+                                </div>
+
+                                <div class="product-value">
+                                    Jami:
+                                    ${formatMoney(
+                                        product.total_value
                                     )}
-
-                                    ${escapeHtml(
-                                        product.unit
-                                    )}
-
                                 </div>
 
-                            </div>
+                                <div class="product-buttons">
 
+                                    <button
+                                        class="btn-success"
+                                        onclick="openStockModal(
+                                            ${product.id},
+                                            'in'
+                                        )"
+                                    >
+                                        + Kirim
+                                    </button>
 
-                            ${
-                                isLow
-                                    ? `
-                                        <div class="warning">
-                                            ⚠️ Qoldiq kam
-                                        </div>
-                                      `
-                                    : ""
-                            }
+                                    <button
+                                        class="btn-warning"
+                                        onclick="openStockModal(
+                                            ${product.id},
+                                            'out'
+                                        )"
+                                    >
+                                        − Chiqim
+                                    </button>
 
+                                    <button
+                                        class="btn-blue"
+                                        onclick="openPriceModal(
+                                            ${product.id},
+                                            ${product.price}
+                                        )"
+                                    >
+                                        💵 Narx
+                                    </button>
 
-                            <div class="price-row">
-
-                                <div>
-                                    <div class="price-label">
-                                        💵 1 ${escapeHtml(
-                                            product.unit
-                                        )} narxi
-                                    </div>
-
-                                    <div class="price-value">
-                                        ${formatMoney(
-                                            product.price
-                                        )}
-                                    </div>
-                                </div>
-
-
-                                <div style="text-align:right;">
-
-                                    <div class="price-label">
-                                        💰 Jami qiymat
-                                    </div>
-
-                                    <div class="price-value total-value">
-                                        ${formatMoney(
-                                            product.total_value
-                                        )}
-                                    </div>
+                                    <button
+                                        class="btn-danger"
+                                        onclick="deleteProduct(
+                                            ${product.id}
+                                        )"
+                                    >
+                                        🗑️ O'chirish
+                                    </button>
 
                                 </div>
-
-                            </div>
-
-
-                            <div class="inventory-actions">
-
-                                <button
-                                    class="stock-in-btn"
-                                    onclick="openStockModal(
-                                        ${product.id},
-                                        'in',
-                                        '${escapeForAttribute(
-                                            product.name
-                                        )}'
-                                    )"
-                                >
-                                    ➕ Kirim
-                                </button>
-
-
-                                <button
-                                    class="stock-out-btn"
-                                    onclick="openStockModal(
-                                        ${product.id},
-                                        'out',
-                                        '${escapeForAttribute(
-                                            product.name
-                                        )}'
-                                    )"
-                                >
-                                    ➖ Chiqim
-                                </button>
-
-
-                                <button
-                                    class="price-btn"
-                                    onclick="openPriceModal(
-                                        ${product.id},
-                                        '${escapeForAttribute(
-                                            product.name
-                                        )}',
-                                        ${product.price}
-                                    )"
-                                >
-                                    💵 Narx
-                                </button>
-
-
-                                <button
-                                    class="delete-btn"
-                                    onclick="deleteProduct(
-                                        ${product.id},
-                                        '${escapeForAttribute(
-                                            product.name
-                                        )}'
-                                    )"
-                                >
-                                    🗑️ O‘chirish
-                                </button>
 
                             </div>
 
                         `;
 
+                    }
+                ).join("");
 
-                        container.appendChild(
-                            card
-                        );
+        }
+
+
+        document.getElementById(
+            "inventoryProductCount"
+        ).textContent =
+            summaryData.product_count;
+
+
+        document.getElementById(
+            "inventoryTotalValue"
+        ).textContent =
+            formatMoney(
+                summaryData.total_value
+            );
+
+
+        document.getElementById(
+            "inventoryValue2"
+        ).textContent =
+            formatMoney(
+                summaryData.total_value
+            );
+
+
+        document.getElementById(
+            "inventoryLowCount"
+        ).textContent =
+            summaryData.low_stock_count;
+
+
+    } catch (error) {
+
+        console.error(error);
+
+    }
+
+}
+
+
+function openProductModal() {
+
+    document.getElementById(
+        "productModal"
+    ).style.display = "block";
+
+}
+
+
+function closeProductModal() {
+
+    document.getElementById(
+        "productModal"
+    ).style.display = "none";
+
+}
+
+
+async function saveProduct() {
+
+    const name =
+        document.getElementById(
+            "productName"
+        ).value.trim();
+
+    const unit =
+        document.getElementById(
+            "productUnit"
+        ).value.trim();
+
+    const quantity =
+        document.getElementById(
+            "productQuantity"
+        ).value;
+
+    const minQuantity =
+        document.getElementById(
+            "productMinQuantity"
+        ).value;
+
+    const price =
+        document.getElementById(
+            "productPrice"
+        ).value;
+
+
+    if (!name || !unit) {
+
+        alert(
+            "Mahsulot nomi va o'lchov birligini kiriting"
+        );
+
+        return;
+
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/inventory",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+
+                        name,
+
+                        unit,
+
+                        quantity:
+                            quantity || 0,
+
+                        min_quantity:
+                            minQuantity || 0,
+
+                        price:
+                            price || 0
+
+                    })
+
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!data.success) {
+
+            alert(data.error || "Xatolik");
+
+            return;
+
+        }
+
+
+        closeProductModal();
+
+        document.getElementById(
+            "productName"
+        ).value = "";
+
+        document.getElementById(
+            "productUnit"
+        ).value = "";
+
+        document.getElementById(
+            "productQuantity"
+        ).value = "";
+
+        document.getElementById(
+            "productMinQuantity"
+        ).value = "";
+
+        document.getElementById(
+            "productPrice"
+        ).value = "";
+
+
+        await loadInventory();
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert("Server bilan bog'lanishda xatolik");
+
+    }
+
+}
+
+
+function openStockModal(
+    productId,
+    action
+) {
+
+    selectedProductId =
+        productId;
+
+    stockAction =
+        action;
+
+
+    document.getElementById(
+        "stockModalTitle"
+    ).textContent =
+        action === "in"
+            ? "📦 Mahsulot kirimi"
+            : "📤 Mahsulot chiqimi";
+
+
+    document.getElementById(
+        "stockAmount"
+    ).value = "";
+
+
+    document.getElementById(
+        "stockModal"
+    ).style.display = "block";
+
+}
+
+
+function closeStockModal() {
+
+    document.getElementById(
+        "stockModal"
+    ).style.display = "none";
+
+}
+
+
+async function saveStock() {
+
+    const amount =
+        document.getElementById(
+            "stockAmount"
+        ).value;
+
+
+    if (!amount || Number(amount) <= 0) {
+
+        alert("Miqdorni kiriting");
+
+        return;
+
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                `/api/inventory/${selectedProductId}/${stockAction}`,
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        amount
+                    })
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!data.success) {
+
+            alert(data.error || "Xatolik");
+
+            return;
+
+        }
+
+
+        closeStockModal();
+
+        await loadInventory();
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert("Server bilan bog'lanishda xatolik");
+
+    }
+
+}
+
+
+/* ========================================================= */
+/* PRICE */
+/* ========================================================= */
+
+function openPriceModal(
+    productId,
+    price
+) {
+
+    selectedProductId =
+        productId;
+
+
+    document.getElementById(
+        "newPrice"
+    ).value = price || "";
+
+
+    document.getElementById(
+        "priceModal"
+    ).style.display = "block";
+
+}
+
+
+function closePriceModal() {
+
+    document.getElementById(
+        "priceModal"
+    ).style.display = "none";
+
+}
+
+
+async function savePrice() {
+
+    const price =
+        document.getElementById(
+            "newPrice"
+        ).value;
+
+
+    if (
+        price === "" ||
+        Number(price) < 0
+    ) {
+
+        alert("Narxni to'g'ri kiriting");
+
+        return;
+
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                `/api/inventory/${selectedProductId}/price`,
+                {
+                    method: "PUT",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        price
+                    })
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!data.success) {
+
+            alert(data.error || "Xatolik");
+
+            return;
+
+        }
+
+
+        closePriceModal();
+
+        await loadInventory();
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert("Server bilan bog'lanishda xatolik");
+
+    }
+
+}
+
+
+/* ========================================================= */
+/* DELETE PRODUCT */
+/* ========================================================= */
+
+async function deleteProduct(
+    productId
+) {
+
+    const confirmed =
+        confirm(
+            "Bu mahsulotni o'chirishni xohlaysizmi?"
+        );
+
+
+    if (!confirmed) {
+
+        return;
+
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                `/api/inventory/${productId}`,
+                {
+                    method: "DELETE"
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!data.success) {
+
+            alert(data.error || "Xatolik");
+
+            return;
+
+        }
+
+
+        await loadInventory();
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert("Server bilan bog'lanishda xatolik");
+
+    }
+
+}
+
+
+/* ========================================================= */
+/* EMPLOYEES */
+/* ========================================================= */
+
+let selectedEmployeeId = null;
+
+
+async function loadEmployees() {
+
+    try {
+
+        const [
+            employeesResponse,
+            summaryResponse
+        ] = await Promise.all([
+
+            fetch("/api/employees"),
+
+            fetch("/api/employees/summary")
+
+        ]);
+
+
+        const employeeData =
+            await employeesResponse.json();
+
+        const summaryData =
+            await summaryResponse.json();
+
+
+        const list =
+            document.getElementById(
+                "employeeList"
+            );
+
+
+        if (
+            !employeeData.employees ||
+            employeeData.employees.length === 0
+        ) {
+
+            list.innerHTML =
+                '<div class="card"><div class="empty">Hozircha xodimlar qo\'shilmagan</div></div>';
+
+        } else {
+
+            list.innerHTML =
+                employeeData.employees.map(
+                    employee => {
+
+                        return `
+
+                            <div class="employee-card">
+
+                                <div class="employee-name">
+                                    👤 ${employee.name}
+                                </div>
+
+                                <div class="employee-position">
+                                    ${employee.position}
+                                </div>
+
+                                <div class="employee-salary">
+                                    💵 ${formatMoney(
+                                        employee.salary
+                                    )}
+                                </div>
+
+                                <div class="employee-date">
+                                    📅 Ishga kirgan sana:
+                                    ${
+                                        employee.hire_date
+                                        ||
+                                        "Ko'rsatilmagan"
+                                    }
+                                </div>
+
+                                <div class="employee-buttons">
+
+                                    <button
+                                        class="btn-blue"
+                                        onclick="editEmployee(
+                                            ${employee.id}
+                                        )"
+                                    >
+                                        ✏️ Tahrirlash
+                                    </button>
+
+                                    <button
+                                        class="btn-danger"
+                                        onclick="deleteEmployee(
+                                            ${employee.id}
+                                        )"
+                                    >
+                                        🗑️ O'chirish
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+                        `;
 
                     }
-                );
-
-            } catch (error) {
-
-                console.error(
-                    "Inventory xatosi:",
-                    error
-                );
-
-
-                container.innerHTML = `
-                    <div class="empty">
-                        Omborni yuklashda xatolik.
-                    </div>
-                `;
-
-            }
+                ).join("");
 
         }
-
-
-        // =================================================
-        // PRODUCT MODAL
-        // =================================================
-
-        function openProductModal() {
-
-            document.getElementById(
-                "productModal"
-            ).style.display = "flex";
-
-
-            document.getElementById(
-                "productName"
-            ).value = "";
-
-
-            document.getElementById(
-                "productUnit"
-            ).value = "";
-
-
-            document.getElementById(
-                "productQuantity"
-            ).value = "";
-
-
-            document.getElementById(
-                "productMinQuantity"
-            ).value = "";
-
-
-            document.getElementById(
-                "productPrice"
-            ).value = "";
-
-
-            document.getElementById(
-                "productName"
-            ).focus();
-
-        }
-
-
-        function closeProductModal() {
-
-            document.getElementById(
-                "productModal"
-            ).style.display = "none";
-
-        }
-
-
-        // =================================================
-        // SAVE PRODUCT
-        // =================================================
-
-        async function saveProduct() {
-
-            const name =
-                document.getElementById(
-                    "productName"
-                ).value.trim();
-
-
-            const unit =
-                document.getElementById(
-                    "productUnit"
-                ).value;
-
-
-            const quantity =
-                document.getElementById(
-                    "productQuantity"
-                ).value || 0;
-
-
-            const minQuantity =
-                document.getElementById(
-                    "productMinQuantity"
-                ).value || 0;
-
-
-            const price =
-                document.getElementById(
-                    "productPrice"
-                ).value || 0;
-
-
-            if (!name) {
-
-                alert(
-                    "Mahsulot nomini kiriting."
-                );
-
-                return;
-
-            }
-
-
-            if (!unit) {
-
-                alert(
-                    "O‘lchov birligini tanlang."
-                );
-
-                return;
-
-            }
-
-
-            if (Number(quantity) < 0) {
-
-                alert(
-                    "Boshlang‘ich miqdor noto‘g‘ri."
-                );
-
-                return;
-
-            }
-
-
-            if (Number(minQuantity) < 0) {
-
-                alert(
-                    "Minimal qoldiq noto‘g‘ri."
-                );
-
-                return;
-
-            }
-
-
-            if (Number(price) < 0) {
-
-                alert(
-                    "Narx noto‘g‘ri."
-                );
-
-                return;
-
-            }
-
-
-            try {
-
-                const response =
-                    await fetch(
-                        "/api/inventory",
-                        {
-                            method: "POST",
-
-                            headers: {
-                                "Content-Type":
-                                    "application/json"
-                            },
-
-                            body: JSON.stringify({
-
-                                name: name,
-
-                                unit: unit,
-
-                                quantity:
-                                    Number(quantity),
-
-                                min_quantity:
-                                    Number(minQuantity),
-
-                                price:
-                                    Number(price)
-
-                            })
-
-                        }
-                    );
-
-
-                const data =
-                    await response.json();
-
-
-                if (!data.success) {
-
-                    alert(
-                        data.error ||
-                        "Mahsulotni saqlashda xatolik."
-                    );
-
-                    return;
-
-                }
-
-
-                closeProductModal();
-
-
-                await loadInventory();
-
-            } catch (error) {
-
-                console.error(error);
-
-                alert(
-                    "Server bilan bog‘lanishda xatolik."
-                );
-
-            }
-
-        }
-
-
-        // =================================================
-        // STOCK MODAL
-        // =================================================
-
-        function openStockModal(
-            productId,
-            type,
-            productName
-        ) {
-
-            currentStockProductId =
-                productId;
-
-
-            currentStockType =
-                type;
-
-
-            document.getElementById(
-                "stockModal"
-            ).style.display = "flex";
-
-
-            document.getElementById(
-                "stockAmount"
-            ).value = "";
-
-
-            document.getElementById(
-                "stockModalTitle"
-            ).innerText =
-                type === "in"
-                    ? "➕ Kirim: " + productName
-                    : "➖ Chiqim: " + productName;
-
-
-            document.getElementById(
-                "stockAmount"
-            ).focus();
-
-        }
-
-
-        function closeStockModal() {
-
-            document.getElementById(
-                "stockModal"
-            ).style.display = "none";
-
-            currentStockProductId = null;
-
-            currentStockType = null;
-
-        }
-
-
-        // =================================================
-        // SAVE STOCK
-        // =================================================
-
-        async function saveStock() {
-
-            const amount =
-                document.getElementById(
-                    "stockAmount"
-                ).value;
-
-
-            if (
-                !amount ||
-                Number(amount) <= 0
-            ) {
-
-                alert(
-                    "Miqdorni kiriting."
-                );
-
-                return;
-
-            }
-
-
-            const endpoint =
-                currentStockType === "in"
-                    ? "/api/inventory/" +
-                      currentStockProductId +
-                      "/in"
-                    : "/api/inventory/" +
-                      currentStockProductId +
-                      "/out";
-
-
-            try {
-
-                const response =
-                    await fetch(
-                        endpoint,
-                        {
-                            method: "POST",
-
-                            headers: {
-                                "Content-Type":
-                                    "application/json"
-                            },
-
-                            body: JSON.stringify({
-
-                                amount:
-                                    Number(amount)
-
-                            })
-
-                        }
-                    );
-
-
-                const data =
-                    await response.json();
-
-
-                if (!data.success) {
-
-                    alert(
-                        data.error ||
-                        "Amal bajarilmadi."
-                    );
-
-                    return;
-
-                }
-
-
-                closeStockModal();
-
-
-                await loadInventory();
-
-            } catch (error) {
-
-                console.error(error);
-
-                alert(
-                    "Server bilan bog‘lanishda xatolik."
-                );
-
-            }
-
-        }
-
-
-        // =================================================
-        // PRICE MODAL
-        // =================================================
-
-        function openPriceModal(
-            productId,
-            productName,
-            currentPrice
-        ) {
-
-            currentPriceProductId =
-                productId;
-
-
-            document.getElementById(
-                "priceModal"
-            ).style.display = "flex";
-
-
-            document.getElementById(
-                "priceModalTitle"
-            ).innerText =
-                "💵 Narx: " + productName;
-
-
-            document.getElementById(
-                "newPrice"
-            ).value =
-                currentPrice;
-
-
-            document.getElementById(
-                "newPrice"
-            ).focus();
-
-        }
-
-
-        function closePriceModal() {
-
-            document.getElementById(
-                "priceModal"
-            ).style.display = "none";
-
-            currentPriceProductId = null;
-
-        }
-
-
-        // =================================================
-        // SAVE PRICE
-        // =================================================
-
-        async function savePrice() {
-
-            const price =
-                document.getElementById(
-                    "newPrice"
-                ).value;
-
-
-            if (
-                price === "" ||
-                Number(price) < 0
-            ) {
-
-                alert(
-                    "Narxni to‘g‘ri kiriting."
-                );
-
-                return;
-
-            }
-
-
-            try {
-
-                const response =
-                    await fetch(
-                        "/api/inventory/" +
-                        currentPriceProductId +
-                        "/price",
-                        {
-                            method: "PUT",
-
-                            headers: {
-                                "Content-Type":
-                                    "application/json"
-                            },
-
-                            body: JSON.stringify({
-
-                                price:
-                                    Number(price)
-
-                            })
-
-                        }
-                    );
-
-
-                const data =
-                    await response.json();
-
-
-                if (!data.success) {
-
-                    alert(
-                        data.error ||
-                        "Narxni saqlashda xatolik."
-                    );
-
-                    return;
-
-                }
-
-
-                closePriceModal();
-
-
-                await loadInventory();
-
-            } catch (error) {
-
-                console.error(error);
-
-                alert(
-                    "Server bilan bog‘lanishda xatolik."
-                );
-
-            }
-
-        }
-
-
-        // =================================================
-        // DELETE PRODUCT
-        // =================================================
-
-        async function deleteProduct(
-            productId,
-            productName
-        ) {
-
-            const confirmed =
-                confirm(
-                    "“" +
-                    productName +
-                    "” mahsulotini o‘chirmoqchimisiz?"
-                );
-
-
-            if (!confirmed) {
-
-                return;
-
-            }
-
-
-            try {
-
-                const response =
-                    await fetch(
-                        "/api/inventory/" +
-                        productId,
-                        {
-                            method: "DELETE"
-                        }
-                    );
-
-
-                const data =
-                    await response.json();
-
-
-                if (!data.success) {
-
-                    alert(
-                        data.error ||
-                        "Mahsulotni o‘chirishda xatolik."
-                    );
-
-                    return;
-
-                }
-
-
-                await loadInventory();
-
-            } catch (error) {
-
-                console.error(error);
-
-                alert(
-                    "Server bilan bog‘lanishda xatolik."
-                );
-
-            }
-
-        }
-
-
-        // =================================================
-        // SECURITY HELPERS
-        // =================================================
-
-        function escapeHtml(value) {
-
-            return String(value)
-                .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;")
-                .replace(/"/g, "&quot;")
-                .replace(/'/g, "&#039;");
-
-        }
-
-
-        function escapeForAttribute(value) {
-
-            return String(value)
-                .replace(/\\/g, "\\\\")
-                .replace(/'/g, "\\'")
-                .replace(/"/g, "&quot;");
-
-        }
-
-
-        // =================================================
-        // START
-        // =================================================
-
-        document.addEventListener(
-            "DOMContentLoaded",
-            function() {
-
-                loadDashboard();
-
-                loadTransactions();
-
-            }
-        );
-
-
-        // =================================================
-        // CLOSE MODALS
-        // =================================================
-
-        document.getElementById(
-            "transactionModal"
-        ).addEventListener(
-            "click",
-            function(event) {
-
-                if (
-                    event.target === this
-                ) {
-
-                    closeTransactionModal();
-
-                }
-
-            }
-        );
 
 
         document.getElementById(
-            "productModal"
-        ).addEventListener(
-            "click",
-            function(event) {
-
-                if (
-                    event.target === this
-                ) {
-
-                    closeProductModal();
-
-                }
-
-            }
-        );
+            "employeeCount"
+        ).textContent =
+            summaryData.employee_count;
 
 
         document.getElementById(
-            "stockModal"
-        ).addEventListener(
-            "click",
-            function(event) {
-
-                if (
-                    event.target === this
-                ) {
-
-                    closeStockModal();
-
-                }
-
-            }
-        );
+            "employeeCount2"
+        ).textContent =
+            summaryData.employee_count;
 
 
         document.getElementById(
-            "priceModal"
-        ).addEventListener(
-            "click",
-            function(event) {
+            "employeeSalaryTotal"
+        ).textContent =
+            formatMoney(
+                summaryData.total_salary
+            );
+
+
+        document.getElementById(
+            "employeeSalaryTotal2"
+        ).textContent =
+            formatMoney(
+                summaryData.total_salary
+            );
+
+
+    } catch (error) {
+
+        console.error(error);
+
+    }
+
+}
+
+
+function openEmployeeModal(
+    employee = null
+) {
+
+    selectedEmployeeId =
+        employee
+            ? employee.id
+            : null;
+
+
+    document.getElementById(
+        "employeeModalTitle"
+    ).textContent =
+        employee
+            ? "✏️ Xodimni tahrirlash"
+            : "👤 Xodim qo'shish";
+
+
+    document.getElementById(
+        "employeeName"
+    ).value =
+        employee
+            ? employee.name
+            : "";
+
+
+    document.getElementById(
+        "employeePosition"
+    ).value =
+        employee
+            ? employee.position
+            : "";
+
+
+    document.getElementById(
+        "employeeSalary"
+    ).value =
+        employee
+            ? employee.salary
+            : "";
+
+
+    document.getElementById(
+        "employeeHireDate"
+    ).value =
+        employee
+            ? employee.hire_date || ""
+            : "";
+
+
+    document.getElementById(
+        "employeeModal"
+    ).style.display = "block";
+
+}
+
+
+function closeEmployeeModal() {
+
+    document.getElementById(
+        "employeeModal"
+    ).style.display = "none";
+
+}
+
+
+async function saveEmployee() {
+
+    const name =
+        document.getElementById(
+            "employeeName"
+        ).value.trim();
+
+    const position =
+        document.getElementById(
+            "employeePosition"
+        ).value.trim();
+
+    const salary =
+        document.getElementById(
+            "employeeSalary"
+        ).value;
+
+    const hireDate =
+        document.getElementById(
+            "employeeHireDate"
+        ).value;
+
+
+    if (!name) {
+
+        alert("Xodim ismini kiriting");
+
+        return;
+
+    }
+
+
+    if (!position) {
+
+        alert("Lavozimni kiriting");
+
+        return;
+
+    }
+
+
+    if (
+        salary === "" ||
+        Number(salary) < 0
+    ) {
+
+        alert("Oylik maoshini to'g'ri kiriting");
+
+        return;
+
+    }
+
+
+    const url =
+        selectedEmployeeId
+            ? `/api/employees/${selectedEmployeeId}`
+            : "/api/employees";
+
+
+    const method =
+        selectedEmployeeId
+            ? "PUT"
+            : "POST";
+
+
+    try {
+
+        const response =
+            await fetch(
+                url,
+                {
+                    method,
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+
+                        name,
+
+                        position,
+
+                        salary,
+
+                        hire_date:
+                            hireDate || null
+
+                    })
+
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!data.success) {
+
+            alert(data.error || "Xatolik");
+
+            return;
+
+        }
+
+
+        closeEmployeeModal();
+
+        await loadEmployees();
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert("Server bilan bog'lanishda xatolik");
+
+    }
+
+}
+
+
+async function editEmployee(
+    employeeId
+) {
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/employees"
+            );
+
+
+        const data =
+            await response.json();
+
+
+        const employee =
+            data.employees.find(
+                item =>
+                    item.id === employeeId
+            );
+
+
+        if (!employee) {
+
+            alert("Xodim topilmadi");
+
+            return;
+
+        }
+
+
+        openEmployeeModal(
+            employee
+        );
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert("Xodim ma'lumotlarini olishda xatolik");
+
+    }
+
+}
+
+
+async function deleteEmployee(
+    employeeId
+) {
+
+    const confirmed =
+        confirm(
+            "Bu xodimni o'chirishni xohlaysizmi?"
+        );
+
+
+    if (!confirmed) {
+
+        return;
+
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                `/api/employees/${employeeId}`,
+                {
+                    method: "DELETE"
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!data.success) {
+
+            alert(data.error || "Xatolik");
+
+            return;
+
+        }
+
+
+        await loadEmployees();
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert("Server bilan bog'lanishda xatolik");
+
+    }
+
+}
+
+
+/* ========================================================= */
+/* MODAL OUTSIDE CLICK */
+/* ========================================================= */
+
+window.addEventListener(
+    "click",
+    function(event) {
+
+        const modals =
+            document.querySelectorAll(
+                ".modal"
+            );
+
+
+        modals.forEach(
+            modal => {
 
                 if (
-                    event.target === this
+                    event.target === modal
                 ) {
 
-                    closePriceModal();
+                    modal.style.display =
+                        "none";
 
                 }
 
             }
         );
 
-    </script>
+    }
+);
 
+
+/* ========================================================= */
+/* INITIAL LOAD */
+/* ========================================================= */
+
+async function loadAll() {
+
+    await loadSummary();
+
+    await loadTransactions();
+
+    await loadReport("today");
+
+    await loadInventory();
+
+    await loadEmployees();
+
+}
+
+
+loadAll();
+
+</script>
 
 </body>
-
 </html>
