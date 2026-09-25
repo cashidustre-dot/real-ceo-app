@@ -52,13 +52,28 @@ def init_db():
     """)
 
     # =====================================================
-    # ADD PRICE COLUMN IF IT DOES NOT EXIST
+    # INVENTORY PRICE
     # =====================================================
 
     cur.execute("""
         ALTER TABLE inventory
         ADD COLUMN IF NOT EXISTS price NUMERIC(15, 2)
         NOT NULL DEFAULT 0
+    """)
+
+    # =====================================================
+    # EMPLOYEES
+    # =====================================================
+
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS employees (
+            id SERIAL PRIMARY KEY,
+            name VARCHAR(150) NOT NULL,
+            position VARCHAR(100) NOT NULL,
+            salary NUMERIC(15, 2) NOT NULL DEFAULT 0,
+            hire_date DATE DEFAULT CURRENT_DATE,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
     """)
 
     conn.commit()
@@ -522,7 +537,7 @@ def get_inventory():
 
 
 # =========================================================
-# INVENTORY - SUMMARY / TOTAL VALUE
+# INVENTORY - SUMMARY
 # =========================================================
 
 @app.route(
@@ -832,6 +847,359 @@ def delete_product(product_id):
         return jsonify({
             "success": False,
             "error": "Mahsulot topilmadi"
+        }), 404
+
+    conn.commit()
+
+    cur.close()
+    conn.close()
+
+    return jsonify({
+        "success": True
+    })
+
+
+# =========================================================
+# EMPLOYEES - ADD
+# =========================================================
+
+@app.route(
+    "/api/employees",
+    methods=["POST"]
+)
+def add_employee():
+
+    data = request.get_json() or {}
+
+    name = str(
+        data.get("name", "")
+    ).strip()
+
+    position = str(
+        data.get("position", "")
+    ).strip()
+
+    salary = data.get(
+        "salary",
+        0
+    )
+
+    hire_date = data.get(
+        "hire_date"
+    )
+
+    if not name:
+
+        return jsonify({
+            "success": False,
+            "error": "Xodim ismini kiriting"
+        }), 400
+
+    if not position:
+
+        return jsonify({
+            "success": False,
+            "error": "Lavozimni kiriting"
+        }), 400
+
+    try:
+
+        salary = float(salary)
+
+    except (TypeError, ValueError):
+
+        return jsonify({
+            "success": False,
+            "error": "Oylik maoshi noto'g'ri"
+        }), 400
+
+    if salary < 0:
+
+        return jsonify({
+            "success": False,
+            "error": "Oylik maoshi manfiy bo'lishi mumkin emas"
+        }), 400
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    if hire_date:
+
+        cur.execute(
+            """
+            INSERT INTO employees
+            (name, position, salary, hire_date)
+            VALUES (%s, %s, %s, %s)
+            RETURNING id
+            """,
+            (
+                name,
+                position,
+                salary,
+                hire_date
+            )
+        )
+
+    else:
+
+        cur.execute(
+            """
+            INSERT INTO employees
+            (name, position, salary)
+            VALUES (%s, %s, %s)
+            RETURNING id
+            """,
+            (
+                name,
+                position,
+                salary
+            )
+        )
+
+    employee_id = cur.fetchone()[0]
+
+    conn.commit()
+
+    cur.close()
+    conn.close()
+
+    return jsonify({
+        "success": True,
+        "id": employee_id
+    })
+
+
+# =========================================================
+# EMPLOYEES - GET
+# =========================================================
+
+@app.route(
+    "/api/employees",
+    methods=["GET"]
+)
+def get_employees():
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute("""
+        SELECT
+            id,
+            name,
+            position,
+            salary,
+            hire_date,
+            created_at
+        FROM employees
+        ORDER BY name ASC
+    """)
+
+    rows = cur.fetchall()
+
+    cur.close()
+    conn.close()
+
+    employees = []
+
+    for row in rows:
+
+        employees.append({
+            "id": row[0],
+            "name": row[1],
+            "position": row[2],
+            "salary": float(row[3]),
+            "hire_date": (
+                row[4].isoformat()
+                if row[4]
+                else None
+            ),
+            "created_at": row[5].isoformat()
+        })
+
+    return jsonify({
+        "success": True,
+        "employees": employees
+    })
+
+
+# =========================================================
+# EMPLOYEES - SUMMARY
+# =========================================================
+
+@app.route(
+    "/api/employees/summary",
+    methods=["GET"]
+)
+def employees_summary():
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute("""
+        SELECT
+            COUNT(*),
+            COALESCE(
+                SUM(salary),
+                0
+            )
+        FROM employees
+    """)
+
+    employee_count, total_salary = cur.fetchone()
+
+    cur.close()
+    conn.close()
+
+    return jsonify({
+        "success": True,
+        "employee_count": employee_count,
+        "total_salary": float(total_salary)
+    })
+
+
+# =========================================================
+# EMPLOYEES - UPDATE
+# =========================================================
+
+@app.route(
+    "/api/employees/<int:employee_id>",
+    methods=["PUT"]
+)
+def update_employee(employee_id):
+
+    data = request.get_json() or {}
+
+    name = str(
+        data.get("name", "")
+    ).strip()
+
+    position = str(
+        data.get("position", "")
+    ).strip()
+
+    salary = data.get(
+        "salary",
+        0
+    )
+
+    hire_date = data.get(
+        "hire_date"
+    )
+
+    if not name:
+
+        return jsonify({
+            "success": False,
+            "error": "Xodim ismini kiriting"
+        }), 400
+
+    if not position:
+
+        return jsonify({
+            "success": False,
+            "error": "Lavozimni kiriting"
+        }), 400
+
+    try:
+
+        salary = float(salary)
+
+    except (TypeError, ValueError):
+
+        return jsonify({
+            "success": False,
+            "error": "Oylik maoshi noto'g'ri"
+        }), 400
+
+    if salary < 0:
+
+        return jsonify({
+            "success": False,
+            "error": "Oylik maoshi manfiy bo'lishi mumkin emas"
+        }), 400
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute(
+        """
+        UPDATE employees
+        SET
+            name = %s,
+            position = %s,
+            salary = %s,
+            hire_date = COALESCE(%s, hire_date)
+        WHERE id = %s
+        RETURNING id
+        """,
+        (
+            name,
+            position,
+            salary,
+            hire_date,
+            employee_id
+        )
+    )
+
+    result = cur.fetchone()
+
+    if not result:
+
+        conn.rollback()
+
+        cur.close()
+        conn.close()
+
+        return jsonify({
+            "success": False,
+            "error": "Xodim topilmadi"
+        }), 404
+
+    conn.commit()
+
+    cur.close()
+    conn.close()
+
+    return jsonify({
+        "success": True,
+        "id": result[0]
+    })
+
+
+# =========================================================
+# EMPLOYEES - DELETE
+# =========================================================
+
+@app.route(
+    "/api/employees/<int:employee_id>",
+    methods=["DELETE"]
+)
+def delete_employee(employee_id):
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute(
+        """
+        DELETE FROM employees
+        WHERE id = %s
+        RETURNING id
+        """,
+        (employee_id,)
+    )
+
+    result = cur.fetchone()
+
+    if not result:
+
+        conn.rollback()
+
+        cur.close()
+        conn.close()
+
+        return jsonify({
+            "success": False,
+            "error": "Xodim topilmadi"
         }), 404
 
     conn.commit()
