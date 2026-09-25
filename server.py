@@ -23,7 +23,7 @@ def get_db():
 
 
 # =========================================================
-# DATABASE INIT
+# DATABASE INIT + MIGRATION
 # =========================================================
 
 def init_db():
@@ -31,7 +31,10 @@ def init_db():
     conn = get_db()
     cur = conn.cursor()
 
+    # =====================================================
     # TRANSACTIONS
+    # =====================================================
+
     cur.execute("""
         CREATE TABLE IF NOT EXISTS transactions (
             id SERIAL PRIMARY KEY,
@@ -47,7 +50,10 @@ def init_db():
         ADD COLUMN IF NOT EXISTS sale_id INTEGER
     """)
 
+    # =====================================================
     # INVENTORY
+    # =====================================================
+
     cur.execute("""
         CREATE TABLE IF NOT EXISTS inventory (
             id SERIAL PRIMARY KEY,
@@ -65,7 +71,10 @@ def init_db():
         ADD COLUMN IF NOT EXISTS price NUMERIC(14,2) DEFAULT 0
     """)
 
+    # =====================================================
     # EMPLOYEES
+    # =====================================================
+
     cur.execute("""
         CREATE TABLE IF NOT EXISTS employees (
             id SERIAL PRIMARY KEY,
@@ -77,19 +86,38 @@ def init_db():
         )
     """)
 
+    # =====================================================
     # SALES
+    # =====================================================
+
     cur.execute("""
         CREATE TABLE IF NOT EXISTS sales (
             id SERIAL PRIMARY KEY,
             product_name VARCHAR(255) NOT NULL,
             quantity NUMERIC(14,3) NOT NULL,
             unit_price NUMERIC(14,2) NOT NULL,
-            total NUMERIC(14,2) NOT NULL,
+            total NUMERIC(14,2),
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     """)
 
+    # Eski sales jadvalida total bo'lmasa avtomatik qo'shadi
+    cur.execute("""
+        ALTER TABLE sales
+        ADD COLUMN IF NOT EXISTS total NUMERIC(14,2)
+    """)
+
+    # Eski sotuvlar bo'lsa totalni hisoblab qo'yadi
+    cur.execute("""
+        UPDATE sales
+        SET total = quantity * unit_price
+        WHERE total IS NULL
+    """)
+
+    # =====================================================
     # RECIPES
+    # =====================================================
+
     cur.execute("""
         CREATE TABLE IF NOT EXISTS recipes (
             id SERIAL PRIMARY KEY,
@@ -99,7 +127,10 @@ def init_db():
         )
     """)
 
+    # =====================================================
     # RECIPE ITEMS
+    # =====================================================
+
     cur.execute("""
         CREATE TABLE IF NOT EXISTS recipe_items (
             id SERIAL PRIMARY KEY,
@@ -116,10 +147,11 @@ def init_db():
     cur.close()
     conn.close()
 
+    print("DATABASE INIT / MIGRATION OK")
+
 
 try:
     init_db()
-    print("DATABASE INIT OK")
 except Exception as e:
     print("DATABASE INIT ERROR:", e)
 
@@ -165,7 +197,7 @@ def health():
 
 
 # =========================================================
-# SUMMARY
+# DASHBOARD SUMMARY
 # =========================================================
 
 @app.get("/api/summary")
@@ -301,7 +333,6 @@ def delete_transaction(transaction_id):
     if not result:
 
         conn.rollback()
-
         cur.close()
         conn.close()
 
@@ -370,6 +401,7 @@ def report():
             ),0) AS expense
 
         FROM transactions
+
         WHERE {condition}
     """)
 
@@ -408,6 +440,7 @@ def get_inventory():
             END AS low_stock
 
         FROM inventory
+
         ORDER BY name
     """)
 
@@ -442,7 +475,9 @@ def add_inventory():
     cur.execute("""
         INSERT INTO inventory
         (name, unit, quantity, min_quantity, price)
+
         VALUES (%s,%s,%s,%s,%s)
+
         RETURNING *
     """, (
         name,
@@ -472,13 +507,16 @@ def update_inventory(item_id):
 
     cur.execute("""
         UPDATE inventory
+
         SET
             name=COALESCE(%s,name),
             unit=COALESCE(%s,unit),
             quantity=COALESCE(%s,quantity),
             min_quantity=COALESCE(%s,min_quantity),
             price=COALESCE(%s,price)
+
         WHERE id=%s
+
         RETURNING *
     """, (
         data.get("name"),
@@ -494,7 +532,6 @@ def update_inventory(item_id):
     if not result:
 
         conn.rollback()
-
         cur.close()
         conn.close()
 
@@ -527,7 +564,6 @@ def delete_inventory(item_id):
     if not result:
 
         conn.rollback()
-
         cur.close()
         conn.close()
 
@@ -568,8 +604,11 @@ def inventory_in(item_id):
 
     cur.execute("""
         UPDATE inventory
+
         SET quantity = quantity + %s
+
         WHERE id=%s
+
         RETURNING *
     """, (
         amount,
@@ -581,7 +620,6 @@ def inventory_in(item_id):
     if not result:
 
         conn.rollback()
-
         cur.close()
         conn.close()
 
@@ -629,7 +667,6 @@ def inventory_out(item_id):
     if not item:
 
         conn.rollback()
-
         cur.close()
         conn.close()
 
@@ -640,7 +677,6 @@ def inventory_out(item_id):
     if float(item["quantity"]) < float(amount):
 
         conn.rollback()
-
         cur.close()
         conn.close()
 
@@ -650,8 +686,11 @@ def inventory_out(item_id):
 
     cur.execute("""
         UPDATE inventory
+
         SET quantity = quantity - %s
+
         WHERE id=%s
+
         RETURNING *
     """, (
         amount,
@@ -690,8 +729,11 @@ def update_inventory_price(item_id):
 
     cur.execute("""
         UPDATE inventory
+
         SET price=%s
+
         WHERE id=%s
+
         RETURNING *
     """, (
         price,
@@ -703,7 +745,6 @@ def update_inventory_price(item_id):
     if not result:
 
         conn.rollback()
-
         cur.close()
         conn.close()
 
@@ -797,7 +838,9 @@ def add_employee():
     cur.execute("""
         INSERT INTO employees
         (name, phone, position, salary)
+
         VALUES (%s,%s,%s,%s)
+
         RETURNING *
     """, (
         name,
@@ -826,12 +869,15 @@ def update_employee(employee_id):
 
     cur.execute("""
         UPDATE employees
+
         SET
             name=COALESCE(%s,name),
             phone=COALESCE(%s,phone),
             position=COALESCE(%s,position),
             salary=COALESCE(%s,salary)
+
         WHERE id=%s
+
         RETURNING *
     """, (
         data.get("name"),
@@ -846,7 +892,6 @@ def update_employee(employee_id):
     if not result:
 
         conn.rollback()
-
         cur.close()
         conn.close()
 
@@ -879,7 +924,6 @@ def delete_employee(employee_id):
     if not result:
 
         conn.rollback()
-
         cur.close()
         conn.close()
 
@@ -908,6 +952,7 @@ def employees_summary():
         SELECT
             COUNT(*) AS count,
             COALESCE(SUM(salary),0) AS salaries
+
         FROM employees
     """)
 
@@ -963,13 +1008,30 @@ def create_recipe():
 
     data = request.json or {}
 
-    name = data.get("name")
-    sale_unit = data.get("sale_unit", "dona")
+    name = str(
+        data.get("name", "")
+    ).strip()
+
+    sale_unit = data.get(
+        "sale_unit",
+        "dona"
+    )
+
+    ingredients = data.get(
+        "ingredients",
+        []
+    )
 
     if not name:
 
         return jsonify({
-            "error": "recipe name kerak"
+            "error": "Taom nomini kiriting"
+        }), 400
+
+    if not ingredients:
+
+        return jsonify({
+            "error": "Kamida bitta mahsulot qo'shing"
         }), 400
 
     conn = get_db()
@@ -980,7 +1042,9 @@ def create_recipe():
         cur.execute("""
             INSERT INTO recipes
             (name, sale_unit)
+
             VALUES (%s,%s)
+
             RETURNING *
         """, (
             name,
@@ -989,19 +1053,50 @@ def create_recipe():
 
         recipe = cur.fetchone()
 
-        ingredients = data.get("ingredients", [])
-
         for item in ingredients:
 
-            inventory_id = item.get("inventory_id")
-            quantity = item.get("quantity")
+            inventory_id = item.get(
+                "inventory_id"
+            )
 
-            if not inventory_id or quantity is None:
+            quantity = item.get(
+                "quantity"
+            )
+
+            if not inventory_id:
                 continue
+
+            if quantity is None:
+                continue
+
+            if float(quantity) <= 0:
+                continue
+
+            # Mahsulot mavjudligini tekshirish
+            cur.execute("""
+                SELECT id
+                FROM inventory
+                WHERE id=%s
+            """, (
+                inventory_id,
+            ))
+
+            inventory_item = cur.fetchone()
+
+            if not inventory_item:
+
+                raise Exception(
+                    "Tanlangan mahsulot omborda topilmadi"
+                )
 
             cur.execute("""
                 INSERT INTO recipe_items
-                (recipe_id, inventory_id, quantity)
+                (
+                    recipe_id,
+                    inventory_id,
+                    quantity
+                )
+
                 VALUES (%s,%s,%s)
             """, (
                 recipe["id"],
@@ -1011,7 +1106,10 @@ def create_recipe():
 
         conn.commit()
 
-        return jsonify(recipe), 201
+        return jsonify({
+            "success": True,
+            "recipe": recipe
+        }), 201
 
     except Exception as e:
 
@@ -1037,7 +1135,9 @@ def get_recipe(recipe_id):
         SELECT *
         FROM recipes
         WHERE id=%s
-    """, (recipe_id,))
+    """, (
+        recipe_id,
+    ))
 
     recipe = cur.fetchone()
 
@@ -1066,7 +1166,9 @@ def get_recipe(recipe_id):
         WHERE ri.recipe_id=%s
 
         ORDER BY i.name
-    """, (recipe_id,))
+    """, (
+        recipe_id,
+    ))
 
     ingredients = cur.fetchall()
 
@@ -1093,6 +1195,7 @@ def update_recipe(recipe_id):
 
         cur.execute("""
             UPDATE recipes
+
             SET
                 name=COALESCE(%s,name),
                 sale_unit=COALESCE(%s,sale_unit)
@@ -1121,19 +1224,37 @@ def update_recipe(recipe_id):
             cur.execute("""
                 DELETE FROM recipe_items
                 WHERE recipe_id=%s
-            """, (recipe_id,))
+            """, (
+                recipe_id,
+            ))
 
             for item in data["ingredients"]:
 
-                inventory_id = item.get("inventory_id")
-                quantity = item.get("quantity")
+                inventory_id = item.get(
+                    "inventory_id"
+                )
 
-                if not inventory_id or quantity is None:
+                quantity = item.get(
+                    "quantity"
+                )
+
+                if not inventory_id:
+                    continue
+
+                if quantity is None:
+                    continue
+
+                if float(quantity) <= 0:
                     continue
 
                 cur.execute("""
                     INSERT INTO recipe_items
-                    (recipe_id, inventory_id, quantity)
+                    (
+                        recipe_id,
+                        inventory_id,
+                        quantity
+                    )
+
                     VALUES (%s,%s,%s)
                 """, (
                     recipe_id,
@@ -1143,7 +1264,10 @@ def update_recipe(recipe_id):
 
         conn.commit()
 
-        return jsonify(recipe)
+        return jsonify({
+            "success": True,
+            "recipe": recipe
+        })
 
     except Exception as e:
 
@@ -1169,7 +1293,9 @@ def delete_recipe(recipe_id):
         DELETE FROM recipes
         WHERE id=%s
         RETURNING *
-    """, (recipe_id,))
+    """, (
+        recipe_id,
+    ))
 
     result = cur.fetchone()
 
@@ -1224,10 +1350,21 @@ def add_sale():
 
     data = request.json or {}
 
-    product_name = data.get("product_name")
-    quantity = data.get("quantity")
-    unit_price = data.get("unit_price")
-    recipe_id = data.get("recipe_id")
+    product_name = data.get(
+        "product_name"
+    )
+
+    quantity = data.get(
+        "quantity"
+    )
+
+    unit_price = data.get(
+        "unit_price"
+    )
+
+    recipe_id = data.get(
+        "recipe_id"
+    )
 
     if not product_name:
 
@@ -1235,13 +1372,25 @@ def add_sale():
             "error": "product_name kerak"
         }), 400
 
-    if quantity is None or float(quantity) <= 0:
+    if quantity is None:
+
+        return jsonify({
+            "error": "quantity kerak"
+        }), 400
+
+    if float(quantity) <= 0:
 
         return jsonify({
             "error": "quantity noto'g'ri"
         }), 400
 
-    if unit_price is None or float(unit_price) < 0:
+    if unit_price is None:
+
+        return jsonify({
+            "error": "unit_price kerak"
+        }), 400
+
+    if float(unit_price) < 0:
 
         return jsonify({
             "error": "unit_price noto'g'ri"
@@ -1259,7 +1408,10 @@ def add_sale():
 
         recipe_items = []
 
-        # RETSEPT BOR BO'LSA
+        # =================================================
+        # RETSEPT
+        # =================================================
+
         if recipe_id:
 
             cur.execute("""
@@ -1278,7 +1430,9 @@ def add_sale():
                 WHERE ri.recipe_id=%s
 
                 FOR UPDATE
-            """, (recipe_id,))
+            """, (
+                recipe_id,
+            ))
 
             recipe_items = cur.fetchall()
 
@@ -1288,7 +1442,7 @@ def add_sale():
                     "Bu retseptda mahsulotlar mavjud emas"
                 )
 
-            # OMBOR YETARLILIGI
+            # Ombor yetarliligini tekshirish
             for item in recipe_items:
 
                 needed = (
@@ -1296,7 +1450,9 @@ def add_sale():
                     * quantity
                 )
 
-                stock = float(item["stock"])
+                stock = float(
+                    item["stock"]
+                )
 
                 if stock < needed:
 
@@ -1306,11 +1462,21 @@ def add_sale():
                         f"omborda: {stock} {item['unit']}"
                     )
 
-        # SOTUV
+        # =================================================
+        # SOTUVNI SAQLASH
+        # =================================================
+
         cur.execute("""
             INSERT INTO sales
-            (product_name, quantity, unit_price, total)
+            (
+                product_name,
+                quantity,
+                unit_price,
+                total
+            )
+
             VALUES (%s,%s,%s,%s)
+
             RETURNING *
         """, (
             product_name,
@@ -1321,10 +1487,18 @@ def add_sale():
 
         sale = cur.fetchone()
 
+        # =================================================
         # DAROMAD
+        # =================================================
+
         cur.execute("""
             INSERT INTO transactions
-            (type, amount, description, sale_id)
+            (
+                type,
+                amount,
+                description,
+                sale_id
+            )
 
             VALUES (
                 'income',
@@ -1342,7 +1516,10 @@ def add_sale():
 
         transaction = cur.fetchone()
 
+        # =================================================
         # OMBORDAN YECHISH
+        # =================================================
+
         used_inventory = []
 
         for item in recipe_items:
@@ -1379,7 +1556,9 @@ def add_sale():
                     needed,
 
                 "remaining":
-                    float(updated["quantity"])
+                    float(
+                        updated["quantity"]
+                    )
             })
 
         conn.commit()
@@ -1451,7 +1630,9 @@ def delete_sale(sale_id):
             SELECT *
             FROM sales
             WHERE id=%s
-        """, (sale_id,))
+        """, (
+            sale_id,
+        ))
 
         sale = cur.fetchone()
 
@@ -1461,17 +1642,21 @@ def delete_sale(sale_id):
                 "error": "sotuv topilmadi"
             }), 404
 
-        # LINKED DAROMADNI O'CHIRISH
+        # Bog'langan daromadni o'chirish
         cur.execute("""
             DELETE FROM transactions
             WHERE sale_id=%s
-        """, (sale_id,))
+        """, (
+            sale_id,
+        ))
 
-        # SOTUVNI O'CHIRISH
+        # Sotuvni o'chirish
         cur.execute("""
             DELETE FROM sales
             WHERE id=%s
-        """, (sale_id,))
+        """, (
+            sale_id,
+        ))
 
         conn.commit()
 
@@ -1501,7 +1686,10 @@ def delete_sale(sale_id):
 if __name__ == "__main__":
 
     port = int(
-        os.environ.get("PORT", 5000)
+        os.environ.get(
+            "PORT",
+            5000
+        )
     )
 
     app.run(
