@@ -265,6 +265,42 @@
         }
 
         /* =================================================
+           INVENTORY SUMMARY
+        ================================================= */
+
+        .inventory-summary {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .inventory-summary-box {
+            background: #f9fafb;
+            border-radius: 14px;
+            padding: 15px;
+        }
+
+        .inventory-summary-label {
+            color: #6b7280;
+            font-size: 12px;
+            margin-bottom: 7px;
+        }
+
+        .inventory-summary-value {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .inventory-total {
+            color: #2563eb;
+        }
+
+        .inventory-warning {
+            color: #dc2626;
+        }
+
+        /* =================================================
            INVENTORY
         ================================================= */
 
@@ -318,17 +354,39 @@
             font-weight: bold;
         }
 
+        .price-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-top: 13px;
+            padding-top: 12px;
+            border-top: 1px solid #e5e7eb;
+            font-size: 14px;
+        }
+
+        .price-label {
+            color: #6b7280;
+        }
+
+        .price-value {
+            font-weight: bold;
+        }
+
+        .total-value {
+            color: #2563eb;
+        }
+
         .inventory-actions {
             display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 8px;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 7px;
             margin-top: 13px;
         }
 
         .inventory-actions button {
-            padding: 11px 5px;
+            padding: 10px 4px;
             border-radius: 10px;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: bold;
         }
 
@@ -340,6 +398,11 @@
         .stock-out-btn {
             background: #fee2e2;
             color: #b91c1c;
+        }
+
+        .price-btn {
+            background: #dbeafe;
+            color: #1d4ed8;
         }
 
         .delete-btn {
@@ -440,7 +503,7 @@
            MOBILE
         ================================================= */
 
-        @media (max-width: 500px) {
+        @media (max-width: 600px) {
 
             .stats {
                 gap: 7px;
@@ -462,8 +525,8 @@
                 padding: 12px;
             }
 
-            .inventory-actions button {
-                font-size: 12px;
+            .inventory-actions {
+                grid-template-columns: 1fr 1fr;
             }
 
         }
@@ -564,7 +627,6 @@
 
             <div class="menu">
 
-
                 <button
                     class="primary"
                     onclick="openTransactionModal('income')"
@@ -621,7 +683,6 @@
                 >
                     ⚙️ Sozlamalar
                 </button>
-
 
             </div>
 
@@ -699,6 +760,44 @@
             </div>
 
 
+            <!-- INVENTORY SUMMARY -->
+
+            <div class="inventory-summary">
+
+                <div class="inventory-summary-box">
+
+                    <div class="inventory-summary-label">
+                        💰 Umumiy qiymat
+                    </div>
+
+                    <div
+                        id="inventoryTotalValue"
+                        class="inventory-summary-value inventory-total"
+                    >
+                        0 so‘m
+                    </div>
+
+                </div>
+
+
+                <div class="inventory-summary-box">
+
+                    <div class="inventory-summary-label">
+                        ⚠️ Qoldig‘i kam
+                    </div>
+
+                    <div
+                        id="inventoryLowCount"
+                        class="inventory-summary-value inventory-warning"
+                    >
+                        0 ta
+                    </div>
+
+                </div>
+
+            </div>
+
+
             <button
                 class="add-product-btn"
                 onclick="openProductModal()"
@@ -707,12 +806,12 @@
             </button>
 
 
-            <div
-                id="inventoryList"
-            >
+            <div id="inventoryList">
+
                 <div class="loading">
                     Ombor yuklanmoqda...
                 </div>
+
             </div>
 
         </div>
@@ -824,9 +923,7 @@
             >
 
 
-            <select
-                id="productUnit"
-            >
+            <select id="productUnit">
 
                 <option value="">
                     O‘lchov birligini tanlang
@@ -874,6 +971,15 @@
                 placeholder="Minimal qoldiq"
                 min="0"
                 step="0.001"
+            >
+
+
+            <input
+                id="productPrice"
+                type="number"
+                placeholder="1 birlik narxi (so‘m)"
+                min="0"
+                step="0.01"
             >
 
 
@@ -953,6 +1059,58 @@
     </div>
 
 
+    <!-- =================================================
+         PRICE MODAL
+    ================================================= -->
+
+    <div
+        id="priceModal"
+        class="modal"
+    >
+
+        <div class="modal-content">
+
+            <div
+                id="priceModalTitle"
+                class="modal-title"
+            >
+                💵 Narxni o‘zgartirish
+            </div>
+
+
+            <input
+                id="newPrice"
+                type="number"
+                placeholder="1 birlik narxi"
+                min="0"
+                step="0.01"
+            >
+
+
+            <div class="modal-buttons">
+
+                <button
+                    class="cancel"
+                    onclick="closePriceModal()"
+                >
+                    Bekor qilish
+                </button>
+
+
+                <button
+                    class="save"
+                    onclick="savePrice()"
+                >
+                    Saqlash
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
     <script>
 
         // =================================================
@@ -966,6 +1124,8 @@
         let currentStockProductId = null;
 
         let currentStockType = null;
+
+        let currentPriceProductId = null;
 
 
         // =================================================
@@ -1135,7 +1295,6 @@
 
 
                 closeTransactionModal();
-
 
                 await loadDashboard();
 
@@ -1523,9 +1682,7 @@
 
                 content.innerHTML = `
 
-                    <div
-                        class="report-box report-income"
-                    >
+                    <div class="report-box report-income">
 
                         <div class="report-label">
                             💰 Daromad
@@ -1540,9 +1697,7 @@
                     </div>
 
 
-                    <div
-                        class="report-box report-expense"
-                    >
+                    <div class="report-box report-expense">
 
                         <div class="report-label">
                             💸 Xarajat
@@ -1557,9 +1712,7 @@
                     </div>
 
 
-                    <div
-                        class="report-box report-profit"
-                    >
+                    <div class="report-box report-profit">
 
                         <div class="report-label">
                             📈 Sof foyda
@@ -1574,9 +1727,7 @@
                     </div>
 
 
-                    <div
-                        class="report-box report-count"
-                    >
+                    <div class="report-box report-count">
 
                         <div class="report-label">
                             🧾 Operatsiyalar
@@ -1665,15 +1816,56 @@
 
             try {
 
-                const response =
-                    await fetch(
+                const [
+                    inventoryResponse,
+                    summaryResponse
+                ] = await Promise.all([
+
+                    fetch(
                         "/api/inventory"
-                    );
+                    ),
+
+                    fetch(
+                        "/api/inventory/summary"
+                    )
+
+                ]);
 
 
                 const data =
-                    await response.json();
+                    await inventoryResponse.json();
 
+
+                const summary =
+                    await summaryResponse.json();
+
+
+                // =================================================
+                // SUMMARY
+                // =================================================
+
+                if (summary.success) {
+
+                    document.getElementById(
+                        "inventoryTotalValue"
+                    ).innerText =
+                        formatMoney(
+                            summary.total_value
+                        );
+
+
+                    document.getElementById(
+                        "inventoryLowCount"
+                    ).innerText =
+                        summary.low_stock_count +
+                        " ta";
+
+                }
+
+
+                // =================================================
+                // PRODUCTS
+                // =================================================
 
                 if (
                     !data.success ||
@@ -1725,7 +1917,8 @@
                                     </div>
 
                                     <div class="product-unit">
-                                        Birlik: ${escapeHtml(
+                                        Birlik:
+                                        ${escapeHtml(
                                             product.unit
                                         )}
                                     </div>
@@ -1768,6 +1961,40 @@
                             }
 
 
+                            <div class="price-row">
+
+                                <div>
+                                    <div class="price-label">
+                                        💵 1 ${escapeHtml(
+                                            product.unit
+                                        )} narxi
+                                    </div>
+
+                                    <div class="price-value">
+                                        ${formatMoney(
+                                            product.price
+                                        )}
+                                    </div>
+                                </div>
+
+
+                                <div style="text-align:right;">
+
+                                    <div class="price-label">
+                                        💰 Jami qiymat
+                                    </div>
+
+                                    <div class="price-value total-value">
+                                        ${formatMoney(
+                                            product.total_value
+                                        )}
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
                             <div class="inventory-actions">
 
                                 <button
@@ -1795,6 +2022,20 @@
                                     )"
                                 >
                                     ➖ Chiqim
+                                </button>
+
+
+                                <button
+                                    class="price-btn"
+                                    onclick="openPriceModal(
+                                        ${product.id},
+                                        '${escapeForAttribute(
+                                            product.name
+                                        )}',
+                                        ${product.price}
+                                    )"
+                                >
+                                    💵 Narx
                                 </button>
 
 
@@ -1873,6 +2114,11 @@
 
 
             document.getElementById(
+                "productPrice"
+            ).value = "";
+
+
+            document.getElementById(
                 "productName"
             ).focus();
 
@@ -1915,6 +2161,12 @@
             const minQuantity =
                 document.getElementById(
                     "productMinQuantity"
+                ).value || 0;
+
+
+            const price =
+                document.getElementById(
+                    "productPrice"
                 ).value || 0;
 
 
@@ -1962,6 +2214,17 @@
             }
 
 
+            if (Number(price) < 0) {
+
+                alert(
+                    "Narx noto‘g‘ri."
+                );
+
+                return;
+
+            }
+
+
             try {
 
                 const response =
@@ -1985,7 +2248,10 @@
                                     Number(quantity),
 
                                 min_quantity:
-                                    Number(minQuantity)
+                                    Number(minQuantity),
+
+                                price:
+                                    Number(price)
 
                             })
 
@@ -2013,7 +2279,6 @@
 
 
                 await loadInventory();
-
 
             } catch (error) {
 
@@ -2134,8 +2399,10 @@
                             },
 
                             body: JSON.stringify({
+
                                 amount:
                                     Number(amount)
+
                             })
 
                         }
@@ -2159,6 +2426,141 @@
 
 
                 closeStockModal();
+
+
+                await loadInventory();
+
+            } catch (error) {
+
+                console.error(error);
+
+                alert(
+                    "Server bilan bog‘lanishda xatolik."
+                );
+
+            }
+
+        }
+
+
+        // =================================================
+        // PRICE MODAL
+        // =================================================
+
+        function openPriceModal(
+            productId,
+            productName,
+            currentPrice
+        ) {
+
+            currentPriceProductId =
+                productId;
+
+
+            document.getElementById(
+                "priceModal"
+            ).style.display = "flex";
+
+
+            document.getElementById(
+                "priceModalTitle"
+            ).innerText =
+                "💵 Narx: " + productName;
+
+
+            document.getElementById(
+                "newPrice"
+            ).value =
+                currentPrice;
+
+
+            document.getElementById(
+                "newPrice"
+            ).focus();
+
+        }
+
+
+        function closePriceModal() {
+
+            document.getElementById(
+                "priceModal"
+            ).style.display = "none";
+
+            currentPriceProductId = null;
+
+        }
+
+
+        // =================================================
+        // SAVE PRICE
+        // =================================================
+
+        async function savePrice() {
+
+            const price =
+                document.getElementById(
+                    "newPrice"
+                ).value;
+
+
+            if (
+                price === "" ||
+                Number(price) < 0
+            ) {
+
+                alert(
+                    "Narxni to‘g‘ri kiriting."
+                );
+
+                return;
+
+            }
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        "/api/inventory/" +
+                        currentPriceProductId +
+                        "/price",
+                        {
+                            method: "PUT",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body: JSON.stringify({
+
+                                price:
+                                    Number(price)
+
+                            })
+
+                        }
+                    );
+
+
+                const data =
+                    await response.json();
+
+
+                if (!data.success) {
+
+                    alert(
+                        data.error ||
+                        "Narxni saqlashda xatolik."
+                    );
+
+                    return;
+
+                }
+
+
+                closePriceModal();
 
 
                 await loadInventory();
@@ -2286,7 +2688,7 @@
 
 
         // =================================================
-        // CLOSE MODALS WHEN CLICKING OUTSIDE
+        // CLOSE MODALS
         // =================================================
 
         document.getElementById(
@@ -2336,6 +2738,24 @@
                 ) {
 
                     closeStockModal();
+
+                }
+
+            }
+        );
+
+
+        document.getElementById(
+            "priceModal"
+        ).addEventListener(
+            "click",
+            function(event) {
+
+                if (
+                    event.target === this
+                ) {
+
+                    closePriceModal();
 
                 }
 
