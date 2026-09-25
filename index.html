@@ -2,329 +2,352 @@
 <html lang="uz">
 <head>
 
-    <meta charset="UTF-8">
+<meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
 
-    <title>Real CEO</title>
+<title>Real CEO</title>
 
-    <style>
+<style>
 
-        * {
-            box-sizing: border-box;
-        }
+* {
+    box-sizing: border-box;
+}
 
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #f4f6f8;
-            color: #17202a;
-        }
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f4f6f8;
+    color: #17202a;
+}
 
-        header {
-            background: #111827;
-            color: white;
-            padding: 18px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
+header {
+    background: #111827;
+    color: white;
+    padding: 18px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
 
-        header h1 {
-            margin: 0;
-            font-size: 22px;
-        }
+header h1 {
+    margin: 0;
+    font-size: 22px;
+}
 
-        header span {
-            font-size: 13px;
-            opacity: .75;
-        }
+header span {
+    font-size: 13px;
+    opacity: .75;
+}
 
-        .container {
-            max-width: 1100px;
-            margin: auto;
-            padding: 20px;
-        }
+.container {
+    max-width: 1100px;
+    margin: auto;
+    padding: 20px;
+}
 
-        .grid {
-            display: grid;
-            grid-template-columns:
-                repeat(auto-fit, minmax(210px, 1fr));
-            gap: 15px;
-            margin-bottom: 20px;
-        }
+.grid {
+    display: grid;
+    grid-template-columns:
+        repeat(auto-fit, minmax(210px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
 
-        .card {
-            background: white;
-            border-radius: 16px;
-            padding: 20px;
-            box-shadow:
-                0 4px 15px rgba(0,0,0,.06);
-        }
+.card {
+    background: white;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow:
+        0 4px 15px rgba(0,0,0,.06);
+}
 
-        .card-title {
-            font-size: 14px;
-            color: #6b7280;
-            margin-bottom: 8px;
-        }
+.card-title {
+    font-size: 14px;
+    color: #6b7280;
+    margin-bottom: 8px;
+}
 
-        .card-value {
-            font-size: 25px;
-            font-weight: bold;
-        }
+.card-value {
+    font-size: 25px;
+    font-weight: bold;
+}
 
-        button {
-            border: none;
-            border-radius: 10px;
-            padding: 11px 16px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: bold;
-        }
+button {
+    border: none;
+    border-radius: 10px;
+    padding: 11px 16px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+}
 
-        button:active {
-            transform: scale(.98);
-        }
+button:active {
+    transform: scale(.98);
+}
 
-        .btn-primary {
-            background: #111827;
-            color: white;
-        }
+.btn-primary {
+    background: #111827;
+    color: white;
+}
 
-        .btn-success {
-            background: #16a34a;
-            color: white;
-        }
+.btn-success {
+    background: #16a34a;
+    color: white;
+}
 
-        .btn-danger {
-            background: #dc2626;
-            color: white;
-        }
+.btn-danger {
+    background: #dc2626;
+    color: white;
+}
 
-        .btn-warning {
-            background: #f59e0b;
-            color: white;
-        }
+.btn-warning {
+    background: #f59e0b;
+    color: white;
+}
 
-        .btn-blue {
-            background: #2563eb;
-            color: white;
-        }
+.btn-blue {
+    background: #2563eb;
+    color: white;
+}
 
-        .btn-gray {
-            background: #e5e7eb;
-            color: #111827;
-        }
+.btn-gray {
+    background: #e5e7eb;
+    color: #111827;
+}
 
-        .section {
-            margin-top: 28px;
-        }
+.section {
+    margin-top: 28px;
+}
 
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 15px;
-            flex-wrap: wrap;
-        }
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+}
 
-        .section-header h2 {
-            margin: 0;
-            font-size: 20px;
-        }
+.section-header h2 {
+    margin: 0;
+    font-size: 20px;
+}
 
-        .transaction {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 10px;
-            padding: 13px 0;
-            border-bottom: 1px solid #eee;
-        }
+.transaction {
+    padding: 14px 0;
+    border-bottom: 1px solid #eee;
+}
 
-        .income {
-            color: #16a34a;
-        }
+.transaction:last-child {
+    border-bottom: none;
+}
 
-        .expense {
-            color: #dc2626;
-        }
+.transaction-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
 
-        .inventory-grid,
-        .employee-grid,
-        .sales-grid {
-            display: grid;
-            grid-template-columns:
-                repeat(auto-fit, minmax(270px, 1fr));
-            gap: 15px;
-        }
+.transaction-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin-top: 8px;
+}
 
-        .product-card,
-        .employee-card,
-        .sale-card {
-            background: white;
-            border-radius: 16px;
-            padding: 18px;
-            box-shadow:
-                0 4px 15px rgba(0,0,0,.06);
-        }
+.transaction-delete {
+    padding: 7px 10px;
+    font-size: 12px;
+}
 
-        .product-name,
-        .employee-name,
-        .sale-name {
-            font-size: 19px;
-            font-weight: bold;
-            margin-bottom: 8px;
-        }
+.income {
+    color: #16a34a;
+}
 
-        .product-info,
-        .employee-position,
-        .sale-info {
-            margin: 7px 0;
-            color: #4b5563;
-        }
+.expense {
+    color: #dc2626;
+}
 
-        .product-value,
-        .employee-salary {
-            font-size: 18px;
-            font-weight: bold;
-            margin-top: 10px;
-        }
+.inventory-grid,
+.employee-grid,
+.sales-grid {
+    display: grid;
+    grid-template-columns:
+        repeat(auto-fit, minmax(270px, 1fr));
+    gap: 15px;
+}
 
-        .low-stock {
-            background: #fee2e2;
-            color: #b91c1c;
-            padding: 8px 10px;
-            border-radius: 8px;
-            font-size: 13px;
-            margin: 10px 0;
-            font-weight: bold;
-        }
+.product-card,
+.employee-card,
+.sale-card {
+    background: white;
+    border-radius: 16px;
+    padding: 18px;
+    box-shadow:
+        0 4px 15px rgba(0,0,0,.06);
+}
 
-        .product-buttons,
-        .employee-buttons {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-            margin-top: 14px;
-        }
+.product-name,
+.employee-name,
+.sale-name {
+    font-size: 19px;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
 
-        .sale-buttons {
-            margin-top: 12px;
-        }
+.product-info,
+.employee-position,
+.sale-info {
+    margin: 7px 0;
+    color: #4b5563;
+}
 
-        .payment-badge {
-            display: inline-block;
-            padding: 6px 9px;
-            border-radius: 8px;
-            background: #eef2ff;
-            color: #3730a3;
-            font-size: 12px;
-            font-weight: bold;
-            margin-top: 5px;
-        }
+.product-value,
+.employee-salary {
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 10px;
+}
 
-        .modal {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,.55);
-            z-index: 1000;
-            padding: 20px;
-            overflow-y: auto;
-        }
+.low-stock {
+    background: #fee2e2;
+    color: #b91c1c;
+    padding: 8px 10px;
+    border-radius: 8px;
+    font-size: 13px;
+    margin: 10px 0;
+    font-weight: bold;
+}
 
-        .modal-content {
-            background: white;
-            max-width: 500px;
-            margin: 40px auto;
-            border-radius: 18px;
-            padding: 22px;
-        }
+.product-buttons,
+.employee-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 14px;
+}
 
-        .modal-content h2 {
-            margin-top: 0;
-        }
+.sale-buttons {
+    margin-top: 12px;
+}
 
-        label {
-            display: block;
-            margin-top: 12px;
-            margin-bottom: 6px;
-            font-size: 14px;
-            font-weight: bold;
-        }
+.payment-badge {
+    display: inline-block;
+    padding: 6px 9px;
+    border-radius: 8px;
+    background: #eef2ff;
+    color: #3730a3;
+    font-size: 12px;
+    font-weight: bold;
+    margin-top: 5px;
+}
 
-        input,
-        select,
-        textarea {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #d1d5db;
-            border-radius: 10px;
-            font-size: 15px;
-            outline: none;
-        }
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.55);
+    z-index: 1000;
+    padding: 20px;
+    overflow-y: auto;
+}
 
-        textarea {
-            min-height: 80px;
-            resize: vertical;
-        }
+.modal-content {
+    background: white;
+    max-width: 500px;
+    margin: 40px auto;
+    border-radius: 18px;
+    padding: 22px;
+}
 
-        input:focus,
-        select:focus,
-        textarea:focus {
-            border-color: #2563eb;
-        }
+.modal-content h2 {
+    margin-top: 0;
+}
 
-        .modal-buttons {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-top: 20px;
-        }
+label {
+    display: block;
+    margin-top: 12px;
+    margin-bottom: 6px;
+    font-size: 14px;
+    font-weight: bold;
+}
 
-        .empty {
-            text-align: center;
-            padding: 25px;
-            color: #6b7280;
-        }
+input,
+select,
+textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    font-size: 15px;
+    outline: none;
+}
 
-        @media (max-width: 600px) {
+textarea {
+    min-height: 80px;
+    resize: vertical;
+}
 
-            .container {
-                padding: 12px;
-            }
+input:focus,
+select:focus,
+textarea:focus {
+    border-color: #2563eb;
+}
 
-            header {
-                padding: 15px;
-            }
+.modal-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 20px;
+}
 
-            header h1 {
-                font-size: 19px;
-            }
+.empty {
+    text-align: center;
+    padding: 25px;
+    color: #6b7280;
+}
 
-            .card-value {
-                font-size: 22px;
-            }
+@media (max-width: 600px) {
 
-            .section-header h2 {
-                font-size: 18px;
-            }
+    .container {
+        padding: 12px;
+    }
 
-            .modal-content {
-                margin: 20px auto;
-            }
+    header {
+        padding: 15px;
+    }
 
-        }
+    header h1 {
+        font-size: 19px;
+    }
 
-    </style>
+    .card-value {
+        font-size: 22px;
+    }
+
+    .section-header h2 {
+        font-size: 18px;
+    }
+
+    .modal-content {
+        margin: 20px auto;
+    }
+
+    .transaction-top {
+        flex-direction: column;
+    }
+
+}
+
+</style>
 
 </head>
 
@@ -585,7 +608,6 @@
         class="sales-grid"
         id="salesList"
     >
-
     </div>
 
 </div>
@@ -810,7 +832,6 @@
         class="inventory-grid"
         id="inventoryList"
     >
-
     </div>
 
 </div>
@@ -876,7 +897,6 @@
         class="employee-grid"
         id="employeeList"
     >
-
     </div>
 
 </div>
@@ -894,68 +914,68 @@
     id="transactionModal"
 >
 
-    <div class="modal-content">
+<div class="modal-content">
 
-        <h2>💰 Tranzaksiya</h2>
+    <h2>💰 Tranzaksiya</h2>
 
-        <label>
-            Turi
-        </label>
+    <label>
+        Turi
+    </label>
 
-        <select id="transactionType">
+    <select id="transactionType">
 
-            <option value="income">
-                💰 Daromad
-            </option>
+        <option value="income">
+            💰 Daromad
+        </option>
 
-            <option value="expense">
-                💸 Xarajat
-            </option>
+        <option value="expense">
+            💸 Xarajat
+        </option>
 
-        </select>
+    </select>
 
 
-        <label>
-            Summa
-        </label>
+    <label>
+        Summa
+    </label>
 
-        <input
-            type="number"
-            id="transactionAmount"
-            placeholder="500000"
+    <input
+        type="number"
+        id="transactionAmount"
+        placeholder="500000"
+    >
+
+
+    <label>
+        Izoh
+    </label>
+
+    <input
+        type="text"
+        id="transactionDescription"
+        placeholder="Izoh"
+    >
+
+
+    <div class="modal-buttons">
+
+        <button
+            class="btn-gray"
+            onclick="closeTransactionModal()"
         >
+            Bekor qilish
+        </button>
 
-
-        <label>
-            Izoh
-        </label>
-
-        <input
-            type="text"
-            id="transactionDescription"
-            placeholder="Izoh"
+        <button
+            class="btn-success"
+            onclick="saveTransaction()"
         >
-
-
-        <div class="modal-buttons">
-
-            <button
-                class="btn-gray"
-                onclick="closeTransactionModal()"
-            >
-                Bekor qilish
-            </button>
-
-            <button
-                class="btn-success"
-                onclick="saveTransaction()"
-            >
-                Saqlash
-            </button>
-
-        </div>
+            Saqlash
+        </button>
 
     </div>
+
+</div>
 
 </div>
 
@@ -969,114 +989,114 @@
     id="saleModal"
 >
 
-    <div class="modal-content">
+<div class="modal-content">
 
-        <h2>🛒 Savdo qo'shish</h2>
-
-
-        <label>
-            Mahsulot / taom nomi
-        </label>
-
-        <input
-            type="text"
-            id="saleProductName"
-            placeholder="Masalan: Osh"
-        >
+    <h2>🛒 Savdo qo'shish</h2>
 
 
-        <label>
-            Miqdor
-        </label>
+    <label>
+        Mahsulot / taom nomi
+    </label>
 
-        <input
-            type="number"
-            id="saleQuantity"
-            step="0.001"
-            value="1"
-        >
-
-
-        <label>
-            Birlik narxi
-        </label>
-
-        <input
-            type="number"
-            id="saleUnitPrice"
-            placeholder="Masalan: 50000"
-        >
+    <input
+        type="text"
+        id="saleProductName"
+        placeholder="Masalan: Osh"
+    >
 
 
-        <label>
-            To'lov turi
-        </label>
+    <label>
+        Miqdor
+    </label>
 
-        <select id="salePayment">
-
-            <option value="cash">
-                💵 Naqd
-            </option>
-
-            <option value="card">
-                💳 Karta
-            </option>
-
-            <option value="other">
-                🔄 Boshqa
-            </option>
-
-        </select>
+    <input
+        type="number"
+        id="saleQuantity"
+        step="0.001"
+        value="1"
+    >
 
 
-        <label>
-            Izoh
-        </label>
+    <label>
+        Birlik narxi
+    </label>
 
-        <textarea
-            id="saleDescription"
-            placeholder="Masalan: Stol 5"
-        ></textarea>
+    <input
+        type="number"
+        id="saleUnitPrice"
+        placeholder="50000"
+    >
 
 
-        <div
-            class="card"
-            style="margin-top:15px;"
-        >
+    <label>
+        To'lov turi
+    </label>
 
-            <div class="card-title">
-                Jami summa
-            </div>
+    <select id="salePayment">
 
-            <div
-                class="card-value"
-                id="saleTotalPreview"
-            >
-                0 so'm
-            </div>
+        <option value="cash">
+            💵 Naqd
+        </option>
 
+        <option value="card">
+            💳 Karta
+        </option>
+
+        <option value="other">
+            🔄 Boshqa
+        </option>
+
+    </select>
+
+
+    <label>
+        Izoh
+    </label>
+
+    <textarea
+        id="saleDescription"
+        placeholder="Masalan: Stol 5"
+    ></textarea>
+
+
+    <div
+        class="card"
+        style="margin-top:15px;"
+    >
+
+        <div class="card-title">
+            Jami summa
         </div>
 
-
-        <div class="modal-buttons">
-
-            <button
-                class="btn-gray"
-                onclick="closeSaleModal()"
-            >
-                Bekor qilish
-            </button>
-
-            <button
-                class="btn-success"
-                onclick="saveSale()"
-            >
-                Saqlash
-            </button>
-
+        <div
+            class="card-value"
+            id="saleTotalPreview"
+        >
+            0 so'm
         </div>
 
     </div>
+
+
+    <div class="modal-buttons">
+
+        <button
+            class="btn-gray"
+            onclick="closeSaleModal()"
+        >
+            Bekor qilish
+        </button>
+
+        <button
+            class="btn-success"
+            onclick="saveSale()"
+        >
+            Saqlash
+        </button>
+
+    </div>
+
+</div>
 
 </div>
 
@@ -1090,83 +1110,83 @@
     id="productModal"
 >
 
-    <div class="modal-content">
+<div class="modal-content">
 
-        <h2>📦 Mahsulot qo'shish</h2>
+    <h2>📦 Mahsulot qo'shish</h2>
 
-        <label>
-            Mahsulot nomi
-        </label>
+    <label>
+        Mahsulot nomi
+    </label>
 
-        <input
-            type="text"
-            id="productName"
-            placeholder="Masalan: Guruch"
+    <input
+        type="text"
+        id="productName"
+        placeholder="Guruch"
+    >
+
+
+    <label>
+        O'lchov birligi
+    </label>
+
+    <input
+        type="text"
+        id="productUnit"
+        placeholder="kg"
+    >
+
+
+    <label>
+        Boshlang'ich miqdor
+    </label>
+
+    <input
+        type="number"
+        id="productQuantity"
+        step="0.001"
+    >
+
+
+    <label>
+        Minimal qoldiq
+    </label>
+
+    <input
+        type="number"
+        id="productMinQuantity"
+        step="0.001"
+    >
+
+
+    <label>
+        1 birlik narxi
+    </label>
+
+    <input
+        type="number"
+        id="productPrice"
+    >
+
+
+    <div class="modal-buttons">
+
+        <button
+            class="btn-gray"
+            onclick="closeProductModal()"
         >
+            Bekor qilish
+        </button>
 
-
-        <label>
-            O'lchov birligi
-        </label>
-
-        <input
-            type="text"
-            id="productUnit"
-            placeholder="kg / dona / litr"
+        <button
+            class="btn-success"
+            onclick="saveProduct()"
         >
-
-
-        <label>
-            Boshlang'ich miqdor
-        </label>
-
-        <input
-            type="number"
-            id="productQuantity"
-            step="0.001"
-        >
-
-
-        <label>
-            Minimal qoldiq
-        </label>
-
-        <input
-            type="number"
-            id="productMinQuantity"
-            step="0.001"
-        >
-
-
-        <label>
-            1 birlik narxi
-        </label>
-
-        <input
-            type="number"
-            id="productPrice"
-        >
-
-
-        <div class="modal-buttons">
-
-            <button
-                class="btn-gray"
-                onclick="closeProductModal()"
-            >
-                Bekor qilish
-            </button>
-
-            <button
-                class="btn-success"
-                onclick="saveProduct()"
-            >
-                Saqlash
-            </button>
-
-        </div>
+            Saqlash
+        </button>
 
     </div>
+
+</div>
 
 </div>
 
@@ -1180,42 +1200,42 @@
     id="stockModal"
 >
 
-    <div class="modal-content">
+<div class="modal-content">
 
-        <h2 id="stockModalTitle">
-            📦 Ombor
-        </h2>
+    <h2 id="stockModalTitle">
+        📦 Ombor
+    </h2>
 
-        <label>
-            Miqdor
-        </label>
+    <label>
+        Miqdor
+    </label>
 
-        <input
-            type="number"
-            id="stockAmount"
-            step="0.001"
+    <input
+        type="number"
+        id="stockAmount"
+        step="0.001"
+    >
+
+
+    <div class="modal-buttons">
+
+        <button
+            class="btn-gray"
+            onclick="closeStockModal()"
         >
+            Bekor qilish
+        </button>
 
-
-        <div class="modal-buttons">
-
-            <button
-                class="btn-gray"
-                onclick="closeStockModal()"
-            >
-                Bekor qilish
-            </button>
-
-            <button
-                class="btn-success"
-                onclick="saveStock()"
-            >
-                Saqlash
-            </button>
-
-        </div>
+        <button
+            class="btn-success"
+            onclick="saveStock()"
+        >
+            Saqlash
+        </button>
 
     </div>
+
+</div>
 
 </div>
 
@@ -1229,39 +1249,39 @@
     id="priceModal"
 >
 
-    <div class="modal-content">
+<div class="modal-content">
 
-        <h2>💵 Narxni o'zgartirish</h2>
+    <h2>💵 Narxni o'zgartirish</h2>
 
-        <label>
-            1 birlik narxi
-        </label>
+    <label>
+        1 birlik narxi
+    </label>
 
-        <input
-            type="number"
-            id="newPrice"
+    <input
+        type="number"
+        id="newPrice"
+    >
+
+
+    <div class="modal-buttons">
+
+        <button
+            class="btn-gray"
+            onclick="closePriceModal()"
         >
+            Bekor qilish
+        </button>
 
-
-        <div class="modal-buttons">
-
-            <button
-                class="btn-gray"
-                onclick="closePriceModal()"
-            >
-                Bekor qilish
-            </button>
-
-            <button
-                class="btn-success"
-                onclick="savePrice()"
-            >
-                Saqlash
-            </button>
-
-        </div>
+        <button
+            class="btn-success"
+            onclick="savePrice()"
+        >
+            Saqlash
+        </button>
 
     </div>
+
+</div>
 
 </div>
 
@@ -1275,74 +1295,74 @@
     id="employeeModal"
 >
 
-    <div class="modal-content">
+<div class="modal-content">
 
-        <h2 id="employeeModalTitle">
-            👤 Xodim qo'shish
-        </h2>
+    <h2 id="employeeModalTitle">
+        👤 Xodim qo'shish
+    </h2>
 
-        <label>
-            Xodim ismi
-        </label>
+    <label>
+        Xodim ismi
+    </label>
 
-        <input
-            type="text"
-            id="employeeName"
-            placeholder="Masalan: Ali"
+    <input
+        type="text"
+        id="employeeName"
+        placeholder="Ali"
+    >
+
+
+    <label>
+        Lavozimi
+    </label>
+
+    <input
+        type="text"
+        id="employeePosition"
+        placeholder="Oshpaz"
+    >
+
+
+    <label>
+        Oylik maoshi
+    </label>
+
+    <input
+        type="number"
+        id="employeeSalary"
+        placeholder="5000000"
+    >
+
+
+    <label>
+        Ishga kirgan sana
+    </label>
+
+    <input
+        type="date"
+        id="employeeHireDate"
+    >
+
+
+    <div class="modal-buttons">
+
+        <button
+            class="btn-gray"
+            onclick="closeEmployeeModal()"
         >
+            Bekor qilish
+        </button>
 
-
-        <label>
-            Lavozimi
-        </label>
-
-        <input
-            type="text"
-            id="employeePosition"
-            placeholder="Masalan: Oshpaz"
+        <button
+            class="btn-success"
+            onclick="saveEmployee()"
         >
-
-
-        <label>
-            Oylik maoshi
-        </label>
-
-        <input
-            type="number"
-            id="employeeSalary"
-            placeholder="5000000"
-        >
-
-
-        <label>
-            Ishga kirgan sana
-        </label>
-
-        <input
-            type="date"
-            id="employeeHireDate"
-        >
-
-
-        <div class="modal-buttons">
-
-            <button
-                class="btn-gray"
-                onclick="closeEmployeeModal()"
-            >
-                Bekor qilish
-            </button>
-
-            <button
-                class="btn-success"
-                onclick="saveEmployee()"
-            >
-                Saqlash
-            </button>
-
-        </div>
+            Saqlash
+        </button>
 
     </div>
+
+</div>
 
 </div>
 
@@ -1419,6 +1439,7 @@ async function loadTransactions() {
                 "transactionList"
             );
 
+
         if (
             !data.transactions ||
             data.transactions.length === 0
@@ -1430,6 +1451,7 @@ async function loadTransactions() {
             return;
 
         }
+
 
         list.innerHTML =
             data.transactions.map(item => {
@@ -1449,37 +1471,65 @@ async function loadTransactions() {
                         ? "Daromad"
                         : "Xarajat";
 
+
                 return `
 
                     <div class="transaction">
 
-                        <div>
-
-                            <strong class="${typeClass}">
-                                ${title}
-                            </strong>
+                        <div class="transaction-top">
 
                             <div>
-                                ${item.description || ""}
+
+                                <strong
+                                    class="${typeClass}"
+                                >
+                                    ${title}
+                                </strong>
+
+                                <div>
+                                    ${item.description || ""}
+                                </div>
+
+                                <small>
+                                    ${new Date(
+                                        item.created_at
+                                    ).toLocaleString("uz-UZ")}
+                                </small>
+
                             </div>
 
-                            <small>
-                                ${new Date(
-                                    item.created_at
-                                ).toLocaleString("uz-UZ")}
-                            </small>
+                            <strong
+                                class="${typeClass}"
+                            >
+                                ${sign}${formatMoney(
+                                    item.amount
+                                )}
+                            </strong>
 
                         </div>
 
-                        <strong class="${typeClass}">
-                            ${sign}${formatMoney(item.amount)}
-                        </strong>
+
+                        <div class="transaction-bottom">
+
+                            <span></span>
+
+                            <button
+                                class="btn-danger transaction-delete"
+                                onclick="deleteTransaction(
+                                    ${item.id}
+                                )"
+                            >
+                                🗑️ O'chirish
+                            </button>
+
+                        </div>
 
                     </div>
 
                 `;
 
             }).join("");
+
 
     } catch (error) {
 
@@ -1525,6 +1575,7 @@ async function saveTransaction() {
             "transactionDescription"
         ).value;
 
+
     if (!amount) {
 
         alert("Summani kiriting");
@@ -1533,12 +1584,14 @@ async function saveTransaction() {
 
     }
 
+
     try {
 
         const response =
             await fetch(
                 "/api/transactions",
                 {
+
                     method: "POST",
 
                     headers: {
@@ -1547,15 +1600,22 @@ async function saveTransaction() {
                     },
 
                     body: JSON.stringify({
+
                         type,
+
                         amount,
+
                         description
+
                     })
+
                 }
             );
 
+
         const data =
             await response.json();
+
 
         if (!data.success) {
 
@@ -1568,7 +1628,9 @@ async function saveTransaction() {
 
         }
 
+
         closeTransactionModal();
+
 
         document.getElementById(
             "transactionAmount"
@@ -1578,9 +1640,81 @@ async function saveTransaction() {
             "transactionDescription"
         ).value = "";
 
+
         await loadSummary();
 
         await loadTransactions();
+
+        await loadReport("today");
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(
+            "Server bilan bog'lanishda xatolik"
+        );
+
+    }
+
+}
+
+
+/* ========================================================= */
+/* DELETE TRANSACTION */
+/* ========================================================= */
+
+async function deleteTransaction(
+    transactionId
+) {
+
+    const confirmed =
+        confirm(
+            "Bu tranzaksiyani o'chirishni xohlaysizmi?"
+        );
+
+
+    if (!confirmed) {
+
+        return;
+
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                `/api/transactions/${transactionId}`,
+                {
+                    method: "DELETE"
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!data.success) {
+
+            alert(
+                data.error ||
+                "Tranzaksiyani o'chirishda xatolik"
+            );
+
+            return;
+
+        }
+
+
+        await loadSummary();
+
+        await loadTransactions();
+
+        await loadReport("today");
+
 
     } catch (error) {
 
@@ -1611,6 +1745,7 @@ async function loadReport(period) {
         const data =
             await response.json();
 
+
         if (!data.success) {
 
             alert(data.error);
@@ -1619,25 +1754,30 @@ async function loadReport(period) {
 
         }
 
+
         document.getElementById(
             "reportIncome"
         ).textContent =
             formatMoney(data.income);
+
 
         document.getElementById(
             "reportExpense"
         ).textContent =
             formatMoney(data.expense);
 
+
         document.getElementById(
             "reportProfit"
         ).textContent =
             formatMoney(data.profit);
 
+
         document.getElementById(
             "reportCount"
         ).textContent =
             data.transaction_count;
+
 
     } catch (error) {
 
@@ -1666,6 +1806,7 @@ async function loadSales() {
             fetch("/api/sales/summary")
 
         ]);
+
 
         const salesData =
             await salesResponse.json();
@@ -1752,7 +1893,8 @@ async function loadSales() {
                 sale => {
 
                     let paymentText =
-                        "Boshqa";
+                        "🔄 Boshqa";
+
 
                     if (
                         sale.payment_method ===
@@ -1762,7 +1904,10 @@ async function loadSales() {
                         paymentText =
                             "💵 Naqd";
 
-                    } else if (
+                    }
+
+
+                    if (
                         sale.payment_method ===
                         "card"
                     ) {
@@ -1807,9 +1952,13 @@ async function loadSales() {
                             </div>
 
                             <div>
-                                <span class="payment-badge">
+
+                                <span
+                                    class="payment-badge"
+                                >
                                     ${paymentText}
                                 </span>
+
                             </div>
 
                             <div class="sale-info">
@@ -1856,7 +2005,9 @@ function openSaleModal() {
 
     document.getElementById(
         "saleModal"
-    ).style.display = "block";
+    ).style.display =
+        "block";
+
 
     updateSalePreview();
 
@@ -1867,7 +2018,8 @@ function closeSaleModal() {
 
     document.getElementById(
         "saleModal"
-    ).style.display = "none";
+    ).style.display =
+        "none";
 
 }
 
@@ -1881,6 +2033,7 @@ function updateSalePreview() {
             ).value
         ) || 0;
 
+
     const price =
         Number(
             document.getElementById(
@@ -1888,8 +2041,10 @@ function updateSalePreview() {
             ).value
         ) || 0;
 
+
     const total =
         quantity * price;
+
 
     document.getElementById(
         "saleTotalPreview"
@@ -1906,20 +2061,24 @@ async function saveSale() {
             "saleProductName"
         ).value.trim();
 
+
     const quantity =
         document.getElementById(
             "saleQuantity"
         ).value;
+
 
     const unitPrice =
         document.getElementById(
             "saleUnitPrice"
         ).value;
 
+
     const paymentMethod =
         document.getElementById(
             "salePayment"
         ).value;
+
 
     const description =
         document.getElementById(
@@ -1943,7 +2102,9 @@ async function saveSale() {
         Number(quantity) <= 0
     ) {
 
-        alert("Miqdorni kiriting");
+        alert(
+            "Miqdorni kiriting"
+        );
 
         return;
 
@@ -1955,7 +2116,9 @@ async function saveSale() {
         Number(unitPrice) < 0
     ) {
 
-        alert("Narxni kiriting");
+        alert(
+            "Narxni kiriting"
+        );
 
         return;
 
@@ -1968,6 +2131,7 @@ async function saveSale() {
             await fetch(
                 "/api/sales",
                 {
+
                     method: "POST",
 
                     headers: {
@@ -2054,6 +2218,10 @@ async function saveSale() {
 }
 
 
+/* ========================================================= */
+/* DELETE SALE */
+/* ========================================================= */
+
 async function deleteSale(
     saleId
 ) {
@@ -2090,7 +2258,7 @@ async function deleteSale(
 
             alert(
                 data.error ||
-                "Xatolik"
+                "Savdoni o'chirishda xatolik"
             );
 
             return;
@@ -2179,13 +2347,19 @@ async function loadInventory() {
 
                         return `
 
-                            <div class="product-card">
+                            <div
+                                class="product-card"
+                            >
 
-                                <div class="product-name">
+                                <div
+                                    class="product-name"
+                                >
                                     📦 ${product.name}
                                 </div>
 
-                                <div class="product-info">
+                                <div
+                                    class="product-info"
+                                >
                                     Qoldiq:
                                     <strong>
                                         ${product.quantity}
@@ -2193,7 +2367,9 @@ async function loadInventory() {
                                     </strong>
                                 </div>
 
-                                <div class="product-info">
+                                <div
+                                    class="product-info"
+                                >
                                     Minimal:
                                     ${product.min_quantity}
                                     ${product.unit}
@@ -2203,7 +2379,9 @@ async function loadInventory() {
                                     low
                                     ?
                                     `
-                                    <div class="low-stock">
+                                    <div
+                                        class="low-stock"
+                                    >
                                         ⚠️ Mahsulot kamaygan
                                     </div>
                                     `
@@ -2211,7 +2389,9 @@ async function loadInventory() {
                                     ""
                                 }
 
-                                <div class="product-info">
+                                <div
+                                    class="product-info"
+                                >
                                     1 ${product.unit}:
                                     <strong>
                                         ${formatMoney(
@@ -2220,14 +2400,18 @@ async function loadInventory() {
                                     </strong>
                                 </div>
 
-                                <div class="product-value">
+                                <div
+                                    class="product-value"
+                                >
                                     Jami:
                                     ${formatMoney(
                                         product.total_value
                                     )}
                                 </div>
 
-                                <div class="product-buttons">
+                                <div
+                                    class="product-buttons"
+                                >
 
                                     <button
                                         class="btn-success"
@@ -2321,7 +2505,8 @@ function openProductModal() {
 
     document.getElementById(
         "productModal"
-    ).style.display = "block";
+    ).style.display =
+        "block";
 
 }
 
@@ -2330,7 +2515,8 @@ function closeProductModal() {
 
     document.getElementById(
         "productModal"
-    ).style.display = "none";
+    ).style.display =
+        "none";
 
 }
 
@@ -2342,20 +2528,24 @@ async function saveProduct() {
             "productName"
         ).value.trim();
 
+
     const unit =
         document.getElementById(
             "productUnit"
         ).value.trim();
+
 
     const quantity =
         document.getElementById(
             "productQuantity"
         ).value;
 
+
     const minQuantity =
         document.getElementById(
             "productMinQuantity"
         ).value;
+
 
     const price =
         document.getElementById(
@@ -2380,6 +2570,7 @@ async function saveProduct() {
             await fetch(
                 "/api/inventory",
                 {
+
                     method: "POST",
 
                     headers: {
@@ -2425,6 +2616,7 @@ async function saveProduct() {
 
 
         closeProductModal();
+
 
         document.getElementById(
             "productName"
@@ -2490,7 +2682,8 @@ function openStockModal(
 
     document.getElementById(
         "stockModal"
-    ).style.display = "block";
+    ).style.display =
+        "block";
 
 }
 
@@ -2499,7 +2692,8 @@ function closeStockModal() {
 
     document.getElementById(
         "stockModal"
-    ).style.display = "none";
+    ).style.display =
+        "none";
 
 }
 
@@ -2517,7 +2711,9 @@ async function saveStock() {
         Number(amount) <= 0
     ) {
 
-        alert("Miqdorni kiriting");
+        alert(
+            "Miqdorni kiriting"
+        );
 
         return;
 
@@ -2530,6 +2726,7 @@ async function saveStock() {
             await fetch(
                 `/api/inventory/${selectedProductId}/${stockAction}`,
                 {
+
                     method: "POST",
 
                     headers: {
@@ -2540,6 +2737,7 @@ async function saveStock() {
                     body: JSON.stringify({
                         amount
                     })
+
                 }
             );
 
@@ -2578,6 +2776,10 @@ async function saveStock() {
 }
 
 
+/* ========================================================= */
+/* PRICE */
+/* ========================================================= */
+
 function openPriceModal(
     productId,
     price
@@ -2595,7 +2797,8 @@ function openPriceModal(
 
     document.getElementById(
         "priceModal"
-    ).style.display = "block";
+    ).style.display =
+        "block";
 
 }
 
@@ -2604,7 +2807,8 @@ function closePriceModal() {
 
     document.getElementById(
         "priceModal"
-    ).style.display = "none";
+    ).style.display =
+        "none";
 
 }
 
@@ -2637,6 +2841,7 @@ async function savePrice() {
             await fetch(
                 `/api/inventory/${selectedProductId}/price`,
                 {
+
                     method: "PUT",
 
                     headers: {
@@ -2647,6 +2852,7 @@ async function savePrice() {
                     body: JSON.stringify({
                         price
                     })
+
                 }
             );
 
@@ -2684,6 +2890,10 @@ async function savePrice() {
 
 }
 
+
+/* ========================================================= */
+/* DELETE PRODUCT */
+/* ========================================================= */
 
 async function deleteProduct(
     productId
@@ -2797,23 +3007,33 @@ async function loadEmployees() {
 
                         return `
 
-                            <div class="employee-card">
+                            <div
+                                class="employee-card"
+                            >
 
-                                <div class="employee-name">
+                                <div
+                                    class="employee-name"
+                                >
                                     👤 ${employee.name}
                                 </div>
 
-                                <div class="employee-position">
+                                <div
+                                    class="employee-position"
+                                >
                                     ${employee.position}
                                 </div>
 
-                                <div class="employee-salary">
+                                <div
+                                    class="employee-salary"
+                                >
                                     💵 ${formatMoney(
                                         employee.salary
                                     )}
                                 </div>
 
-                                <div class="employee-position">
+                                <div
+                                    class="employee-position"
+                                >
                                     📅 ${
                                         employee.hire_date
                                         ||
@@ -2821,7 +3041,9 @@ async function loadEmployees() {
                                     }
                                 </div>
 
-                                <div class="employee-buttons">
+                                <div
+                                    class="employee-buttons"
+                                >
 
                                     <button
                                         class="btn-blue"
@@ -2957,15 +3179,18 @@ async function saveEmployee() {
             "employeeName"
         ).value.trim();
 
+
     const position =
         document.getElementById(
             "employeePosition"
         ).value.trim();
 
+
     const salary =
         document.getElementById(
             "employeeSalary"
         ).value;
+
 
     const hireDate =
         document.getElementById(
@@ -3027,6 +3252,7 @@ async function saveEmployee() {
             await fetch(
                 url,
                 {
+
                     method,
 
                     headers: {
@@ -3095,6 +3321,7 @@ async function editEmployee(
             await fetch(
                 "/api/employees"
             );
+
 
         const data =
             await response.json();
@@ -3206,25 +3433,27 @@ window.addEventListener(
 
         document
             .querySelectorAll(".modal")
-            .forEach(modal => {
+            .forEach(
+                modal => {
 
-                if (
-                    event.target === modal
-                ) {
+                    if (
+                        event.target === modal
+                    ) {
 
-                    modal.style.display =
-                        "none";
+                        modal.style.display =
+                            "none";
+
+                    }
 
                 }
-
-            });
+            );
 
     }
 );
 
 
 /* ========================================================= */
-/* SALE PREVIEW EVENTS */
+/* SALE PREVIEW */
 /* ========================================================= */
 
 document.addEventListener(
@@ -3235,6 +3464,7 @@ document.addEventListener(
             document.getElementById(
                 "saleQuantity"
             );
+
 
         const price =
             document.getElementById(
