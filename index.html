@@ -1,10 +1,7 @@
 <!DOCTYPE html>
 <html lang="uz">
-
 <head>
-
     <meta charset="UTF-8">
-
     <meta
         name="viewport"
         content="width=device-width, initial-scale=1.0"
@@ -21,15 +18,15 @@
         body {
             margin: 0;
             font-family: Arial, sans-serif;
-            background: #f4f5f7;
-            color: #111827;
+            background: #f4f6f8;
+            color: #1f2937;
         }
 
         .header {
             background: #111827;
             color: white;
-            padding: 24px 20px;
-            border-radius: 0 0 24px 24px;
+            padding: 22px 18px;
+            text-align: center;
         }
 
         .header h1 {
@@ -39,269 +36,514 @@
 
         .header p {
             margin: 7px 0 0;
-            opacity: 0.75;
+            color: #d1d5db;
+            font-size: 14px;
         }
 
         .container {
-            padding: 18px;
-            max-width: 600px;
+            width: 100%;
+            max-width: 900px;
             margin: auto;
+            padding: 16px;
         }
 
         .stats {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .stat {
+            background: white;
+            border-radius: 16px;
+            padding: 16px 10px;
+            text-align: center;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.06);
+        }
+
+        .stat-title {
+            font-size: 13px;
+            color: #6b7280;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 17px;
+            font-weight: bold;
+        }
+
+        .income {
+            color: #16a34a;
+        }
+
+        .expense {
+            color: #dc2626;
+        }
+
+        .profit {
+            color: #2563eb;
         }
 
         .card {
             background: white;
-            padding: 18px;
             border-radius: 18px;
-            margin-bottom: 12px;
+            padding: 18px;
+            margin-bottom: 16px;
             box-shadow: 0 3px 12px rgba(0,0,0,0.06);
         }
 
         .title {
-            font-size: 14px;
-            color: #6b7280;
-        }
-
-        .amount {
-            font-size: 22px;
+            font-size: 18px;
             font-weight: bold;
-            margin-top: 7px;
+            margin-bottom: 15px;
         }
 
         .menu {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-top: 6px;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
         }
 
         button {
             border: none;
-            background: white;
-            padding: 20px 10px;
-            border-radius: 18px;
-            font-size: 15px;
-            box-shadow: 0 3px 12px rgba(0,0,0,0.06);
             cursor: pointer;
+            font-family: inherit;
         }
 
-        button:active {
-            transform: scale(0.97);
+        .menu button {
+            background: #f3f4f6;
+            border-radius: 14px;
+            padding: 17px 10px;
+            font-size: 15px;
+            font-weight: 600;
+            color: #111827;
         }
 
-        button:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
+        .menu button:active {
+            transform: scale(0.98);
         }
 
         .primary {
-            background: #111827;
-            color: white;
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.5);
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            z-index: 100;
-        }
-
-        .modal-content {
-            background: white;
-            width: 100%;
-            max-width: 420px;
-            padding: 22px;
-            border-radius: 22px;
-        }
-
-        input {
-            width: 100%;
-            padding: 14px;
-            margin: 8px 0;
-            border: 1px solid #ddd;
-            border-radius: 12px;
-            font-size: 16px;
-        }
-
-        .modal-buttons {
-            display: flex;
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        .modal-buttons button {
-            flex: 1;
+            background: #111827 !important;
+            color: white !important;
         }
 
         .transaction {
-            padding: 14px 0;
-            border-bottom: 1px solid #eeeeee;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 13px 0;
+            border-bottom: 1px solid #e5e7eb;
         }
 
         .transaction:last-child {
             border-bottom: none;
         }
 
-        .transaction-row {
+        .transaction-left {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
+            min-width: 0;
         }
 
-        .transaction-name {
-            font-weight: bold;
-            font-size: 15px;
+        .transaction-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f3f4f6;
+            font-size: 19px;
+            flex-shrink: 0;
+        }
+
+        .transaction-info {
+            min-width: 0;
         }
 
         .transaction-description {
-            color: #6b7280;
-            font-size: 13px;
-            margin-top: 5px;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .transaction-date {
             color: #9ca3af;
             font-size: 12px;
-            margin-top: 4px;
+            margin-top: 3px;
         }
 
-        .income-value {
-            color: #16a34a;
-            font-weight: bold;
-            white-space: nowrap;
-        }
-
-        .expense-value {
-            color: #dc2626;
+        .transaction-amount {
             font-weight: bold;
             white-space: nowrap;
         }
 
         .empty {
-            color: #6b7280;
             text-align: center;
-            padding: 15px 0;
+            color: #9ca3af;
+            padding: 20px 10px;
         }
 
-        @media (max-width: 400px) {
+        /* REPORT */
+
+        .report-tabs {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 18px;
+        }
+
+        .report-tab {
+            padding: 12px 5px;
+            border-radius: 12px;
+            background: #f3f4f6;
+            color: #374151;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .report-tab.active {
+            background: #111827;
+            color: white;
+        }
+
+        .report-box {
+            background: #f9fafb;
+            border-radius: 14px;
+            padding: 15px;
+            margin-bottom: 10px;
+        }
+
+        .report-label {
+            color: #6b7280;
+            font-size: 13px;
+            margin-bottom: 6px;
+        }
+
+        .report-number {
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .report-profit {
+            background: #eff6ff;
+        }
+
+        .report-income {
+            background: #f0fdf4;
+        }
+
+        .report-expense {
+            background: #fef2f2;
+        }
+
+        .report-count {
+            background: #f9fafb;
+        }
+
+        /* MODAL */
+
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.55);
+            align-items: center;
+            justify-content: center;
+            padding: 18px;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            width: 100%;
+            max-width: 420px;
+            background: white;
+            border-radius: 20px;
+            padding: 22px;
+        }
+
+        .modal-title {
+            font-size: 21px;
+            font-weight: bold;
+            margin-bottom: 18px;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #d1d5db;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            font-size: 16px;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #2563eb;
+        }
+
+        .modal-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 5px;
+        }
+
+        .modal-buttons button {
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+        .cancel {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        .save {
+            background: #111827;
+            color: white;
+        }
+
+        .loading {
+            text-align: center;
+            color: #6b7280;
+            padding: 15px;
+        }
+
+        @media (max-width: 500px) {
 
             .stats {
-                grid-template-columns: 1fr;
+                gap: 7px;
             }
 
-            .transaction-row {
-                align-items: flex-start;
+            .stat {
+                padding: 13px 6px;
             }
 
-            .income-value,
-            .expense-value {
+            .stat-value {
                 font-size: 14px;
             }
+
+            .stat-title {
+                font-size: 11px;
+            }
+
+            .container {
+                padding: 12px;
+            }
+
         }
 
     </style>
-
 </head>
-
 
 <body>
 
+    <!-- HEADER -->
 
-<div class="header">
+    <div class="header">
 
-    <h1>REAL CEO 👔</h1>
+        <h1>REAL CEO 👔</h1>
 
-    <p>
-        Real Choyxona M39
-    </p>
-
-</div>
-
-
-<div class="container">
-
-
-    <!-- MOLIYAVIY KO'RSATKICHLAR -->
-
-    <div class="stats">
-
-
-        <div class="card">
-
-            <div class="title">
-                💰 Daromad
-            </div>
-
-            <div
-                class="amount"
-                id="income"
-            >
-                0 so'm
-            </div>
-
-        </div>
-
-
-        <div class="card">
-
-            <div class="title">
-                💸 Xarajat
-            </div>
-
-            <div
-                class="amount"
-                id="expense"
-            >
-                0 so'm
-            </div>
-
-        </div>
-
+        <p>
+            Real Choyxona M39
+        </p>
 
     </div>
 
 
-    <!-- FOYDA -->
+    <div class="container">
 
-    <div class="card">
+        <!-- MAIN STATS -->
 
-        <div class="title">
-            📈 Foyda
+        <div class="stats">
+
+            <div class="stat">
+
+                <div class="stat-title">
+                    💰 Daromad
+                </div>
+
+                <div
+                    id="income"
+                    class="stat-value income"
+                >
+                    0 so‘m
+                </div>
+
+            </div>
+
+
+            <div class="stat">
+
+                <div class="stat-title">
+                    💸 Xarajat
+                </div>
+
+                <div
+                    id="expense"
+                    class="stat-value expense"
+                >
+                    0 so‘m
+                </div>
+
+            </div>
+
+
+            <div class="stat">
+
+                <div class="stat-title">
+                    📈 Foyda
+                </div>
+
+                <div
+                    id="profit"
+                    class="stat-value profit"
+                >
+                    0 so‘m
+                </div>
+
+            </div>
+
         </div>
+
+
+        <!-- QUICK ACTIONS -->
+
+        <div class="card">
+
+            <div class="title">
+                ⚡ Tezkor amallar
+            </div>
+
+            <div class="menu">
+
+                <button
+                    class="primary"
+                    onclick="openModal('income')"
+                >
+                    💰 Daromad qo‘shish
+                </button>
+
+
+                <button
+                    class="primary"
+                    onclick="openModal('expense')"
+                >
+                    💸 Xarajat qo‘shish
+                </button>
+
+
+                <button onclick="showReport()">
+                    📊 Hisobot
+                </button>
+
+
+                <button onclick="alert('🚧 Ombor moduli tez orada qo‘shiladi')">
+                    📦 Ombor
+                </button>
+
+
+                <button onclick="alert('🚧 Xodimlar moduli tez orada qo‘shiladi')">
+                    👨‍🍳 Xodimlar
+                </button>
+
+
+                <button onclick="alert('🚧 Savdo moduli tez orada qo‘shiladi')">
+                    🛒 Savdo
+                </button>
+
+
+                <button onclick="alert('🤖 AI CEO tez orada qo‘shiladi')">
+                    🤖 AI CEO
+                </button>
+
+
+                <button onclick="alert('⚙️ Sozlamalar tez orada qo‘shiladi')">
+                    ⚙️ Sozlamalar
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- REPORT -->
 
         <div
-            class="amount"
-            id="profit"
+            id="reportCard"
+            class="card"
+            style="display:none;"
         >
-            0 so'm
+
+            <div class="title">
+                📊 Hisobot
+            </div>
+
+
+            <div class="report-tabs">
+
+                <button
+                    id="todayTab"
+                    class="report-tab active"
+                    onclick="loadReport('today')"
+                >
+                    Bugun
+                </button>
+
+
+                <button
+                    id="weekTab"
+                    class="report-tab"
+                    onclick="loadReport('week')"
+                >
+                    Hafta
+                </button>
+
+
+                <button
+                    id="monthTab"
+                    class="report-tab"
+                    onclick="loadReport('month')"
+                >
+                    Oy
+                </button>
+
+            </div>
+
+
+            <div
+                id="reportContent"
+                class="loading"
+            >
+                Hisobot yuklanmoqda...
+            </div>
+
         </div>
 
-    </div>
+
+        <!-- TRANSACTION HISTORY -->
+
+        <div class="card">
+
+            <div class="title">
+                📋 So‘nggi operatsiyalar
+            </div>
 
 
-    <!-- TRANZAKSIYALAR -->
+            <div id="transactions">
 
-    <div class="card">
+                <div class="empty">
+                    Ma'lumotlar yuklanmoqda...
+                </div>
 
-        <div class="title">
-            📋 So‘nggi operatsiyalar
-        </div>
-
-
-        <div id="transactions">
-
-            <div class="empty">
-                Ma'lumotlar yuklanmoqda...
             </div>
 
         </div>
@@ -309,598 +551,751 @@
     </div>
 
 
-    <!-- ASOSIY MENYU -->
+    <!-- MODAL -->
 
-    <div class="menu">
+    <div
+        id="modal"
+        class="modal"
+    >
 
+        <div class="modal-content">
 
-        <button
-            class="primary"
-            onclick="openModal('income')"
-        >
-            💰
-            <br>
-            Daromad qo‘shish
-        </button>
-
-
-        <button
-            onclick="openModal('expense')"
-        >
-            💸
-            <br>
-            Xarajat qo‘shish
-        </button>
-
-
-        <button>
-            📦
-            <br>
-            Ombor
-        </button>
-
-
-        <button>
-            👥
-            <br>
-            Xodimlar
-        </button>
-
-
-        <button>
-            🍽️
-            <br>
-            Savdo
-        </button>
-
-
-        <button>
-            📊
-            <br>
-            Hisobot
-        </button>
-
-
-        <button>
-            🤖
-            <br>
-            AI CEO
-        </button>
-
-
-        <button>
-            ⚙️
-            <br>
-            Sozlamalar
-        </button>
-
-
-    </div>
-
-
-</div>
-
-
-<!-- DAROMAD / XARAJAT MODALI -->
-
-<div
-    class="modal"
-    id="modal"
->
-
-
-    <div class="modal-content">
-
-
-        <h2 id="modalTitle">
-            Daromad qo‘shish
-        </h2>
-
-
-        <input
-            type="number"
-            id="amount"
-            placeholder="Summa, masalan: 500000"
-        >
-
-
-        <input
-            type="text"
-            id="description"
-            placeholder="Izoh"
-        >
-
-
-        <div class="modal-buttons">
-
-
-            <button
-                onclick="closeModal()"
+            <div
+                id="modalTitle"
+                class="modal-title"
             >
-                Bekor qilish
-            </button>
+                Daromad qo‘shish
+            </div>
 
 
-            <button
-                class="primary"
-                onclick="saveData()"
+            <input
+                id="amount"
+                type="number"
+                placeholder="Summa"
+                min="1"
             >
-                Saqlash
-            </button>
 
+
+            <input
+                id="description"
+                type="text"
+                placeholder="Izoh"
+            >
+
+
+            <div class="modal-buttons">
+
+                <button
+                    class="cancel"
+                    onclick="closeModal()"
+                >
+                    Bekor qilish
+                </button>
+
+
+                <button
+                    class="save"
+                    onclick="saveData()"
+                >
+                    Saqlash
+                </button>
+
+            </div>
 
         </div>
 
-
     </div>
 
 
-</div>
+    <script>
+
+        let currentType = "income";
 
 
-<script>
+        // =================================================
+        // FORMAT MONEY
+        // =================================================
 
+        function formatMoney(amount) {
 
-let currentType = "";
+            return new Intl.NumberFormat(
+                "uz-UZ"
+            ).format(
+                Math.round(amount)
+            ) + " so‘m";
 
-
-const API_URL = "/api";
-
-
-// =========================================================
-// MODAL
-// =========================================================
-
-function openModal(type) {
-
-    currentType = type;
-
-    document.getElementById(
-        "modal"
-    ).style.display = "flex";
-
-
-    document.getElementById(
-        "modalTitle"
-    ).innerText =
-
-        type === "income"
-
-            ? "💰 Daromad qo‘shish"
-
-            : "💸 Xarajat qo‘shish";
-}
-
-
-function closeModal() {
-
-    document.getElementById(
-        "modal"
-    ).style.display = "none";
-
-
-    document.getElementById(
-        "amount"
-    ).value = "";
-
-
-    document.getElementById(
-        "description"
-    ).value = "";
-}
-
-
-// =========================================================
-// PUL FORMAT
-// =========================================================
-
-function formatMoney(value) {
-
-    return Number(
-        value
-    ).toLocaleString(
-        "uz-UZ"
-    ) + " so‘m";
-}
-
-
-// =========================================================
-// DASHBOARD
-// =========================================================
-
-async function loadDashboard() {
-
-    try {
-
-        const response =
-            await fetch(
-                API_URL + "/summary"
-            );
-
-
-        if (!response.ok) {
-
-            throw new Error(
-                "Hisobotni olishda xatolik"
-            );
         }
 
 
-        const data =
-            await response.json();
+        // =================================================
+        // OPEN MODAL
+        // =================================================
 
+        function openModal(type) {
 
-        document.getElementById(
-            "income"
-        ).innerText =
-            formatMoney(
-                data.income
-            );
+            currentType = type;
 
-
-        document.getElementById(
-            "expense"
-        ).innerText =
-            formatMoney(
-                data.expense
-            );
-
-
-        document.getElementById(
-            "profit"
-        ).innerText =
-            formatMoney(
-                data.profit
-            );
-
-
-    } catch (error) {
-
-        console.error(
-            error
-        );
-
-        alert(
-            "Serverdan ma'lumot olishda xatolik yuz berdi."
-        );
-    }
-}
-
-
-// =========================================================
-// TRANZAKSIYALAR TARIXI
-// =========================================================
-
-async function loadTransactions() {
-
-    try {
-
-        const response =
-            await fetch(
-                API_URL + "/transactions"
-            );
-
-
-        if (!response.ok) {
-
-            throw new Error(
-                "Operatsiyalarni olishda xatolik"
-            );
-        }
-
-
-        const data =
-            await response.json();
-
-
-        const container =
             document.getElementById(
-                "transactions"
-            );
+                "modal"
+            ).style.display = "flex";
 
 
-        if (
-            !data.transactions ||
-            data.transactions.length === 0
-        ) {
+            document.getElementById(
+                "amount"
+            ).value = "";
 
-            container.innerHTML =
-                `
-                <div class="empty">
-                    Hozircha operatsiyalar yo‘q.
-                </div>
+
+            document.getElementById(
+                "description"
+            ).value = "";
+
+
+            if (type === "income") {
+
+                document.getElementById(
+                    "modalTitle"
+                ).innerText =
+                    "💰 Daromad qo‘shish";
+
+            } else {
+
+                document.getElementById(
+                    "modalTitle"
+                ).innerText =
+                    "💸 Xarajat qo‘shish";
+
+            }
+
+
+            document.getElementById(
+                "amount"
+            ).focus();
+
+        }
+
+
+        // =================================================
+        // CLOSE MODAL
+        // =================================================
+
+        function closeModal() {
+
+            document.getElementById(
+                "modal"
+            ).style.display = "none";
+
+        }
+
+
+        // =================================================
+        // LOAD DASHBOARD
+        // =================================================
+
+        async function loadDashboard() {
+
+            try {
+
+                const response =
+                    await fetch(
+                        "/api/summary"
+                    );
+
+
+                const data =
+                    await response.json();
+
+
+                document.getElementById(
+                    "income"
+                ).innerText =
+                    formatMoney(
+                        data.income
+                    );
+
+
+                document.getElementById(
+                    "expense"
+                ).innerText =
+                    formatMoney(
+                        data.expense
+                    );
+
+
+                document.getElementById(
+                    "profit"
+                ).innerText =
+                    formatMoney(
+                        data.profit
+                    );
+
+            } catch (error) {
+
+                console.error(
+                    "Dashboard xatosi:",
+                    error
+                );
+
+            }
+
+        }
+
+
+        // =================================================
+        // LOAD TRANSACTIONS
+        // =================================================
+
+        async function loadTransactions() {
+
+            const container =
+                document.getElementById(
+                    "transactions"
+                );
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        "/api/transactions"
+                    );
+
+
+                const data =
+                    await response.json();
+
+
+                if (
+                    !data.success ||
+                    data.transactions.length === 0
+                ) {
+
+                    container.innerHTML = `
+                        <div class="empty">
+                            Hozircha operatsiyalar yo‘q.
+                        </div>
+                    `;
+
+                    return;
+
+                }
+
+
+                container.innerHTML = "";
+
+
+                data.transactions.forEach(
+                    transaction => {
+
+                        const isIncome =
+                            transaction.type === "income";
+
+
+                        const icon =
+                            isIncome
+                                ? "💰"
+                                : "💸";
+
+
+                        const sign =
+                            isIncome
+                                ? "+"
+                                : "-";
+
+
+                        const color =
+                            isIncome
+                                ? "#16a34a"
+                                : "#dc2626";
+
+
+                        const date =
+                            new Date(
+                                transaction.created_at
+                            );
+
+
+                        const dateText =
+                            date.toLocaleString(
+                                "uz-UZ"
+                            );
+
+
+                        const item =
+                            document.createElement(
+                                "div"
+                            );
+
+
+                        item.className =
+                            "transaction";
+
+
+                        item.innerHTML = `
+
+                            <div class="transaction-left">
+
+                                <div class="transaction-icon">
+                                    ${icon}
+                                </div>
+
+                                <div class="transaction-info">
+
+                                    <div class="transaction-description">
+                                        ${
+                                            transaction.description ||
+                                            (
+                                                isIncome
+                                                    ? "Daromad"
+                                                    : "Xarajat"
+                                            )
+                                        }
+                                    </div>
+
+                                    <div class="transaction-date">
+                                        ${dateText}
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <div
+                                class="transaction-amount"
+                                style="color:${color};"
+                            >
+                                ${sign}${formatMoney(
+                                    transaction.amount
+                                )}
+                            </div>
+
+                        `;
+
+
+                        container.appendChild(
+                            item
+                        );
+
+                    }
+                );
+
+            } catch (error) {
+
+                console.error(
+                    "Transaction xatosi:",
+                    error
+                );
+
+
+                container.innerHTML = `
+                    <div class="empty">
+                        Ma'lumotlarni yuklashda xatolik.
+                    </div>
                 `;
 
-            return;
+            }
+
         }
 
 
-        container.innerHTML = "";
+        // =================================================
+        // SAVE DATA
+        // =================================================
+
+        async function saveData() {
+
+            const amount =
+                document.getElementById(
+                    "amount"
+                ).value;
 
 
-        data.transactions.forEach(
-            transaction => {
+            const description =
+                document.getElementById(
+                    "description"
+                ).value;
 
 
-                const item =
-                    document.createElement(
-                        "div"
+            if (
+                !amount ||
+                Number(amount) <= 0
+            ) {
+
+                alert(
+                    "Iltimos, summani kiriting."
+                );
+
+                return;
+
+            }
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        "/api/transactions",
+                        {
+                            method: "POST",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body: JSON.stringify({
+                                type: currentType,
+                                amount: Number(amount),
+                                description:
+                                    description
+                            })
+                        }
                     );
 
 
-                item.className =
-                    "transaction";
+                const data =
+                    await response.json();
 
 
-                const isIncome =
-                    transaction.type === "income";
+                if (!data.success) {
+
+                    alert(
+                        data.error ||
+                        "Xatolik yuz berdi."
+                    );
+
+                    return;
+
+                }
 
 
-                const icon =
-                    isIncome
-                        ? "💰"
-                        : "💸";
+                closeModal();
 
 
-                const name =
-                    isIncome
-                        ? "Daromad"
-                        : "Xarajat";
+                await loadDashboard();
+
+                await loadTransactions();
+
+                if (
+                    document.getElementById(
+                        "reportCard"
+                    ).style.display !== "none"
+                ) {
+
+                    loadReport(
+                        currentReportPeriod
+                    );
+
+                }
 
 
-                const sign =
-                    isIncome
-                        ? "+"
-                        : "-";
+            } catch (error) {
+
+                console.error(
+                    "Saqlash xatosi:",
+                    error
+                );
 
 
-                const valueClass =
-                    isIncome
-                        ? "income-value"
-                        : "expense-value";
+                alert(
+                    "Server bilan bog‘lanishda xatolik."
+                );
+
+            }
+
+        }
 
 
-                const date =
-                    new Date(
-                        transaction.created_at
-                    ).toLocaleString(
-                        "uz-UZ"
+        // =================================================
+        // REPORT
+        // =================================================
+
+        let currentReportPeriod = "today";
+
+
+        function showReport() {
+
+            const reportCard =
+                document.getElementById(
+                    "reportCard"
+                );
+
+
+            reportCard.style.display =
+                "block";
+
+
+            reportCard.scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
+
+
+            loadReport(
+                currentReportPeriod
+            );
+
+        }
+
+
+        async function loadReport(period) {
+
+            currentReportPeriod = period;
+
+
+            document.getElementById(
+                "todayTab"
+            ).classList.remove(
+                "active"
+            );
+
+
+            document.getElementById(
+                "weekTab"
+            ).classList.remove(
+                "active"
+            );
+
+
+            document.getElementById(
+                "monthTab"
+            ).classList.remove(
+                "active"
+            );
+
+
+            if (period === "today") {
+
+                document.getElementById(
+                    "todayTab"
+                ).classList.add(
+                    "active"
+                );
+
+            }
+
+
+            if (period === "week") {
+
+                document.getElementById(
+                    "weekTab"
+                ).classList.add(
+                    "active"
+                );
+
+            }
+
+
+            if (period === "month") {
+
+                document.getElementById(
+                    "monthTab"
+                ).classList.add(
+                    "active"
+                );
+
+            }
+
+
+            const content =
+                document.getElementById(
+                    "reportContent"
+                );
+
+
+            content.innerHTML =
+                "Hisobot yuklanmoqda...";
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        "/api/report?period=" +
+                        period
                     );
 
 
-                item.innerHTML = `
-
-                    <div class="transaction-row">
-
-
-                        <div>
-
-                            <div class="transaction-name">
-
-                                ${icon}
-                                ${name}
-
-                            </div>
+                const data =
+                    await response.json();
 
 
-                            <div class="transaction-description">
+                if (!data.success) {
 
-                                ${
-                                    transaction.description ||
-                                    "Izoh yo‘q"
-                                }
+                    content.innerHTML =
+                        "Hisobotni yuklashda xatolik.";
 
-                            </div>
+                    return;
+
+                }
 
 
-                            <div class="transaction-date">
+                let periodName =
+                    "Bugun";
 
-                                ${date}
 
-                            </div>
+                if (period === "week") {
 
+                    periodName =
+                        "Oxirgi 7 kun";
+
+                }
+
+
+                if (period === "month") {
+
+                    periodName =
+                        "Joriy oy";
+
+                }
+
+
+                content.innerHTML = `
+
+                    <div
+                        class="report-box report-income"
+                    >
+
+                        <div class="report-label">
+                            💰 Daromad
                         </div>
-
 
                         <div
-                            class="${valueClass}"
+                            class="report-number income"
                         >
-
-                            ${sign}
                             ${formatMoney(
-                                transaction.amount
+                                data.income
                             )}
-
                         </div>
 
+                    </div>
 
+
+                    <div
+                        class="report-box report-expense"
+                    >
+
+                        <div class="report-label">
+                            💸 Xarajat
+                        </div>
+
+                        <div
+                            class="report-number expense"
+                        >
+                            ${formatMoney(
+                                data.expense
+                            )}
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        class="report-box report-profit"
+                    >
+
+                        <div class="report-label">
+                            📈 Sof foyda
+                        </div>
+
+                        <div
+                            class="report-number profit"
+                        >
+                            ${formatMoney(
+                                data.profit
+                            )}
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        class="report-box report-count"
+                    >
+
+                        <div class="report-label">
+                            🧾 Operatsiyalar
+                        </div>
+
+                        <div
+                            class="report-number"
+                        >
+                            ${data.transaction_count} ta
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        style="
+                            text-align:center;
+                            color:#6b7280;
+                            font-size:13px;
+                            margin-top:12px;
+                        "
+                    >
+                        📅 ${periodName}
                     </div>
 
                 `;
 
+            } catch (error) {
 
-                container.appendChild(
-                    item
+                console.error(
+                    "Report xatosi:",
+                    error
                 );
+
+
+                content.innerHTML = `
+                    <div class="empty">
+                        Server bilan bog‘lanishda xatolik.
+                    </div>
+                `;
+
+            }
+
+        }
+
+
+        // =================================================
+        // START
+        // =================================================
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            function() {
+
+                loadDashboard();
+
+                loadTransactions();
 
             }
         );
 
 
-    } catch (error) {
-
-        console.error(
-            error
-        );
-
+        // =================================================
+        // CLOSE MODAL OUTSIDE
+        // =================================================
 
         document.getElementById(
-            "transactions"
-        ).innerHTML =
+            "modal"
+        ).addEventListener(
+            "click",
+            function(event) {
 
-            `
-            <div
-                class="empty"
-                style="color:#dc2626;"
-            >
-                Tarixni yuklashda xatolik.
-            </div>
-            `;
-    }
-}
+                if (
+                    event.target === this
+                ) {
 
+                    closeModal();
 
-// =========================================================
-// DAROMAD / XARAJAT SAQLASH
-// =========================================================
-
-async function saveData() {
-
-
-    const amount =
-        Number(
-            document.getElementById(
-                "amount"
-            ).value
-        );
-
-
-    const description =
-        document.getElementById(
-            "description"
-        ).value.trim();
-
-
-    if (
-        !Number.isFinite(
-            amount
-        ) ||
-        amount <= 0
-    ) {
-
-        alert(
-            "Iltimos, to‘g‘ri summani kiriting."
-        );
-
-        return;
-    }
-
-
-    const saveButton =
-        document.querySelector(
-            ".modal-buttons .primary"
-        );
-
-
-    saveButton.disabled =
-        true;
-
-
-    saveButton.innerText =
-        "Saqlanmoqda...";
-
-
-    try {
-
-
-        const response =
-            await fetch(
-                API_URL + "/transactions",
-                {
-
-                    method: "POST",
-
-                    headers: {
-
-                        "Content-Type":
-                            "application/json"
-                    },
-
-                    body:
-                        JSON.stringify({
-
-                            type:
-                                currentType,
-
-                            amount:
-                                amount,
-
-                            description:
-                                description
-                        })
                 }
-            );
 
-
-        const result =
-            await response.json();
-
-
-        if (
-            !response.ok ||
-            !result.success
-        ) {
-
-            throw new Error(
-                result.error ||
-                "Saqlashda xatolik"
-            );
-        }
-
-
-        closeModal();
-
-
-        await loadDashboard();
-
-
-        await loadTransactions();
-
-
-        alert(
-            "Ma'lumot muvaffaqiyatli saqlandi!"
+            }
         );
 
-
-    } catch (error) {
-
-        alert(
-            "Xatolik: " +
-            error.message
-        );
-
-
-    } finally {
-
-        saveButton.disabled =
-            false;
-
-
-        saveButton.innerText =
-            "Saqlash";
-    }
-}
-
-
-// =========================================================
-// SAHIFA OCHILGANDA
-// =========================================================
-
-document.addEventListener(
-    "DOMContentLoaded",
-    async function () {
-
-        await loadDashboard();
-
-        await loadTransactions();
-
-    }
-);
-
-
-</script>
-
+    </script>
 
 </body>
-
 </html>
