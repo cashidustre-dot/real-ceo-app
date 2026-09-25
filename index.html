@@ -231,71 +231,120 @@
 </div>
 
 <script>
-
 let currentType = "";
 
-let income = 0;
-let expense = 0;
+const API_URL = "/api";
 
 function openModal(type) {
-
     currentType = type;
 
     document.getElementById("modal").style.display = "flex";
 
-    if (type === "income") {
-        document.getElementById("modalTitle").innerText =
-            "💰 Daromad qo‘shish";
-    } else {
-        document.getElementById("modalTitle").innerText =
-            "💸 Xarajat qo‘shish";
-    }
+    document.getElementById("modalTitle").innerText =
+        type === "income"
+            ? "💰 Daromad qo‘shish"
+            : "💸 Xarajat qo‘shish";
 }
 
 function closeModal() {
-
     document.getElementById("modal").style.display = "none";
-
     document.getElementById("amount").value = "";
     document.getElementById("description").value = "";
 }
 
-function saveData() {
+function formatMoney(value) {
+    return Number(value).toLocaleString("uz-UZ") + " so‘m";
+}
 
+// PostgreSQL bazasidan hisobotni olish
+async function loadDashboard() {
+    try {
+        const response = await fetch(API_URL + "/summary");
+
+        if (!response.ok) {
+            throw new Error("Hisobotni olishda xatolik");
+        }
+
+        const data = await response.json();
+
+        document.getElementById("income").innerText =
+            formatMoney(data.income);
+
+        document.getElementById("expense").innerText =
+            formatMoney(data.expense);
+
+        document.getElementById("profit").innerText =
+            formatMoney(data.profit);
+
+    } catch (error) {
+        console.error(error);
+        alert("Serverdan ma'lumot olishda xatolik yuz berdi.");
+    }
+}
+
+// Daromad yoki xarajatni PostgreSQL bazasiga saqlash
+async function saveData() {
     const amount = Number(
         document.getElementById("amount").value
     );
 
-    if (!amount || amount <= 0) {
-        alert("Iltimos, summani kiriting.");
+    const description =
+        document.getElementById("description").value.trim();
+
+    if (!Number.isFinite(amount) || amount <= 0) {
+        alert("Iltimos, to‘g‘ri summani kiriting.");
         return;
     }
 
-    if (currentType === "income") {
-        income += amount;
-    } else {
-        expense += amount;
+    const saveButton =
+        document.querySelector(".modal-buttons .primary");
+
+    saveButton.disabled = true;
+    saveButton.innerText = "Saqlanmoqda...";
+
+    try {
+        const response = await fetch(
+            API_URL + "/transactions",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    type: currentType,
+                    amount: amount,
+                    description: description
+                })
+            }
+        );
+
+        const result = await response.json();
+
+        if (!response.ok || !result.success) {
+            throw new Error(
+                result.error || "Saqlashda xatolik"
+            );
+        }
+
+        closeModal();
+
+        await loadDashboard();
+
+        alert("Ma'lumot muvaffaqiyatli saqlandi!");
+
+    } catch (error) {
+        alert("Xatolik: " + error.message);
+    } finally {
+        saveButton.disabled = false;
+        saveButton.innerText = "Saqlash";
     }
-
-    updateDashboard();
-
-    closeModal();
 }
 
-function updateDashboard() {
-
-    document.getElementById("income").innerText =
-        income.toLocaleString("uz-UZ") + " so'm";
-
-    document.getElementById("expense").innerText =
-        expense.toLocaleString("uz-UZ") + " so'm";
-
-    const profit = income - expense;
-
-    document.getElementById("profit").innerText =
-        profit.toLocaleString("uz-UZ") + " so'm";
-}
-
+// Sahifa ochilganda ma'lumotlarni yuklash
+document.addEventListener(
+    "DOMContentLoaded",
+    loadDashboard
+);
 </script>
 
 </body>
