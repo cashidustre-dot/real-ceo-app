@@ -3,381 +3,649 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Real CEO</title>
 
 <style>
-* {
-    box-sizing: border-box;
+
+*{
+    box-sizing:border-box;
 }
 
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: #f4f6f8;
-    color: #222;
+body{
+    margin:0;
+    font-family:Arial,Helvetica,sans-serif;
+    background:#f4f6f8;
+    color:#1f2937;
 }
 
-header {
-    background: #111827;
-    color: white;
-    padding: 18px;
-    text-align: center;
-    font-size: 24px;
-    font-weight: bold;
+button{
+    border:none;
+    cursor:pointer;
 }
 
-.container {
-    max-width: 1200px;
-    margin: auto;
-    padding: 15px;
+.topbar{
+    background:#111827;
+    color:white;
+    padding:15px 20px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    position:sticky;
+    top:0;
+    z-index:100;
 }
 
-.nav {
-    display: flex;
-    gap: 8px;
-    overflow-x: auto;
-    margin-bottom: 15px;
+.logo{
+    font-size:22px;
+    font-weight:bold;
 }
 
-.nav button {
-    white-space: nowrap;
-    border: none;
-    background: white;
-    padding: 12px 16px;
-    border-radius: 10px;
-    cursor: pointer;
-    font-weight: bold;
+.logo span{
+    color:#22c55e;
 }
 
-.nav button.active {
-    background: #111827;
-    color: white;
+.menu{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
 }
 
-.section {
-    display: none;
+.menu button{
+    background:#1f2937;
+    color:#fff;
+    padding:10px 14px;
+    border-radius:8px;
 }
 
-.section.active {
-    display: block;
+.menu button:hover,
+.menu button.active{
+    background:#22c55e;
 }
 
-.cards {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 12px;
-    margin-bottom: 20px;
+.container{
+    max-width:1400px;
+    margin:auto;
+    padding:20px;
 }
 
-.card {
-    background: white;
-    border-radius: 14px;
-    padding: 18px;
-    box-shadow: 0 2px 8px rgba(0,0,0,.06);
+.page{
+    display:none;
 }
 
-.card-title {
-    font-size: 14px;
-    color: #6b7280;
-    margin-bottom: 8px;
+.page.active{
+    display:block;
 }
 
-.card-value {
-    font-size: 25px;
-    font-weight: bold;
+h1{
+    margin-top:0;
 }
 
-.green {
-    color: #15803d;
+h2{
+    margin-top:0;
 }
 
-.red {
-    color: #dc2626;
+.cards{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:15px;
+    margin-bottom:20px;
 }
 
-.orange {
-    color: #ea580c;
+.card{
+    background:white;
+    border-radius:14px;
+    padding:18px;
+    box-shadow:0 3px 12px rgba(0,0,0,.06);
 }
 
-.blue {
-    color: #2563eb;
+.card-title{
+    color:#6b7280;
+    font-size:14px;
+    margin-bottom:8px;
 }
 
-.panel {
-    background: white;
-    border-radius: 14px;
-    padding: 18px;
-    margin-bottom: 18px;
-    box-shadow: 0 2px 8px rgba(0,0,0,.06);
+.card-value{
+    font-size:25px;
+    font-weight:bold;
 }
 
-.panel-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 15px;
-    flex-wrap: wrap;
+.profit{
+    color:#16a34a;
 }
 
-.panel h2 {
-    margin: 0;
-    font-size: 20px;
+.loss{
+    color:#dc2626;
 }
 
-button.primary {
-    background: #2563eb;
-    color: white;
-    border: none;
-    padding: 11px 16px;
-    border-radius: 9px;
-    cursor: pointer;
-    font-weight: bold;
+.section{
+    background:white;
+    border-radius:14px;
+    padding:20px;
+    margin-bottom:20px;
+    box-shadow:0 3px 12px rgba(0,0,0,.05);
 }
 
-button.success {
-    background: #16a34a;
-    color: white;
-    border: none;
-    padding: 9px 13px;
-    border-radius: 8px;
-    cursor: pointer;
+.toolbar{
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+    align-items:center;
+    margin-bottom:15px;
+    flex-wrap:wrap;
 }
 
-button.danger {
-    background: #dc2626;
-    color: white;
-    border: none;
-    padding: 8px 12px;
-    border-radius: 8px;
-    cursor: pointer;
+.btn{
+    padding:10px 15px;
+    border-radius:8px;
+    background:#111827;
+    color:white;
 }
 
-button.warning {
-    background: #ea580c;
-    color: white;
-    border: none;
-    padding: 8px 12px;
-    border-radius: 8px;
-    cursor: pointer;
+.btn.green{
+    background:#16a34a;
 }
 
-button.gray {
-    background: #6b7280;
-    color: white;
-    border: none;
-    padding: 9px 13px;
-    border-radius: 8px;
-    cursor: pointer;
+.btn.red{
+    background:#dc2626;
 }
 
-table {
-    width: 100%;
-    border-collapse: collapse;
+.btn.blue{
+    background:#2563eb;
+}
+
+.btn.gray{
+    background:#6b7280;
+}
+
+.btn:hover{
+    opacity:.9;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
 }
 
 th,
-td {
-    padding: 11px 8px;
-    border-bottom: 1px solid #eee;
-    text-align: left;
+td{
+    padding:11px 9px;
+    border-bottom:1px solid #e5e7eb;
+    text-align:left;
 }
 
-th {
-    background: #f8fafc;
+th{
+    background:#f9fafb;
 }
 
-.low {
-    background: #fff1f2;
+.badge{
+    display:inline-block;
+    padding:5px 9px;
+    border-radius:20px;
+    font-size:12px;
 }
 
-.form-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 12px;
+.badge.green{
+    background:#dcfce7;
+    color:#166534;
 }
 
-label {
-    display: block;
-    font-size: 13px;
-    margin-bottom: 5px;
-    color: #555;
+.badge.red{
+    background:#fee2e2;
+    color:#991b1b;
+}
+
+.badge.yellow{
+    background:#fef3c7;
+    color:#92400e;
 }
 
 input,
-select {
-    width: 100%;
-    padding: 11px;
-    border: 1px solid #d1d5db;
-    border-radius: 8px;
-    font-size: 15px;
+select{
+    width:100%;
+    padding:11px;
+    border:1px solid #d1d5db;
+    border-radius:8px;
+    font-size:15px;
 }
 
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1000;
-    inset: 0;
-    background: rgba(0,0,0,.55);
-    padding: 15px;
-    overflow-y: auto;
+label{
+    display:block;
+    font-size:13px;
+    margin-bottom:6px;
+    font-weight:bold;
 }
 
-.modal-box {
-    background: white;
-    max-width: 650px;
-    margin: 30px auto;
-    padding: 20px;
-    border-radius: 15px;
+.form-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:14px;
 }
 
-.modal-box h2 {
-    margin-top: 0;
+.form-group{
+    margin-bottom:10px;
 }
 
-.modal-actions {
-    display: flex;
-    gap: 8px;
-    justify-content: flex-end;
-    margin-top: 18px;
+.modal{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.55);
+    z-index:1000;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
 }
 
-.ingredient-row {
-    display: grid;
-    grid-template-columns: 1fr 130px 45px;
-    gap: 8px;
-    margin-bottom: 8px;
-    align-items: center;
+.modal.show{
+    display:flex;
 }
 
-.recipe-card {
-    border: 1px solid #e5e7eb;
-    border-radius: 12px;
-    padding: 15px;
-    margin-bottom: 12px;
+.modal-content{
+    background:white;
+    width:100%;
+    max-width:650px;
+    max-height:90vh;
+    overflow:auto;
+    border-radius:15px;
+    padding:22px;
 }
 
-.recipe-title {
-    font-size: 18px;
-    font-weight: bold;
+.modal-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:15px;
 }
 
-.recipe-item {
-    color: #555;
-    padding: 4px 0;
+.close{
+    font-size:26px;
+    cursor:pointer;
 }
 
-.badge {
-    display: inline-block;
-    padding: 5px 8px;
-    border-radius: 7px;
-    background: #eef2ff;
-    color: #3730a3;
-    font-size: 12px;
+.ingredient-row{
+    display:grid;
+    grid-template-columns:1fr 120px 45px;
+    gap:8px;
+    margin-bottom:8px;
+    align-items:end;
 }
 
-.empty {
-    text-align: center;
-    padding: 25px;
-    color: #777;
+.remove-btn{
+    background:#fee2e2;
+    color:#991b1b;
+    height:42px;
+    border-radius:7px;
 }
 
-@media(max-width:600px) {
-    .container {
-        padding: 10px;
+.preview{
+    background:#f3f4f6;
+    border-radius:10px;
+    padding:12px;
+    margin:12px 0;
+}
+
+.profit-box{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:12px;
+}
+
+.profit-item{
+    padding:15px;
+    background:#f9fafb;
+    border-radius:10px;
+}
+
+.profit-item small{
+    display:block;
+    color:#6b7280;
+    margin-bottom:5px;
+}
+
+.profit-item strong{
+    font-size:20px;
+}
+
+.period-buttons{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+}
+
+.period-buttons button{
+    padding:9px 14px;
+    border-radius:8px;
+    background:#e5e7eb;
+}
+
+.period-buttons button.active{
+    background:#111827;
+    color:white;
+}
+
+.empty{
+    text-align:center;
+    padding:30px;
+    color:#6b7280;
+}
+
+.recipe-item{
+    background:#f9fafb;
+    padding:12px;
+    border-radius:8px;
+    margin-bottom:7px;
+}
+
+.top-product{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+    padding:13px 0;
+    border-bottom:1px solid #eee;
+}
+
+.top-product:last-child{
+    border-bottom:none;
+}
+
+.product-name{
+    font-weight:bold;
+}
+
+.product-meta{
+    color:#6b7280;
+    font-size:13px;
+}
+
+@media(max-width:1000px){
+
+    .cards{
+        grid-template-columns:repeat(2,1fr);
     }
 
-    th,
-    td {
-        font-size: 13px;
+}
+
+@media(max-width:700px){
+
+    .topbar{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:12px;
     }
 
-    .ingredient-row {
-        grid-template-columns: 1fr 100px 40px;
+    .menu{
+        width:100%;
+        overflow-x:auto;
+        flex-wrap:nowrap;
     }
+
+    .menu button{
+        white-space:nowrap;
+    }
+
+    .container{
+        padding:12px;
+    }
+
+    .cards{
+        grid-template-columns:1fr 1fr;
+        gap:10px;
+    }
+
+    .card{
+        padding:14px;
+    }
+
+    .card-value{
+        font-size:19px;
+    }
+
+    .form-grid{
+        grid-template-columns:1fr;
+    }
+
+    .profit-box{
+        grid-template-columns:1fr;
+    }
+
+    table{
+        min-width:700px;
+    }
+
+    .section{
+        overflow-x:auto;
+    }
+
+    .section > .toolbar,
+    .section > h2{
+        min-width:auto;
+    }
+
 }
+
 </style>
 </head>
 
 <body>
 
-<header>
-    🏢 REAL CEO
+<header class="topbar">
+
+    <div class="logo">
+        REAL <span>CEO</span>
+    </div>
+
+    <div class="menu">
+
+        <button class="active" onclick="showPage('dashboard',this)">
+            📊 Dashboard
+        </button>
+
+        <button onclick="showPage('sales',this)">
+            🛒 Sotuv
+        </button>
+
+        <button onclick="showPage('finance',this)">
+            💳 Moliya
+        </button>
+
+        <button onclick="showPage('reports',this)">
+            📈 Hisobot
+        </button>
+
+        <button onclick="showPage('inventory',this)">
+            📦 Ombor
+        </button>
+
+        <button onclick="showPage('recipes',this)">
+            🍽️ Retseptlar
+        </button>
+
+        <button onclick="showPage('employees',this)">
+            👥 Xodimlar
+        </button>
+
+    </div>
+
 </header>
 
+
 <div class="container">
-
-<!-- =====================================================
-     NAVIGATION
-===================================================== -->
-
-<div class="nav">
-    <button class="active" onclick="showSection('dashboard', this)">📊 Dashboard</button>
-    <button onclick="showSection('sales', this)">💰 Sotuv</button>
-    <button onclick="showSection('finance', this)">💳 Moliya</button>
-    <button onclick="showSection('reports', this)">📈 Hisobot</button>
-    <button onclick="showSection('inventory', this)">📦 Ombor</button>
-    <button onclick="showSection('recipes', this)">🍽️ Retseptlar</button>
-    <button onclick="showSection('employees', this)">👨‍💼 Xodimlar</button>
-</div>
 
 
 <!-- =====================================================
      DASHBOARD
 ===================================================== -->
 
-<section id="dashboard" class="section active">
+<section id="dashboard" class="page active">
+
+    <h1>📊 Boshqaruv paneli</h1>
 
     <div class="cards">
 
         <div class="card">
-            <div class="card-title">💰 Daromad</div>
-            <div id="dashboardIncome" class="card-value green">
-                0 so'm
+            <div class="card-title">
+                Jami daromad
+            </div>
+
+            <div class="card-value" id="dashboardIncome">
+                0 so‘m
             </div>
         </div>
 
+
         <div class="card">
-            <div class="card-title">💸 Xarajat</div>
-            <div id="dashboardExpense" class="card-value red">
-                0 so'm
+            <div class="card-title">
+                Jami xarajat
+            </div>
+
+            <div class="card-value" id="dashboardExpense">
+                0 so‘m
             </div>
         </div>
 
+
         <div class="card">
-            <div class="card-title">📈 Foyda</div>
-            <div id="dashboardProfit" class="card-value blue">
-                0 so'm
+            <div class="card-title">
+                Sof foyda
+            </div>
+
+            <div class="card-value profit" id="dashboardProfit">
+                0 so‘m
             </div>
         </div>
 
+
         <div class="card">
-            <div class="card-title">📦 Ombor qiymati</div>
-            <div id="dashboardInventory" class="card-value">
-                0 so'm
+            <div class="card-title">
+                Ombor qiymati
+            </div>
+
+            <div class="card-value" id="dashboardInventory">
+                0 so‘m
             </div>
         </div>
 
+
         <div class="card">
-            <div class="card-title">⚠️ Kam qolgan</div>
-            <div id="dashboardLowStock" class="card-value orange">
+            <div class="card-title">
+                Kam qolgan mahsulot
+            </div>
+
+            <div class="card-value" id="dashboardLowStock">
                 0
+            </div>
+        </div>
+
+
+        <div class="card">
+            <div class="card-title">
+                Bugungi sotuv
+            </div>
+
+            <div class="card-value" id="dashboardTodaySales">
+                0
+            </div>
+        </div>
+
+
+        <div class="card">
+            <div class="card-title">
+                Bugungi tannarx
+            </div>
+
+            <div class="card-value" id="dashboardTodayCost">
+                0 so‘m
+            </div>
+        </div>
+
+
+        <div class="card">
+            <div class="card-title">
+                Bugungi mahsulot foydasi
+            </div>
+
+            <div class="card-value profit" id="dashboardTodayProfit">
+                0 so‘m
             </div>
         </div>
 
     </div>
 
-    <div class="panel">
-        <div class="panel-header">
-            <h2>Bugungi sotuv</h2>
-            <button class="primary" onclick="showSectionByName('sales')">
-                + Sotuv
-            </button>
+
+    <div class="section">
+
+        <div class="toolbar">
+
+            <h2>📊 Foyda tahlili</h2>
+
+            <div class="period-buttons">
+
+                <button
+                    id="profitTodayBtn"
+                    class="active"
+                    onclick="loadProfitPeriod('today')">
+                    Bugun
+                </button>
+
+                <button
+                    id="profitWeekBtn"
+                    onclick="loadProfitPeriod('week')">
+                    Hafta
+                </button>
+
+                <button
+                    id="profitMonthBtn"
+                    onclick="loadProfitPeriod('month')">
+                    Oy
+                </button>
+
+            </div>
+
         </div>
 
-        <div id="dashboardSalesSummary">
-            Yuklanmoqda...
+
+        <div class="profit-box">
+
+            <div class="profit-item">
+                <small>Daromad</small>
+                <strong id="profitRevenue">
+                    0 so‘m
+                </strong>
+            </div>
+
+            <div class="profit-item">
+                <small>Tannarx</small>
+                <strong id="profitCost">
+                    0 so‘m
+                </strong>
+            </div>
+
+            <div class="profit-item">
+                <small>Foyda</small>
+                <strong
+                    class="profit"
+                    id="profitValue">
+                    0 so‘m
+                </strong>
+            </div>
+
         </div>
+
+    </div>
+
+
+    <div class="section">
+
+        <h2>🔥 Eng ko‘p sotilgan mahsulotlar</h2>
+
+        <div id="topProductsDashboard">
+            <div class="empty">
+                Ma'lumot yuklanmoqda...
+            </div>
+        </div>
+
     </div>
 
 </section>
@@ -387,39 +655,78 @@ select {
      SALES
 ===================================================== -->
 
-<section id="sales" class="section">
+<section id="sales" class="page">
 
-    <div class="panel">
+    <div class="toolbar">
 
-        <div class="panel-header">
-            <h2>💰 Sotuvlar</h2>
+        <h1>🛒 Sotuvlar</h1>
 
-            <button class="primary" onclick="openSaleModal()">
-                + Yangi sotuv
-            </button>
+        <button
+            class="btn green"
+            onclick="openSaleModal()">
+            + Sotuv qo‘shish
+        </button>
+
+    </div>
+
+
+    <div class="cards">
+
+        <div class="card">
+
+            <div class="card-title">
+                Bugungi sotilgan miqdor
+            </div>
+
+            <div
+                class="card-value"
+                id="salesQuantity">
+                0
+            </div>
+
         </div>
 
-        <div id="salesSummary" class="cards"></div>
 
-        <div style="overflow-x:auto;">
-            <table>
+        <div class="card">
 
-                <thead>
-                    <tr>
-                        <th>Taom</th>
-                        <th>Miqdor</th>
-                        <th>Narx</th>
-                        <th>Jami</th>
-                        <th>Sana</th>
-                        <th></th>
-                    </tr>
-                </thead>
+            <div class="card-title">
+                Bugungi savdo
+            </div>
 
-                <tbody id="salesTable">
-                </tbody>
+            <div
+                class="card-value"
+                id="salesTotal">
+                0 so‘m
+            </div>
 
-            </table>
         </div>
+
+    </div>
+
+
+    <div class="section">
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>ID</th>
+                    <th>Mahsulot</th>
+                    <th>Retsept</th>
+                    <th>Miqdor</th>
+                    <th>Narx</th>
+                    <th>Jami</th>
+                    <th>Sana</th>
+                    <th>Amal</th>
+                </tr>
+
+            </thead>
+
+            <tbody id="salesTable">
+            </tbody>
+
+        </table>
 
     </div>
 
@@ -430,36 +737,42 @@ select {
      FINANCE
 ===================================================== -->
 
-<section id="finance" class="section">
+<section id="finance" class="page">
 
-    <div class="panel">
+    <div class="toolbar">
 
-        <div class="panel-header">
-            <h2>💳 Moliya</h2>
+        <h1>💳 Moliya</h1>
 
-            <button class="primary" onclick="openTransactionModal()">
-                + Tranzaksiya
-            </button>
-        </div>
+        <button
+            class="btn green"
+            onclick="openTransactionModal()">
+            + Tranzaksiya
+        </button>
 
-        <div style="overflow-x:auto;">
-            <table>
+    </div>
 
-                <thead>
-                    <tr>
-                        <th>Turi</th>
-                        <th>Summa</th>
-                        <th>Izoh</th>
-                        <th>Sana</th>
-                        <th></th>
-                    </tr>
-                </thead>
 
-                <tbody id="transactionsTable">
-                </tbody>
+    <div class="section">
 
-            </table>
-        </div>
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>ID</th>
+                    <th>Turi</th>
+                    <th>Summa</th>
+                    <th>Izoh</th>
+                    <th>Sana</th>
+                    <th>Amal</th>
+                </tr>
+
+            </thead>
+
+            <tbody id="transactionsTable">
+            </tbody>
+
+        </table>
 
     </div>
 
@@ -470,51 +783,93 @@ select {
      REPORTS
 ===================================================== -->
 
-<section id="reports" class="section">
+<section id="reports" class="page">
 
-    <div class="panel">
+    <h1>📈 Hisobot</h1>
 
-        <div class="panel-header">
-            <h2>📈 Hisobot</h2>
 
-            <div>
-                <button class="gray" onclick="loadReport('today')">
-                    Bugun
-                </button>
+    <div class="section">
 
-                <button class="gray" onclick="loadReport('week')">
-                    7 kun
-                </button>
+        <div class="period-buttons">
 
-                <button class="gray" onclick="loadReport('month')">
-                    30 kun
-                </button>
-            </div>
+            <button
+                class="active"
+                id="reportTodayBtn"
+                onclick="loadReportPeriod('today')">
+                Bugun
+            </button>
+
+            <button
+                id="reportWeekBtn"
+                onclick="loadReportPeriod('week')">
+                Hafta
+            </button>
+
+            <button
+                id="reportMonthBtn"
+                onclick="loadReportPeriod('month')">
+                Oy
+            </button>
+
         </div>
 
-        <div class="cards">
+    </div>
 
-            <div class="card">
-                <div class="card-title">Daromad</div>
-                <div id="reportIncome" class="card-value green">
-                    0
-                </div>
+
+    <div class="cards">
+
+        <div class="card">
+
+            <div class="card-title">
+                Daromad
             </div>
 
-            <div class="card">
-                <div class="card-title">Xarajat</div>
-                <div id="reportExpense" class="card-value red">
-                    0
-                </div>
+            <div
+                class="card-value"
+                id="reportIncome">
+                0 so‘m
             </div>
 
-            <div class="card">
-                <div class="card-title">Foyda</div>
-                <div id="reportProfit" class="card-value blue">
-                    0
-                </div>
+        </div>
+
+
+        <div class="card">
+
+            <div class="card-title">
+                Xarajat
             </div>
 
+            <div
+                class="card-value"
+                id="reportExpense">
+                0 so‘m
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="card-title">
+                Foyda
+            </div>
+
+            <div
+                class="card-value profit"
+                id="reportProfit">
+                0 so‘m
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="section">
+
+        <h2>🔥 Eng ko‘p sotilgan mahsulotlar</h2>
+
+        <div id="topProductsReport">
         </div>
 
     </div>
@@ -526,64 +881,94 @@ select {
      INVENTORY
 ===================================================== -->
 
-<section id="inventory" class="section">
+<section id="inventory" class="page">
 
-    <div class="panel">
+    <div class="toolbar">
 
-        <div class="panel-header">
-            <h2>📦 Ombor</h2>
+        <h1>📦 Ombor</h1>
 
-            <button class="primary" onclick="openProductModal()">
-                + Mahsulot
-            </button>
-        </div>
+        <button
+            class="btn green"
+            onclick="openProductModal()">
+            + Mahsulot
+        </button>
 
-        <div class="cards">
+    </div>
 
-            <div class="card">
-                <div class="card-title">Mahsulotlar</div>
-                <div id="inventoryProducts" class="card-value">
-                    0
-                </div>
+
+    <div class="cards">
+
+        <div class="card">
+
+            <div class="card-title">
+                Ombor qiymati
             </div>
 
-            <div class="card">
-                <div class="card-title">Umumiy qiymat</div>
-                <div id="inventoryValue" class="card-value">
-                    0 so'm
-                </div>
-            </div>
-
-            <div class="card">
-                <div class="card-title">Kam qolgan</div>
-                <div id="inventoryLow" class="card-value orange">
-                    0
-                </div>
+            <div
+                class="card-value"
+                id="inventoryTotal">
+                0 so‘m
             </div>
 
         </div>
 
-        <div style="overflow-x:auto;">
 
-            <table>
+        <div class="card">
 
-                <thead>
-                    <tr>
-                        <th>Mahsulot</th>
-                        <th>Miqdor</th>
-                        <th>Min.</th>
-                        <th>Birlik narxi</th>
-                        <th>Holat</th>
-                        <th>Amal</th>
-                    </tr>
-                </thead>
+            <div class="card-title">
+                Mahsulotlar
+            </div>
 
-                <tbody id="inventoryTable">
-                </tbody>
-
-            </table>
+            <div
+                class="card-value"
+                id="inventoryProducts">
+                0
+            </div>
 
         </div>
+
+
+        <div class="card">
+
+            <div class="card-title">
+                Kam qolgan
+            </div>
+
+            <div
+                class="card-value"
+                id="inventoryLow">
+                0
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="section">
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>ID</th>
+                    <th>Mahsulot</th>
+                    <th>Birlik</th>
+                    <th>Miqdor</th>
+                    <th>Min.</th>
+                    <th>Narx</th>
+                    <th>Qiymat</th>
+                    <th>Holat</th>
+                    <th>Amal</th>
+                </tr>
+
+            </thead>
+
+            <tbody id="inventoryTable">
+            </tbody>
+
+        </table>
 
     </div>
 
@@ -594,24 +979,24 @@ select {
      RECIPES
 ===================================================== -->
 
-<section id="recipes" class="section">
+<section id="recipes" class="page">
 
-    <div class="panel">
+    <div class="toolbar">
 
-        <div class="panel-header">
+        <h1>🍽️ Retseptlar</h1>
 
-            <h2>🍽️ Retseptlar</h2>
+        <button
+            class="btn green"
+            onclick="openRecipeModal()">
+            + Retsept
+        </button>
 
-            <button class="primary" onclick="openRecipeModal()">
-                + Yangi retsept
-            </button>
+    </div>
 
-        </div>
 
-        <div id="recipesList">
-            Yuklanmoqda...
-        </div>
-
+    <div
+        class="section"
+        id="recipesContainer">
     </div>
 
 </section>
@@ -621,58 +1006,76 @@ select {
      EMPLOYEES
 ===================================================== -->
 
-<section id="employees" class="section">
+<section id="employees" class="page">
 
-    <div class="panel">
+    <div class="toolbar">
 
-        <div class="panel-header">
+        <h1>👥 Xodimlar</h1>
 
-            <h2>👨‍💼 Xodimlar</h2>
+        <button
+            class="btn green"
+            onclick="openEmployeeModal()">
+            + Xodim
+        </button>
 
-            <button class="primary" onclick="openEmployeeModal()">
-                + Xodim
-            </button>
+    </div>
 
-        </div>
 
-        <div class="cards">
+    <div class="cards">
 
-            <div class="card">
-                <div class="card-title">Xodimlar</div>
-                <div id="employeeCount" class="card-value">
-                    0
-                </div>
+        <div class="card">
+
+            <div class="card-title">
+                Xodimlar soni
             </div>
 
-            <div class="card">
-                <div class="card-title">Jami maosh</div>
-                <div id="employeeSalary" class="card-value">
-                    0 so'm
-                </div>
+            <div
+                class="card-value"
+                id="employeeCount">
+                0
             </div>
 
         </div>
 
-        <div style="overflow-x:auto;">
 
-            <table>
+        <div class="card">
 
-                <thead>
-                    <tr>
-                        <th>Ism</th>
-                        <th>Telefon</th>
-                        <th>Lavozim</th>
-                        <th>Maosh</th>
-                        <th></th>
-                    </tr>
-                </thead>
+            <div class="card-title">
+                Jami maosh
+            </div>
 
-                <tbody id="employeesTable">
-                </tbody>
-
-            </table>
+            <div
+                class="card-value"
+                id="employeeSalary">
+                0 so‘m
+            </div>
 
         </div>
+
+    </div>
+
+
+    <div class="section">
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>ID</th>
+                    <th>Ism</th>
+                    <th>Telefon</th>
+                    <th>Lavozim</th>
+                    <th>Maosh</th>
+                    <th>Amal</th>
+                </tr>
+
+            </thead>
+
+            <tbody id="employeesTable">
+            </tbody>
+
+        </table>
 
     </div>
 
@@ -685,144 +1088,72 @@ select {
      TRANSACTION MODAL
 ===================================================== -->
 
-<div id="transactionModal" class="modal">
+<div
+    class="modal"
+    id="transactionModal">
 
-    <div class="modal-box">
+    <div class="modal-content">
 
-        <h2>💳 Tranzaksiya</h2>
+        <div class="modal-header">
 
-        <div class="form-grid">
+            <h2>Tranzaksiya</h2>
 
-            <div>
-                <label>Turi</label>
-
-                <select id="transactionType">
-                    <option value="income">Daromad</option>
-                    <option value="expense">Xarajat</option>
-                </select>
-            </div>
-
-            <div>
-                <label>Summa</label>
-                <input id="transactionAmount" type="number">
-            </div>
-
-        </div>
-
-        <div style="margin-top:12px;">
-
-            <label>Izoh</label>
-
-            <input id="transactionDescription">
-
-        </div>
-
-        <div class="modal-actions">
-
-            <button class="gray"
-                    onclick="closeModal('transactionModal')">
-                Bekor qilish
-            </button>
-
-            <button class="success"
-                    onclick="saveTransaction()">
-                Saqlash
-            </button>
-
-        </div>
-
-    </div>
-
-</div>
-
-
-<!-- =====================================================
-     SALE MODAL
-===================================================== -->
-
-<div id="saleModal" class="modal">
-
-    <div class="modal-box">
-
-        <h2>💰 Yangi sotuv</h2>
-
-        <div class="form-grid">
-
-            <div>
-
-                <label>Retsept / Taom</label>
-
-                <select id="saleRecipe"
-                        onchange="recipeSelected()">
-
-                    <option value="">
-                        Retseptsiz sotuv
-                    </option>
-
-                </select>
-
-            </div>
-
-            <div>
-
-                <label>Taom nomi</label>
-
-                <input id="saleProductName">
-
-            </div>
-
-            <div>
-
-                <label>Miqdor</label>
-
-                <input id="saleQuantity"
-                       type="number"
-                       step="0.001"
-                       value="1"
-                       oninput="calculateSalePreview()">
-
-            </div>
-
-            <div>
-
-                <label>Bir dona narxi</label>
-
-                <input id="saleUnitPrice"
-                       type="number"
-                       oninput="calculateSalePreview()">
-
-            </div>
-
-        </div>
-
-        <div class="panel"
-             style="margin-top:15px;background:#f8fafc;">
-
-            <strong>Sotuv jami:</strong>
-
-            <span id="salePreview">
-                0 so'm
+            <span
+                class="close"
+                onclick="closeModal('transactionModal')">
+                ×
             </span>
 
         </div>
 
-        <div id="saleRecipeInfo"
-             style="margin-top:10px;">
+
+        <div class="form-group">
+
+            <label>Turi</label>
+
+            <select id="transactionType">
+
+                <option value="income">
+                    Daromad
+                </option>
+
+                <option value="expense">
+                    Xarajat
+                </option>
+
+            </select>
+
         </div>
 
-        <div class="modal-actions">
 
-            <button class="gray"
-                    onclick="closeModal('saleModal')">
-                Bekor qilish
-            </button>
+        <div class="form-group">
 
-            <button class="success"
-                    onclick="saveSale()">
-                Sotishni saqlash
-            </button>
+            <label>Summa</label>
+
+            <input
+                type="number"
+                id="transactionAmount"
+                placeholder="0">
 
         </div>
+
+
+        <div class="form-group">
+
+            <label>Izoh</label>
+
+            <input
+                id="transactionDescription"
+                placeholder="Izoh">
+
+        </div>
+
+
+        <button
+            class="btn green"
+            onclick="saveTransaction()">
+            Saqlash
+        </button>
 
     </div>
 
@@ -833,71 +1164,99 @@ select {
      PRODUCT MODAL
 ===================================================== -->
 
-<div id="productModal" class="modal">
+<div
+    class="modal"
+    id="productModal">
 
-    <div class="modal-box">
+    <div class="modal-content">
 
-        <h2>📦 Yangi mahsulot</h2>
+        <div class="modal-header">
+
+            <h2>Mahsulot</h2>
+
+            <span
+                class="close"
+                onclick="closeModal('productModal')">
+                ×
+            </span>
+
+        </div>
+
+
+        <input
+            type="hidden"
+            id="productId">
+
 
         <div class="form-grid">
 
-            <div>
-                <label>Nomi</label>
-                <input id="productName">
+            <div class="form-group">
+
+                <label>Mahsulot nomi</label>
+
+                <input
+                    id="productName"
+                    placeholder="Masalan: Go‘sht">
+
             </div>
 
-            <div>
+
+            <div class="form-group">
+
                 <label>Birlik</label>
 
-                <select id="productUnit">
+                <input
+                    id="productUnit"
+                    placeholder="kg, litr, dona">
 
-                    <option value="kg">kg</option>
-                    <option value="g">g</option>
-                    <option value="litr">litr</option>
-                    <option value="dona">dona</option>
-                    <option value="quti">quti</option>
-
-                </select>
             </div>
 
-            <div>
+
+            <div class="form-group">
+
                 <label>Miqdor</label>
-                <input id="productQuantity"
-                       type="number"
-                       step="0.001"
-                       value="0">
+
+                <input
+                    type="number"
+                    step="0.001"
+                    id="productQuantity"
+                    value="0">
+
             </div>
 
-            <div>
+
+            <div class="form-group">
+
                 <label>Minimal miqdor</label>
-                <input id="productMin"
-                       type="number"
-                       step="0.001"
-                       value="0">
+
+                <input
+                    type="number"
+                    step="0.001"
+                    id="productMin"
+                    value="0">
+
             </div>
 
-            <div>
-                <label>Birlik narxi</label>
-                <input id="productPrice"
-                       type="number"
-                       value="0">
+
+            <div class="form-group">
+
+                <label>1 birlik narxi</label>
+
+                <input
+                    type="number"
+                    id="productPrice"
+                    value="0">
+
             </div>
 
         </div>
 
-        <div class="modal-actions">
 
-            <button class="gray"
-                    onclick="closeModal('productModal')">
-                Bekor qilish
-            </button>
-
-            <button class="success"
-                    onclick="saveProduct()">
-                Saqlash
-            </button>
-
-        </div>
+        <button
+            class="btn green"
+            onclick="saveProduct()">
+            Saqlash
+        </button>
 
     </div>
 
@@ -908,35 +1267,66 @@ select {
      STOCK MODAL
 ===================================================== -->
 
-<div id="stockModal" class="modal">
+<div
+    class="modal"
+    id="stockModal">
 
-    <div class="modal-box">
+    <div class="modal-content">
 
-        <h2 id="stockTitle">📦 Ombor</h2>
+        <div class="modal-header">
 
-        <input id="stockItemId" type="hidden">
+            <h2>Ombor harakati</h2>
 
-        <input id="stockType" type="hidden">
-
-        <label>Miqdor</label>
-
-        <input id="stockAmount"
-               type="number"
-               step="0.001">
-
-        <div class="modal-actions">
-
-            <button class="gray"
-                    onclick="closeModal('stockModal')">
-                Bekor qilish
-            </button>
-
-            <button class="success"
-                    onclick="saveStock()">
-                Saqlash
-            </button>
+            <span
+                class="close"
+                onclick="closeModal('stockModal')">
+                ×
+            </span>
 
         </div>
+
+
+        <input
+            type="hidden"
+            id="stockId">
+
+
+        <div class="form-group">
+
+            <label>Amal</label>
+
+            <select id="stockAction">
+
+                <option value="in">
+                    📥 Omborga kirim
+                </option>
+
+                <option value="out">
+                    📤 Ombordan chiqim
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>Miqdor</label>
+
+            <input
+                type="number"
+                step="0.001"
+                id="stockAmount">
+
+        </div>
+
+
+        <button
+            class="btn green"
+            onclick="saveStock()">
+            Saqlash
+        </button>
 
     </div>
 
@@ -947,32 +1337,46 @@ select {
      PRICE MODAL
 ===================================================== -->
 
-<div id="priceModal" class="modal">
+<div
+    class="modal"
+    id="priceModal">
 
-    <div class="modal-box">
+    <div class="modal-content">
 
-        <h2>💵 Narxni o‘zgartirish</h2>
+        <div class="modal-header">
 
-        <input id="priceItemId" type="hidden">
+            <h2>Narxni o‘zgartirish</h2>
 
-        <label>Yangi narx</label>
-
-        <input id="newPrice"
-               type="number">
-
-        <div class="modal-actions">
-
-            <button class="gray"
-                    onclick="closeModal('priceModal')">
-                Bekor qilish
-            </button>
-
-            <button class="success"
-                    onclick="savePrice()">
-                Saqlash
-            </button>
+            <span
+                class="close"
+                onclick="closeModal('priceModal')">
+                ×
+            </span>
 
         </div>
+
+
+        <input
+            type="hidden"
+            id="priceId">
+
+
+        <div class="form-group">
+
+            <label>1 birlik narxi</label>
+
+            <input
+                type="number"
+                id="newPrice">
+
+        </div>
+
+
+        <button
+            class="btn green"
+            onclick="savePrice()">
+            Saqlash
+        </button>
 
     </div>
 
@@ -983,70 +1387,228 @@ select {
      RECIPE MODAL
 ===================================================== -->
 
-<div id="recipeModal" class="modal">
+<div
+    class="modal"
+    id="recipeModal">
 
-    <div class="modal-box">
+    <div class="modal-content">
 
-        <h2>🍽️ Retsept yaratish</h2>
+        <div class="modal-header">
 
-        <input id="recipeId" type="hidden">
+            <h2 id="recipeModalTitle">
+                Yangi retsept
+            </h2>
+
+            <span
+                class="close"
+                onclick="closeModal('recipeModal')">
+                ×
+            </span>
+
+        </div>
+
+
+        <input
+            type="hidden"
+            id="recipeId">
+
 
         <div class="form-grid">
 
-            <div>
-                <label>Taom nomi</label>
-                <input id="recipeName"
-                       placeholder="Masalan: Osh">
+            <div class="form-group">
+
+                <label>Retsept nomi</label>
+
+                <input
+                    id="recipeName"
+                    placeholder="Masalan: Osh">
+
             </div>
 
-            <div>
+
+            <div class="form-group">
+
                 <label>Sotuv birligi</label>
 
-                <select id="recipeUnit">
+                <input
+                    id="recipeUnit"
+                    placeholder="dona, porsiya, kg">
 
-                    <option value="dona">dona</option>
-                    <option value="porsiya">porsiya</option>
-                    <option value="kg">kg</option>
-                    <option value="litr">litr</option>
-
-                </select>
             </div>
 
         </div>
 
-        <div style="margin-top:20px;">
 
-            <div class="panel-header">
+        <h3>🥕 Tarkibi</h3>
 
-                <h3>
-                    📦 Mahsulot tarkibi
-                </h3>
 
-                <button class="primary"
-                        onclick="addIngredientRow()">
-                    + Mahsulot qo‘shish
-                </button>
+        <div id="ingredientsContainer">
+        </div>
+
+
+        <button
+            class="btn blue"
+            onclick="addIngredientRow()">
+            + Mahsulot qo‘shish
+        </button>
+
+
+        <div class="preview">
+
+            <strong>
+                Tannarx:
+            </strong>
+
+            <span id="recipeCostPreview">
+                0 so‘m
+            </span>
+
+        </div>
+
+
+        <button
+            class="btn green"
+            onclick="saveRecipe()">
+            Saqlash
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     SALE MODAL
+===================================================== -->
+
+<div
+    class="modal"
+    id="saleModal">
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+
+            <h2>Sotuv qo‘shish</h2>
+
+            <span
+                class="close"
+                onclick="closeModal('saleModal')">
+                ×
+            </span>
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>Retsept</label>
+
+            <select
+                id="saleRecipe"
+                onchange="recipeSelected()">
+
+                <option value="">
+                    Retseptsiz sotuv
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>Mahsulot nomi</label>
+
+            <input
+                id="saleProduct"
+                placeholder="Masalan: Osh">
+
+        </div>
+
+
+        <div class="form-grid">
+
+            <div class="form-group">
+
+                <label>Miqdor</label>
+
+                <input
+                    type="number"
+                    step="0.001"
+                    id="saleQuantity"
+                    value="1"
+                    oninput="calculateSalePreview()">
 
             </div>
 
-            <div id="ingredientsContainer">
+
+            <div class="form-group">
+
+                <label>1 dona/porsiya narxi</label>
+
+                <input
+                    type="number"
+                    id="salePrice"
+                    value="0"
+                    oninput="calculateSalePreview()">
+
             </div>
 
         </div>
 
-        <div class="modal-actions">
 
-            <button class="gray"
-                    onclick="closeModal('recipeModal')">
-                Bekor qilish
-            </button>
+        <div class="preview">
 
-            <button class="success"
-                    onclick="saveRecipe()">
-                Retseptni saqlash
-            </button>
+            <div>
+                <strong>
+                    Jami sotuv:
+                </strong>
+
+                <span id="saleTotalPreview">
+                    0 so‘m
+                </span>
+            </div>
+
+
+            <div>
+                <strong>
+                    Tannarx:
+                </strong>
+
+                <span id="saleCostPreview">
+                    0 so‘m
+                </span>
+            </div>
+
+
+            <div>
+                <strong>
+                    Foyda:
+                </strong>
+
+                <span
+                    class="profit"
+                    id="saleProfitPreview">
+                    0 so‘m
+                </span>
+            </div>
 
         </div>
+
+
+        <div
+            id="saleRecipePreview"
+            class="preview">
+        </div>
+
+
+        <button
+            class="btn green"
+            onclick="saveSale()">
+            Sotuvni saqlash
+        </button>
 
     </div>
 
@@ -1057,52 +1619,82 @@ select {
      EMPLOYEE MODAL
 ===================================================== -->
 
-<div id="employeeModal" class="modal">
+<div
+    class="modal"
+    id="employeeModal">
 
-    <div class="modal-box">
+    <div class="modal-content">
 
-        <h2>👨‍💼 Xodim</h2>
+        <div class="modal-header">
 
-        <input id="employeeId" type="hidden">
+            <h2 id="employeeModalTitle">
+                Yangi xodim
+            </h2>
 
-        <div class="form-grid">
-
-            <div>
-                <label>Ism</label>
-                <input id="employeeName">
-            </div>
-
-            <div>
-                <label>Telefon</label>
-                <input id="employeePhone">
-            </div>
-
-            <div>
-                <label>Lavozim</label>
-                <input id="employeePosition">
-            </div>
-
-            <div>
-                <label>Maosh</label>
-                <input id="employeeSalaryInput"
-                       type="number">
-            </div>
+            <span
+                class="close"
+                onclick="closeModal('employeeModal')">
+                ×
+            </span>
 
         </div>
 
-        <div class="modal-actions">
 
-            <button class="gray"
-                    onclick="closeModal('employeeModal')">
-                Bekor qilish
-            </button>
+        <input
+            type="hidden"
+            id="employeeId">
 
-            <button class="success"
-                    onclick="saveEmployee()">
-                Saqlash
-            </button>
+
+        <div class="form-group">
+
+            <label>Ism</label>
+
+            <input
+                id="employeeName"
+                placeholder="Xodim ismi">
 
         </div>
+
+
+        <div class="form-group">
+
+            <label>Telefon</label>
+
+            <input
+                id="employeePhone"
+                placeholder="+998">
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>Lavozim</label>
+
+            <input
+                id="employeePosition"
+                placeholder="Oshpaz">
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>Maosh</label>
+
+            <input
+                type="number"
+                id="employeeSalary"
+                value="0">
+
+        </div>
+
+
+        <button
+            class="btn green"
+            onclick="saveEmployee()">
+            Saqlash
+        </button>
 
     </div>
 
@@ -1111,834 +1703,1378 @@ select {
 
 <script>
 
-/* =====================================================
-   GENERAL
-===================================================== */
+let inventoryData = [];
+let recipesData = [];
+let salesData = [];
+let employeesData = [];
 
-function money(value) {
 
-    return Number(value || 0).toLocaleString("uz-UZ")
-        + " so'm";
+// =====================================================
+// HELPERS
+// =====================================================
+
+function money(value){
+
+    return Number(value || 0)
+        .toLocaleString("uz-UZ") + " so‘m";
+
 }
 
 
-function showSection(name, button) {
+function number(value){
 
-    document.querySelectorAll(".section")
-        .forEach(section => {
-            section.classList.remove("active");
-        });
+    return Number(value || 0)
+        .toLocaleString("uz-UZ");
 
-    document.getElementById(name)
+}
+
+
+async function api(url, options = {}){
+
+    const response = await fetch(url, {
+
+        headers:{
+            "Content-Type":"application/json"
+        },
+
+        ...options
+
+    });
+
+
+    let data;
+
+    try{
+
+        data = await response.json();
+
+    }catch{
+
+        data = {};
+
+    }
+
+
+    if(!response.ok){
+
+        throw new Error(
+            data.error || "Server xatosi"
+        );
+
+    }
+
+
+    return data;
+
+}
+
+
+function showError(error){
+
+    alert(
+        error.message ||
+        "Xatolik yuz berdi"
+    );
+
+}
+
+
+function closeModal(id){
+
+    document.getElementById(id)
+        .classList.remove("show");
+
+}
+
+
+// =====================================================
+// PAGE NAVIGATION
+// =====================================================
+
+function showPage(page, button){
+
+    document
+        .querySelectorAll(".page")
+        .forEach(el =>
+            el.classList.remove("active")
+        );
+
+
+    document
+        .getElementById(page)
         .classList.add("active");
 
-    document.querySelectorAll(".nav button")
-        .forEach(btn => {
-            btn.classList.remove("active");
-        });
 
-    if (button) {
+    document
+        .querySelectorAll(".menu button")
+        .forEach(el =>
+            el.classList.remove("active")
+        );
+
+
+    if(button){
         button.classList.add("active");
     }
 
-    if (name === "dashboard") {
+
+    if(page === "dashboard"){
+
         loadDashboard();
+
     }
 
-    if (name === "sales") {
+
+    if(page === "sales"){
+
         loadSales();
+
     }
 
-    if (name === "finance") {
+
+    if(page === "finance"){
+
         loadTransactions();
+
     }
 
-    if (name === "reports") {
-        loadReport("today");
+
+    if(page === "reports"){
+
+        loadReportPeriod("today");
+        loadTopProducts("today");
+
     }
 
-    if (name === "inventory") {
+
+    if(page === "inventory"){
+
         loadInventory();
+
     }
 
-    if (name === "recipes") {
+
+    if(page === "recipes"){
+
         loadRecipes();
+
     }
 
-    if (name === "employees") {
+
+    if(page === "employees"){
+
         loadEmployees();
+
     }
+
 }
 
 
-function showSectionByName(name) {
+// =====================================================
+// DASHBOARD
+// =====================================================
 
-    const buttons = document.querySelectorAll(".nav button");
+async function loadDashboard(){
 
-    buttons.forEach(btn => {
-
-        if (btn.getAttribute("onclick")
-            ?.includes("'" + name + "'")) {
-
-            showSection(name, btn);
-        }
-
-    });
-}
-
-
-function closeModal(id) {
-
-    document.getElementById(id)
-        .style.display = "none";
-}
-
-
-function openModal(id) {
-
-    document.getElementById(id)
-        .style.display = "block";
-}
-
-
-/* =====================================================
-   DASHBOARD
-===================================================== */
-
-async function loadDashboard() {
-
-    try {
-
-        const response =
-            await fetch("/api/summary");
+    try{
 
         const data =
-            await response.json();
+            await api("/api/summary");
 
-        document.getElementById("dashboardIncome")
-            .textContent = money(data.income);
-
-        document.getElementById("dashboardExpense")
-            .textContent = money(data.expense);
-
-        document.getElementById("dashboardProfit")
-            .textContent = money(data.profit);
-
-        document.getElementById("dashboardInventory")
-            .textContent = money(data.inventory);
-
-        document.getElementById("dashboardLowStock")
-            .textContent = data.low_stock;
-
-        const salesResponse =
-            await fetch("/api/sales/summary");
-
-        const sales =
-            await salesResponse.json();
 
         document.getElementById(
-            "dashboardSalesSummary"
-        ).innerHTML = `
-            <b>${money(sales.total_sales)}</b>
-            — ${sales.sales_count} ta sotuv
-        `;
+            "dashboardIncome"
+        ).textContent = money(data.income);
 
-    } catch (error) {
 
-        console.error(error);
+        document.getElementById(
+            "dashboardExpense"
+        ).textContent = money(data.expense);
+
+
+        document.getElementById(
+            "dashboardProfit"
+        ).textContent = money(data.profit);
+
+
+        document.getElementById(
+            "dashboardInventory"
+        ).textContent =
+            money(data.inventory_value);
+
+
+        document.getElementById(
+            "dashboardLowStock"
+        ).textContent =
+            number(data.low_stock);
+
+
+        document.getElementById(
+            "dashboardTodaySales"
+        ).textContent =
+            number(data.today_sales);
+
+
+        const profit =
+            await api("/api/profit-summary");
+
+
+        document.getElementById(
+            "dashboardTodayCost"
+        ).textContent =
+            money(profit.today.cost);
+
+
+        document.getElementById(
+            "dashboardTodayProfit"
+        ).textContent =
+            money(profit.today.profit);
+
+
+        displayProfit(
+            profit.today
+        );
+
+
+        displayTopProducts(
+            profit.top_products,
+            "topProductsDashboard"
+        );
+
+
+    }catch(error){
+
+        showError(error);
 
     }
+
 }
 
 
-/* =====================================================
-   TRANSACTIONS
-===================================================== */
+// =====================================================
+// PROFIT PERIOD
+// =====================================================
 
-function openTransactionModal() {
+async function loadProfitPeriod(period){
 
-    document.getElementById("transactionAmount")
-        .value = "";
+    document
+        .querySelectorAll("#dashboard .period-buttons button")
+        .forEach(btn =>
+            btn.classList.remove("active")
+        );
 
-    document.getElementById("transactionDescription")
-        .value = "";
 
-    openModal("transactionModal");
+    const button =
+        document.getElementById(
+            "profit" +
+            period.charAt(0).toUpperCase() +
+            period.slice(1) +
+            "Btn"
+        );
+
+
+    if(button){
+
+        button.classList.add("active");
+
+    }
+
+
+    try{
+
+        const data =
+            await api("/api/profit-summary");
+
+
+        displayProfit(
+            data[period]
+        );
+
+
+    }catch(error){
+
+        showError(error);
+
+    }
+
 }
 
 
-async function saveTransaction() {
+function displayProfit(data){
 
-    const type =
-        document.getElementById("transactionType").value;
+    document.getElementById(
+        "profitRevenue"
+    ).textContent =
+        money(data.revenue);
 
-    const amount =
-        document.getElementById("transactionAmount").value;
 
-    const description =
-        document.getElementById("transactionDescription").value;
+    document.getElementById(
+        "profitCost"
+    ).textContent =
+        money(data.cost);
 
-    if (!amount) {
-        alert("Summani kiriting");
-        return;
-    }
 
-    const response = await fetch(
-        "/api/transactions",
-        {
-            method: "POST",
+    const profit =
+        document.getElementById(
+            "profitValue"
+        );
 
-            headers: {
-                "Content-Type": "application/json"
-            },
 
-            body: JSON.stringify({
-                type,
-                amount,
-                description
-            })
-        }
+    profit.textContent =
+        money(data.profit);
+
+
+    profit.classList.remove(
+        "profit",
+        "loss"
     );
 
-    const data = await response.json();
 
-    if (!response.ok) {
+    if(Number(data.profit) >= 0){
 
-        alert(data.error || "Xatolik");
-        return;
+        profit.classList.add("profit");
+
+    }else{
+
+        profit.classList.add("loss");
 
     }
 
-    closeModal("transactionModal");
-
-    loadTransactions();
-    loadDashboard();
 }
 
 
-async function loadTransactions() {
+// =====================================================
+// TOP PRODUCTS
+// =====================================================
 
-    const response =
-        await fetch("/api/transactions");
+async function loadTopProducts(period){
 
-    const data =
-        await response.json();
+    try{
 
-    const table =
-        document.getElementById("transactionsTable");
-
-    table.innerHTML = "";
-
-    data.forEach(item => {
-
-        const type =
-            item.type === "income"
-                ? "Daromad"
-                : "Xarajat";
-
-        const color =
-            item.type === "income"
-                ? "green"
-                : "red";
-
-        table.innerHTML += `
-            <tr>
-
-                <td class="${color}">
-                    ${type}
-                </td>
-
-                <td>
-                    ${money(item.amount)}
-                </td>
-
-                <td>
-                    ${item.description || ""}
-                </td>
-
-                <td>
-                    ${formatDate(item.created_at)}
-                </td>
-
-                <td>
-
-                    <button class="danger"
-                        onclick="deleteTransaction(${item.id})">
-                        🗑️
-                    </button>
-
-                </td>
-
-            </tr>
-        `;
-
-    });
-}
+        const data =
+            await api(
+                "/api/top-products?period=" +
+                period
+            );
 
 
-async function deleteTransaction(id) {
-
-    if (!confirm("Bu tranzaksiyani o‘chirasizmi?")) {
-        return;
-    }
-
-    const response =
-        await fetch(
-            "/api/transactions/" + id,
-            {
-                method: "DELETE"
-            }
+        displayTopProducts(
+            data,
+            "topProductsReport"
         );
 
-    const data =
-        await response.json();
 
-    if (!response.ok) {
+    }catch(error){
 
-        alert(data.error || "Xatolik");
-        return;
+        showError(error);
 
     }
 
-    loadTransactions();
-    loadDashboard();
 }
 
 
-/* =====================================================
-   REPORT
-===================================================== */
-
-async function loadReport(period) {
-
-    const response =
-        await fetch(
-            "/api/report?period=" + period
-        );
-
-    const data =
-        await response.json();
-
-    document.getElementById("reportIncome")
-        .textContent = money(data.income);
-
-    document.getElementById("reportExpense")
-        .textContent = money(data.expense);
-
-    document.getElementById("reportProfit")
-        .textContent = money(data.profit);
-}
-
-
-/* =====================================================
-   INVENTORY
-===================================================== */
-
-async function loadInventory() {
-
-    const response =
-        await fetch("/api/inventory");
-
-    const data =
-        await response.json();
-
-    const table =
-        document.getElementById("inventoryTable");
-
-    table.innerHTML = "";
-
-    data.forEach(item => {
-
-        const low =
-            Number(item.quantity)
-            <= Number(item.min_quantity);
-
-        table.innerHTML += `
-            <tr class="${low ? "low" : ""}">
-
-                <td>
-                    <b>${item.name}</b>
-                </td>
-
-                <td>
-                    ${item.quantity} ${item.unit}
-                </td>
-
-                <td>
-                    ${item.min_quantity} ${item.unit}
-                </td>
-
-                <td>
-                    ${money(item.price)}
-                </td>
-
-                <td>
-                    ${
-                        low
-                        ? '<span class="badge">⚠️ Kam</span>'
-                        : '<span class="badge">✅ Yetarli</span>'
-                    }
-                </td>
-
-                <td>
-
-                    <button class="success"
-                        onclick="openStockModal(${item.id}, 'in')">
-                        +
-                    </button>
-
-                    <button class="warning"
-                        onclick="openStockModal(${item.id}, 'out')">
-                        −
-                    </button>
-
-                    <button class="gray"
-                        onclick="openPriceModal(${item.id}, ${item.price})">
-                        💵
-                    </button>
-
-                    <button class="danger"
-                        onclick="deleteInventory(${item.id})">
-                        🗑️
-                    </button>
-
-                </td>
-
-            </tr>
-        `;
-
-    });
-
-    const summaryResponse =
-        await fetch("/api/inventory/summary");
-
-    const summary =
-        await summaryResponse.json();
-
-    document.getElementById("inventoryProducts")
-        .textContent = summary.products;
-
-    document.getElementById("inventoryValue")
-        .textContent = money(summary.total_value);
-
-    document.getElementById("inventoryLow")
-        .textContent = summary.low_stock;
-}
-
-
-function openProductModal() {
-
-    document.getElementById("productName").value = "";
-    document.getElementById("productQuantity").value = "0";
-    document.getElementById("productMin").value = "0";
-    document.getElementById("productPrice").value = "0";
-
-    openModal("productModal");
-}
-
-
-async function saveProduct() {
-
-    const data = {
-
-        name:
-            document.getElementById("productName").value,
-
-        unit:
-            document.getElementById("productUnit").value,
-
-        quantity:
-            document.getElementById("productQuantity").value,
-
-        min_quantity:
-            document.getElementById("productMin").value,
-
-        price:
-            document.getElementById("productPrice").value
-    };
-
-    if (!data.name) {
-
-        alert("Mahsulot nomini kiriting");
-        return;
-
-    }
-
-    const response =
-        await fetch(
-            "/api/inventory",
-            {
-                method: "POST",
-
-                headers: {
-                    "Content-Type": "application/json"
-                },
-
-                body: JSON.stringify(data)
-            }
-        );
-
-    const result =
-        await response.json();
-
-    if (!response.ok) {
-
-        alert(result.error || "Xatolik");
-        return;
-
-    }
-
-    closeModal("productModal");
-
-    loadInventory();
-    loadDashboard();
-}
-
-
-function openStockModal(id, type) {
-
-    document.getElementById("stockItemId")
-        .value = id;
-
-    document.getElementById("stockType")
-        .value = type;
-
-    document.getElementById("stockAmount")
-        .value = "";
-
-    document.getElementById("stockTitle")
-        .textContent =
-            type === "in"
-            ? "📥 Omborga kirim"
-            : "📤 Ombordan chiqim";
-
-    openModal("stockModal");
-}
-
-
-async function saveStock() {
-
-    const id =
-        document.getElementById("stockItemId").value;
-
-    const type =
-        document.getElementById("stockType").value;
-
-    const amount =
-        document.getElementById("stockAmount").value;
-
-    if (!amount || Number(amount) <= 0) {
-
-        alert("Miqdorni kiriting");
-        return;
-
-    }
-
-    const endpoint =
-        type === "in"
-        ? `/api/inventory/${id}/in`
-        : `/api/inventory/${id}/out`;
-
-    const response =
-        await fetch(
-            endpoint,
-            {
-                method: "POST",
-
-                headers: {
-                    "Content-Type": "application/json"
-                },
-
-                body: JSON.stringify({
-                    quantity: amount
-                })
-            }
-        );
-
-    const data =
-        await response.json();
-
-    if (!response.ok) {
-
-        alert(data.error || "Xatolik");
-        return;
-
-    }
-
-    closeModal("stockModal");
-
-    loadInventory();
-    loadDashboard();
-}
-
-
-function openPriceModal(id, price) {
-
-    document.getElementById("priceItemId")
-        .value = id;
-
-    document.getElementById("newPrice")
-        .value = price;
-
-    openModal("priceModal");
-}
-
-
-async function savePrice() {
-
-    const id =
-        document.getElementById("priceItemId").value;
-
-    const price =
-        document.getElementById("newPrice").value;
-
-    const response =
-        await fetch(
-            `/api/inventory/${id}/price`,
-            {
-                method: "PUT",
-
-                headers: {
-                    "Content-Type": "application/json"
-                },
-
-                body: JSON.stringify({
-                    price
-                })
-            }
-        );
-
-    const data =
-        await response.json();
-
-    if (!response.ok) {
-
-        alert(data.error || "Xatolik");
-        return;
-
-    }
-
-    closeModal("priceModal");
-
-    loadInventory();
-    loadDashboard();
-}
-
-
-async function deleteInventory(id) {
-
-    if (!confirm(
-        "Bu mahsulotni o‘chirmoqchimisiz?"
-    )) {
-        return;
-    }
-
-    const response =
-        await fetch(
-            `/api/inventory/${id}`,
-            {
-                method: "DELETE"
-            }
-        );
-
-    const data =
-        await response.json();
-
-    if (!response.ok) {
-
-        alert(data.error || "Xatolik");
-        return;
-
-    }
-
-    loadInventory();
-    loadDashboard();
-}
-
-
-/* =====================================================
-   RECIPES
-===================================================== */
-
-let inventoryCache = [];
-let recipesCache = [];
-
-
-async function loadRecipes() {
-
-    const response =
-        await fetch("/api/recipes");
-
-    recipesCache =
-        await response.json();
+function displayTopProducts(
+    products,
+    elementId
+){
 
     const container =
-        document.getElementById("recipesList");
+        document.getElementById(elementId);
 
-    if (!recipesCache.length) {
+
+    if(!products || products.length === 0){
 
         container.innerHTML = `
             <div class="empty">
-                Hozircha retsept yo‘q.
-                <br><br>
-                <button class="primary"
-                    onclick="openRecipeModal()">
-                    + Birinchi retseptni yaratish
-                </button>
+                Hozircha sotuv ma'lumotlari yo‘q.
             </div>
         `;
 
         return;
+
     }
 
-    container.innerHTML = "";
 
-    for (const recipe of recipesCache) {
+    container.innerHTML =
+        products.map((product,index) => `
 
-        const detailResponse =
-            await fetch(
-                `/api/recipes/${recipe.id}`
-            );
+            <div class="top-product">
 
-        const detail =
-            await detailResponse.json();
+                <div>
 
-        let ingredientsHtml = "";
-
-        (detail.ingredients || [])
-            .forEach(item => {
-
-                ingredientsHtml += `
-                    <div class="recipe-item">
-                        • ${item.inventory_name}
-                        — <b>${item.quantity}</b>
-                        ${item.unit}
-                    </div>
-                `;
-
-            });
-
-        container.innerHTML += `
-            <div class="recipe-card">
-
-                <div class="panel-header">
-
-                    <div>
-                        <div class="recipe-title">
-                            🍽️ ${recipe.name}
-                        </div>
-
-                        <span class="badge">
-                            ${recipe.sale_unit}
-                        </span>
+                    <div class="product-name">
+                        ${index + 1}.
+                        ${escapeHtml(
+                            product.product_name
+                        )}
                     </div>
 
-                    <div>
-
-                        <button class="gray"
-                            onclick="editRecipe(${recipe.id})">
-                            ✏️
-                        </button>
-
-                        <button class="danger"
-                            onclick="deleteRecipe(${recipe.id})">
-                            🗑️
-                        </button>
-
+                    <div class="product-meta">
+                        ${number(product.quantity)}
+                        ta sotildi
                     </div>
 
                 </div>
 
-                <div>
-                    ${ingredientsHtml || "Mahsulot tarkibi yo‘q"}
+                <div style="text-align:right">
+
+                    <div>
+                        Daromad:
+                        <strong>
+                            ${money(product.revenue)}
+                        </strong>
+                    </div>
+
+                    <div>
+                        Tannarx:
+                        ${money(product.cost)}
+                    </div>
+
+                    <div class="profit">
+                        Foyda:
+                        <strong>
+                            ${money(product.profit)}
+                        </strong>
+                    </div>
+
                 </div>
 
             </div>
-        `;
 
-    }
+        `).join("");
+
 }
 
 
-/* =====================================================
-   OPEN RECIPE
-===================================================== */
+// =====================================================
+// TRANSACTIONS
+// =====================================================
 
-async function openRecipeModal(recipeId = null) {
+async function loadTransactions(){
 
-    await loadInventoryForRecipe();
+    try{
 
-    document.getElementById("recipeId")
-        .value = recipeId || "";
-
-    document.getElementById("recipeName")
-        .value = "";
-
-    document.getElementById("recipeUnit")
-        .value = "dona";
-
-    document.getElementById("ingredientsContainer")
-        .innerHTML = "";
-
-    if (recipeId) {
-
-        const response =
-            await fetch(
-                `/api/recipes/${recipeId}`
+        const data =
+            await api(
+                "/api/transactions"
             );
 
-        const recipe =
-            await response.json();
 
-        document.getElementById("recipeName")
-            .value = recipe.name;
+        const tbody =
+            document.getElementById(
+                "transactionsTable"
+            );
 
-        document.getElementById("recipeUnit")
-            .value = recipe.sale_unit;
 
-        (recipe.ingredients || [])
-            .forEach(item => {
+        if(!data.length){
 
-                addIngredientRow(
-                    item.inventory_id,
-                    item.quantity
-                );
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="6"
+                        class="empty">
+                        Tranzaksiyalar yo‘q
+                    </td>
+                </tr>
+            `;
 
-            });
+            return;
+
+        }
+
+
+        tbody.innerHTML =
+            data.map(tx => `
+
+                <tr>
+
+                    <td>${tx.id}</td>
+
+                    <td>
+                        ${
+                            tx.type === "income"
+                            ? `<span class="badge green">
+                                Daromad
+                               </span>`
+                            : `<span class="badge red">
+                                Xarajat
+                               </span>`
+                        }
+                    </td>
+
+                    <td>
+                        ${money(tx.amount)}
+                    </td>
+
+                    <td>
+                        ${escapeHtml(
+                            tx.description || ""
+                        )}
+                    </td>
+
+                    <td>
+                        ${formatDate(tx.created_at)}
+                    </td>
+
+                    <td>
+
+                        <button
+                            class="btn red"
+                            onclick="deleteTransaction(${tx.id})">
+                            O‘chirish
+                        </button>
+
+                    </td>
+
+                </tr>
+
+            `).join("");
+
+
+    }catch(error){
+
+        showError(error);
 
     }
 
-    openModal("recipeModal");
 }
 
 
-/* =====================================================
-   INVENTORY FOR RECIPE
-===================================================== */
+function openTransactionModal(){
 
-async function loadInventoryForRecipe() {
+    document.getElementById(
+        "transactionType"
+    ).value = "income";
 
-    const response =
-        await fetch("/api/inventory");
 
-    inventoryCache =
-        await response.json();
+    document.getElementById(
+        "transactionAmount"
+    ).value = "";
+
+
+    document.getElementById(
+        "transactionDescription"
+    ).value = "";
+
+
+    document.getElementById(
+        "transactionModal"
+    ).classList.add("show");
+
 }
 
 
-/* =====================================================
-   INGREDIENT ROW
-===================================================== */
+async function saveTransaction(){
+
+    try{
+
+        await api(
+            "/api/transactions",
+            {
+                method:"POST",
+
+                body:JSON.stringify({
+
+                    type:
+                        document.getElementById(
+                            "transactionType"
+                        ).value,
+
+                    amount:
+                        document.getElementById(
+                            "transactionAmount"
+                        ).value,
+
+                    description:
+                        document.getElementById(
+                            "transactionDescription"
+                        ).value
+
+                })
+
+            }
+        );
+
+
+        closeModal(
+            "transactionModal"
+        );
+
+
+        await loadTransactions();
+        await loadDashboard();
+
+
+    }catch(error){
+
+        showError(error);
+
+    }
+
+}
+
+
+async function deleteTransaction(id){
+
+    if(!confirm(
+        "Bu tranzaksiyani o‘chirmoqchimisiz?"
+    )) return;
+
+
+    try{
+
+        await api(
+            "/api/transactions/" + id,
+            {
+                method:"DELETE"
+            }
+        );
+
+
+        await loadTransactions();
+        await loadDashboard();
+
+
+    }catch(error){
+
+        showError(error);
+
+    }
+
+}
+
+
+// =====================================================
+// REPORT
+// =====================================================
+
+async function loadReportPeriod(period){
+
+    document
+        .querySelectorAll(
+            "#reports .period-buttons button"
+        )
+        .forEach(btn =>
+            btn.classList.remove("active")
+        );
+
+
+    const button =
+        document.getElementById(
+            "report" +
+            period.charAt(0).toUpperCase() +
+            period.slice(1) +
+            "Btn"
+        );
+
+
+    if(button){
+
+        button.classList.add("active");
+
+    }
+
+
+    try{
+
+        const data =
+            await api(
+                "/api/report?period=" +
+                period
+            );
+
+
+        document.getElementById(
+            "reportIncome"
+        ).textContent =
+            money(data.income);
+
+
+        document.getElementById(
+            "reportExpense"
+        ).textContent =
+            money(data.expense);
+
+
+        document.getElementById(
+            "reportProfit"
+        ).textContent =
+            money(data.profit);
+
+
+        await loadTopProducts(period);
+
+
+    }catch(error){
+
+        showError(error);
+
+    }
+
+}
+
+
+// =====================================================
+// INVENTORY
+// =====================================================
+
+async function loadInventory(){
+
+    try{
+
+        inventoryData =
+            await api(
+                "/api/inventory"
+            );
+
+
+        const tbody =
+            document.getElementById(
+                "inventoryTable"
+            );
+
+
+        if(!inventoryData.length){
+
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="9"
+                        class="empty">
+                        Omborda mahsulot yo‘q
+                    </td>
+                </tr>
+            `;
+
+        }else{
+
+            tbody.innerHTML =
+                inventoryData.map(item => `
+
+                    <tr>
+
+                        <td>${item.id}</td>
+
+                        <td>
+                            ${escapeHtml(item.name)}
+                        </td>
+
+                        <td>
+                            ${escapeHtml(item.unit)}
+                        </td>
+
+                        <td>
+                            ${number(item.quantity)}
+                        </td>
+
+                        <td>
+                            ${number(item.min_quantity)}
+                        </td>
+
+                        <td>
+                            ${money(item.price)}
+                        </td>
+
+                        <td>
+                            ${money(item.total_value)}
+                        </td>
+
+                        <td>
+
+                            ${
+                                item.low_stock
+                                ? `<span class="badge red">
+                                    Kam
+                                   </span>`
+                                : `<span class="badge green">
+                                    Yetarli
+                                   </span>`
+                            }
+
+                        </td>
+
+                        <td>
+
+                            <button
+                                class="btn blue"
+                                onclick="openStockModal(${item.id})">
+                                Kirim/Chiqim
+                            </button>
+
+                            <button
+                                class="btn gray"
+                                onclick="openPriceModal(${item.id})">
+                                Narx
+                            </button>
+
+                            <button
+                                class="btn red"
+                                onclick="deleteInventory(${item.id})">
+                                O‘chirish
+                            </button>
+
+                        </td>
+
+                    </tr>
+
+                `).join("");
+
+        }
+
+
+        const summary =
+            await api(
+                "/api/inventory/summary"
+            );
+
+
+        document.getElementById(
+            "inventoryTotal"
+        ).textContent =
+            money(summary.total_value);
+
+
+        document.getElementById(
+            "inventoryProducts"
+        ).textContent =
+            number(summary.products);
+
+
+        document.getElementById(
+            "inventoryLow"
+        ).textContent =
+            number(summary.low_stock);
+
+
+    }catch(error){
+
+        showError(error);
+
+    }
+
+}
+
+
+function openProductModal(){
+
+    document.getElementById(
+        "productId"
+    ).value = "";
+
+
+    document.getElementById(
+        "productName"
+    ).value = "";
+
+
+    document.getElementById(
+        "productUnit"
+    ).value = "";
+
+
+    document.getElementById(
+        "productQuantity"
+    ).value = 0;
+
+
+    document.getElementById(
+        "productMin"
+    ).value = 0;
+
+
+    document.getElementById(
+        "productPrice"
+    ).value = 0;
+
+
+    document.getElementById(
+        "productModal"
+    ).classList.add("show");
+
+}
+
+
+async function saveProduct(){
+
+    try{
+
+        const id =
+            document.getElementById(
+                "productId"
+            ).value;
+
+
+        const body = {
+
+            name:
+                document.getElementById(
+                    "productName"
+                ).value,
+
+            unit:
+                document.getElementById(
+                    "productUnit"
+                ).value,
+
+            quantity:
+                document.getElementById(
+                    "productQuantity"
+                ).value,
+
+            min_quantity:
+                document.getElementById(
+                    "productMin"
+                ).value,
+
+            price:
+                document.getElementById(
+                    "productPrice"
+                ).value
+
+        };
+
+
+        await api(
+            id
+            ? "/api/inventory/" + id
+            : "/api/inventory",
+            {
+
+                method:id
+                    ? "PUT"
+                    : "POST",
+
+                body:JSON.stringify(body)
+
+            }
+        );
+
+
+        closeModal(
+            "productModal"
+        );
+
+
+        await loadInventory();
+        await loadRecipes();
+
+
+    }catch(error){
+
+        showError(error);
+
+    }
+
+}
+
+
+function openStockModal(id){
+
+    document.getElementById(
+        "stockId"
+    ).value = id;
+
+
+    document.getElementById(
+        "stockAmount"
+    ).value = "";
+
+
+    document.getElementById(
+        "stockAction"
+    ).value = "in";
+
+
+    document.getElementById(
+        "stockModal"
+    ).classList.add("show");
+
+}
+
+
+async function saveStock(){
+
+    try{
+
+        const id =
+            document.getElementById(
+                "stockId"
+            ).value;
+
+
+        await api(
+            "/api/inventory/" +
+            id +
+            "/stock",
+            {
+
+                method:"POST",
+
+                body:JSON.stringify({
+
+                    action:
+                        document.getElementById(
+                            "stockAction"
+                        ).value,
+
+                    amount:
+                        document.getElementById(
+                            "stockAmount"
+                        ).value
+
+                })
+
+            }
+        );
+
+
+        closeModal(
+            "stockModal"
+        );
+
+
+        await loadInventory();
+        await loadDashboard();
+
+
+    }catch(error){
+
+        showError(error);
+
+    }
+
+}
+
+
+function openPriceModal(id){
+
+    const item =
+        inventoryData.find(
+            x => x.id == id
+        );
+
+
+    document.getElementById(
+        "priceId"
+    ).value = id;
+
+
+    document.getElementById(
+        "newPrice"
+    ).value =
+        item ? item.price : 0;
+
+
+    document.getElementById(
+        "priceModal"
+    ).classList.add("show");
+
+}
+
+
+async function savePrice(){
+
+    try{
+
+        const id =
+            document.getElementById(
+                "priceId"
+            ).value;
+
+
+        await api(
+            "/api/inventory/" +
+            id +
+            "/price",
+            {
+
+                method:"PUT",
+
+                body:JSON.stringify({
+
+                    price:
+                        document.getElementById(
+                            "newPrice"
+                        ).value
+
+                })
+
+            }
+        );
+
+
+        closeModal(
+            "priceModal"
+        );
+
+
+        await loadInventory();
+        await loadRecipes();
+
+
+    }catch(error){
+
+        showError(error);
+
+    }
+
+}
+
+
+async function deleteInventory(id){
+
+    if(!confirm(
+        "Bu mahsulotni o‘chirmoqchimisiz?"
+    )) return;
+
+
+    try{
+
+        await api(
+            "/api/inventory/" +
+            id,
+            {
+                method:"DELETE"
+            }
+        );
+
+
+        await loadInventory();
+        await loadRecipes();
+
+
+    }catch(error){
+
+        showError(error);
+
+    }
+
+}
+
+
+// =====================================================
+// RECIPES
+// =====================================================
+
+async function loadRecipes(){
+
+    try{
+
+        recipesData =
+            await api(
+                "/api/recipes"
+            );
+
+
+        const container =
+            document.getElementById(
+                "recipesContainer"
+            );
+
+
+        if(!recipesData.length){
+
+            container.innerHTML = `
+                <div class="empty">
+                    Hozircha retseptlar yo‘q.
+                </div>
+            `;
+
+            return;
+
+        }
+
+
+        container.innerHTML =
+            recipesData.map(recipe => `
+
+                <div
+                    class="section"
+                    style="box-shadow:none;border:1px solid #eee">
+
+                    <div class="toolbar">
+
+                        <div>
+
+                            <h2>
+                                🍽️
+                                ${escapeHtml(recipe.name)}
+                            </h2>
+
+                            <div>
+                                Birlik:
+                                ${escapeHtml(
+                                    recipe.sale_unit
+                                )}
+                            </div>
+
+                        </div>
+
+
+                        <div style="text-align:right">
+
+                            <div>
+                                Tannarx:
+                            </div>
+
+                            <strong>
+                                ${money(recipe.cost)}
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+                    <div>
+
+                        ${
+                            recipe.items &&
+                            recipe.items.length
+
+                            ?
+
+                            recipe.items.map(item => `
+
+                                <div class="recipe-item">
+
+                                    <strong>
+                                        ${escapeHtml(item.name)}
+                                    </strong>
+
+                                    —
+                                    ${number(item.quantity)}
+                                    ${escapeHtml(item.unit)}
+
+                                    ×
+                                    ${money(item.price)}
+
+                                    =
+                                    <strong>
+                                        ${money(item.item_cost)}
+                                    </strong>
+
+                                </div>
+
+                            `).join("")
+
+                            :
+
+                            `<div class="empty">
+                                Tarkib yo‘q
+                             </div>`
+
+                        }
+
+                    </div>
+
+
+                    <div style="margin-top:12px">
+
+                        <button
+                            class="btn blue"
+                            onclick="editRecipe(${recipe.id})">
+                            Tahrirlash
+                        </button>
+
+                        <button
+                            class="btn red"
+                            onclick="deleteRecipe(${recipe.id})">
+                            O‘chirish
+                        </button>
+
+                    </div>
+
+                </div>
+
+            `).join("");
+
+
+    }catch(error){
+
+        showError(error);
+
+    }
+
+}
+
+
+function openRecipeModal(recipe = null){
+
+    document.getElementById(
+        "recipeId"
+    ).value =
+        recipe ? recipe.id : "";
+
+
+    document.getElementById(
+        "recipeModalTitle"
+    ).textContent =
+        recipe
+        ? "Retseptni tahrirlash"
+        : "Yangi retsept";
+
+
+    document.getElementById(
+        "recipeName"
+    ).value =
+        recipe ? recipe.name : "";
+
+
+    document.getElementById(
+        "recipeUnit"
+    ).value =
+        recipe ? recipe.sale_unit : "dona";
+
+
+    document.getElementById(
+        "ingredientsContainer"
+    ).innerHTML = "";
+
+
+    if(recipe && recipe.items){
+
+        recipe.items.forEach(item => {
+
+            addIngredientRow(
+                item.inventory_id,
+                item.quantity
+            );
+
+        });
+
+    }else{
+
+        addIngredientRow();
+
+    }
+
+
+    calculateRecipeCost();
+
+
+    document.getElementById(
+        "recipeModal"
+    ).classList.add("show");
+
+}
+
 
 function addIngredientRow(
     selectedId = "",
     quantity = ""
-) {
+){
 
     const container =
         document.getElementById(
             "ingredientsContainer"
         );
+
+
+    const row =
+        document.createElement("div");
+
+
+    row.className =
+        "ingredient-row";
+
 
     let options = `
         <option value="">
@@ -1946,324 +3082,402 @@ function addIngredientRow(
         </option>
     `;
 
-    inventoryCache.forEach(item => {
+
+    inventoryData.forEach(item => {
 
         options += `
-            <option value="${item.id}"
-                ${Number(selectedId) === Number(item.id)
+            <option
+                value="${item.id}"
+                ${item.id == selectedId
                     ? "selected"
                     : ""}>
-                ${item.name} (${item.unit})
+
+                ${escapeHtml(item.name)}
+                (${escapeHtml(item.unit)})
+
             </option>
         `;
 
     });
 
-    const row =
-        document.createElement("div");
-
-    row.className = "ingredient-row";
 
     row.innerHTML = `
 
-        <select class="ingredient-product">
+        <select
+            class="ingredient-product"
+            onchange="calculateRecipeCost()">
+
             ${options}
+
         </select>
 
-        <input
-            class="ingredient-quantity"
-            type="number"
-            step="0.0001"
-            placeholder="Miqdor"
-            value="${quantity}"
-        >
 
-        <button class="danger"
-            onclick="this.parentElement.remove()">
+        <input
+            type="number"
+            step="0.001"
+            class="ingredient-quantity"
+            value="${quantity}"
+            placeholder="Miqdor"
+            oninput="calculateRecipeCost()">
+
+
+        <button
+            class="remove-btn"
+            onclick="this.parentElement.remove();calculateRecipeCost()">
+
             ×
+
         </button>
 
     `;
 
+
     container.appendChild(row);
+
 }
 
 
-/* =====================================================
-   SAVE RECIPE
-===================================================== */
+function calculateRecipeCost(){
 
-async function saveRecipe() {
+    let total = 0;
 
-    const id =
-        document.getElementById("recipeId").value;
 
-    const name =
-        document.getElementById("recipeName").value.trim();
+    document
+        .querySelectorAll(".ingredient-row")
+        .forEach(row => {
 
-    const sale_unit =
-        document.getElementById("recipeUnit").value;
+            const productId =
+                row.querySelector(
+                    ".ingredient-product"
+                ).value;
 
-    if (!name) {
 
-        alert("Taom nomini kiriting");
-        return;
+            const quantity =
+                Number(
+                    row.querySelector(
+                        ".ingredient-quantity"
+                    ).value || 0
+                );
 
-    }
 
-    const rows =
-        document.querySelectorAll(
-            "#ingredientsContainer .ingredient-row"
-        );
+            const item =
+                inventoryData.find(
+                    x => x.id == productId
+                );
 
-    const ingredients = [];
 
-    rows.forEach(row => {
+            if(item){
 
-        const inventory_id =
-            row.querySelector(
-                ".ingredient-product"
+                total +=
+                    quantity *
+                    Number(item.price || 0);
+
+            }
+
+        });
+
+
+    document.getElementById(
+        "recipeCostPreview"
+    ).textContent =
+        money(total);
+
+}
+
+
+async function saveRecipe(){
+
+    try{
+
+        const id =
+            document.getElementById(
+                "recipeId"
             ).value;
 
-        const quantity =
-            row.querySelector(
-                ".ingredient-quantity"
-            ).value;
 
-        if (
-            inventory_id &&
-            quantity &&
-            Number(quantity) > 0
-        ) {
+        const items = [];
 
-            ingredients.push({
-                inventory_id: Number(inventory_id),
-                quantity: Number(quantity)
+
+        document
+            .querySelectorAll(".ingredient-row")
+            .forEach(row => {
+
+                const inventoryId =
+                    row.querySelector(
+                        ".ingredient-product"
+                    ).value;
+
+
+                const quantity =
+                    row.querySelector(
+                        ".ingredient-quantity"
+                    ).value;
+
+
+                if(inventoryId && quantity){
+
+                    items.push({
+
+                        inventory_id:
+                            Number(inventoryId),
+
+                        quantity:
+                            Number(quantity)
+
+                    });
+
+                }
+
             });
+
+
+        if(!items.length){
+
+            alert(
+                "Retseptga kamida bitta mahsulot qo‘shing."
+            );
+
+            return;
 
         }
 
-    });
 
-    if (!ingredients.length) {
+        const body = {
 
-        alert(
-            "Kamida bitta mahsulot qo‘shing"
-        );
+            name:
+                document.getElementById(
+                    "recipeName"
+                ).value,
 
-        return;
+            sale_unit:
+                document.getElementById(
+                    "recipeUnit"
+                ).value,
 
-    }
+            items
 
-    const payload = {
-        name,
-        sale_unit,
-        ingredients
-    };
-
-    let response;
-
-    if (id) {
-
-        response =
-            await fetch(
-                `/api/recipes/${id}`,
-                {
-                    method: "PUT",
-
-                    headers: {
-                        "Content-Type":
-                            "application/json"
-                    },
-
-                    body:
-                        JSON.stringify(payload)
-                }
-            );
-
-    } else {
-
-        response =
-            await fetch(
-                "/api/recipes",
-                {
-                    method: "POST",
-
-                    headers: {
-                        "Content-Type":
-                            "application/json"
-                    },
-
-                    body:
-                        JSON.stringify(payload)
-                }
-            );
-
-    }
-
-    const data =
-        await response.json();
-
-    if (!response.ok) {
-
-        alert(data.error || "Xatolik");
-        return;
-
-    }
-
-    closeModal("recipeModal");
-
-    loadRecipes();
-}
+        };
 
 
-/* =====================================================
-   EDIT RECIPE
-===================================================== */
-
-async function editRecipe(id) {
-
-    await openRecipeModal(id);
-}
-
-
-/* =====================================================
-   DELETE RECIPE
-===================================================== */
-
-async function deleteRecipe(id) {
-
-    if (!confirm(
-        "Bu retseptni o‘chirmoqchimisiz?"
-    )) {
-        return;
-    }
-
-    const response =
-        await fetch(
-            `/api/recipes/${id}`,
+        await api(
+            id
+            ? "/api/recipes/" + id
+            : "/api/recipes",
             {
-                method: "DELETE"
+
+                method:id
+                    ? "PUT"
+                    : "POST",
+
+                body:JSON.stringify(body)
+
             }
         );
 
-    const data =
-        await response.json();
 
-    if (!response.ok) {
+        closeModal(
+            "recipeModal"
+        );
 
-        alert(data.error || "Xatolik");
-        return;
+
+        await loadRecipes();
+
+
+    }catch(error){
+
+        showError(error);
 
     }
 
-    loadRecipes();
 }
 
 
-/* =====================================================
-   SALES
-===================================================== */
+async function editRecipe(id){
 
-async function loadSales() {
+    try{
 
-    const response =
-        await fetch("/api/sales");
+        const recipe =
+            await api(
+                "/api/recipes/" + id
+            );
 
-    const data =
-        await response.json();
 
-    const table =
-        document.getElementById("salesTable");
+        openRecipeModal(recipe);
 
-    table.innerHTML = "";
 
-    data.forEach(sale => {
+    }catch(error){
 
-        table.innerHTML += `
-            <tr>
+        showError(error);
 
-                <td>
-                    <b>${sale.product_name}</b>
-                </td>
+    }
 
-                <td>
-                    ${sale.quantity}
-                </td>
-
-                <td>
-                    ${money(sale.unit_price)}
-                </td>
-
-                <td class="green">
-                    <b>${money(sale.total)}</b>
-                </td>
-
-                <td>
-                    ${formatDate(sale.created_at)}
-                </td>
-
-                <td>
-
-                    <button class="danger"
-                        onclick="deleteSale(${sale.id})">
-                        🗑️
-                    </button>
-
-                </td>
-
-            </tr>
-        `;
-
-    });
-
-    const summaryResponse =
-        await fetch("/api/sales/summary");
-
-    const summary =
-        await summaryResponse.json();
-
-    document.getElementById("salesSummary")
-        .innerHTML = `
-
-            <div class="card">
-
-                <div class="card-title">
-                    Bugungi sotuv
-                </div>
-
-                <div class="card-value green">
-                    ${money(summary.total_sales)}
-                </div>
-
-            </div>
-
-            <div class="card">
-
-                <div class="card-title">
-                    Sotuvlar soni
-                </div>
-
-                <div class="card-value">
-                    ${summary.sales_count}
-                </div>
-
-            </div>
-
-        `;
 }
 
 
-/* =====================================================
-   OPEN SALE MODAL
-===================================================== */
+async function deleteRecipe(id){
 
-async function openSaleModal() {
+    if(!confirm(
+        "Bu retseptni o‘chirmoqchimisiz?"
+    )) return;
 
-    await loadRecipes();
+
+    try{
+
+        await api(
+            "/api/recipes/" + id,
+            {
+                method:"DELETE"
+            }
+        );
+
+
+        await loadRecipes();
+
+
+    }catch(error){
+
+        showError(error);
+
+    }
+
+}
+
+
+// =====================================================
+// SALES
+// =====================================================
+
+async function loadSales(){
+
+    try{
+
+        salesData =
+            await api(
+                "/api/sales"
+            );
+
+
+        const tbody =
+            document.getElementById(
+                "salesTable"
+            );
+
+
+        if(!salesData.length){
+
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="8"
+                        class="empty">
+                        Hozircha sotuvlar yo‘q
+                    </td>
+                </tr>
+            `;
+
+        }else{
+
+            tbody.innerHTML =
+                salesData.map(sale => `
+
+                    <tr>
+
+                        <td>
+                            ${sale.id}
+                        </td>
+
+                        <td>
+                            ${escapeHtml(
+                                sale.product_name
+                            )}
+                        </td>
+
+                        <td>
+                            ${
+                                sale.recipe_name
+                                ? escapeHtml(
+                                    sale.recipe_name
+                                )
+                                : "-"
+                            }
+                        </td>
+
+                        <td>
+                            ${number(
+                                sale.quantity
+                            )}
+                        </td>
+
+                        <td>
+                            ${money(
+                                sale.unit_price
+                            )}
+                        </td>
+
+                        <td>
+                            <strong>
+                                ${money(
+                                    sale.total
+                                )}
+                            </strong>
+                        </td>
+
+                        <td>
+                            ${formatDate(
+                                sale.created_at
+                            )}
+                        </td>
+
+                        <td>
+
+                            <button
+                                class="btn red"
+                                onclick="deleteSale(${sale.id})">
+                                O‘chirish
+                            </button>
+
+                        </td>
+
+                    </tr>
+
+                `).join("");
+
+        }
+
+
+        const summary =
+            await api(
+                "/api/sales/summary"
+            );
+
+
+        document.getElementById(
+            "salesQuantity"
+        ).textContent =
+            number(summary.total_quantity);
+
+
+        document.getElementById(
+            "salesTotal"
+        ).textContent =
+            money(summary.total_sales);
+
+
+    }catch(error){
+
+        showError(error);
+
+    }
+
+}
+
+
+function openSaleModal(){
 
     const select =
-        document.getElementById("saleRecipe");
+        document.getElementById(
+            "saleRecipe"
+        );
+
 
     select.innerHTML = `
         <option value="">
@@ -2271,507 +3485,709 @@ async function openSaleModal() {
         </option>
     `;
 
-    recipesCache.forEach(recipe => {
+
+    recipesData.forEach(recipe => {
 
         select.innerHTML += `
+
             <option value="${recipe.id}">
-                ${recipe.name}
+
+                ${escapeHtml(recipe.name)}
+
+                —
+                tannarx:
+                ${money(recipe.cost)}
+
             </option>
+
         `;
 
     });
 
-    document.getElementById("saleProductName")
-        .value = "";
 
-    document.getElementById("saleQuantity")
-        .value = "1";
+    document.getElementById(
+        "saleProduct"
+    ).value = "";
 
-    document.getElementById("saleUnitPrice")
-        .value = "";
 
-    document.getElementById("saleRecipeInfo")
-        .innerHTML = "";
+    document.getElementById(
+        "saleQuantity"
+    ).value = 1;
+
+
+    document.getElementById(
+        "salePrice"
+    ).value = 0;
+
+
+    document.getElementById(
+        "saleRecipePreview"
+    ).innerHTML = "";
+
 
     calculateSalePreview();
 
-    openModal("saleModal");
+
+    document.getElementById(
+        "saleModal"
+    ).classList.add("show");
+
 }
 
 
-/* =====================================================
-   RECIPE SELECTED FOR SALE
-===================================================== */
+function recipeSelected(){
 
-async function recipeSelected() {
+    const id =
+        document.getElementById(
+            "saleRecipe"
+        ).value;
 
-    const recipeId =
-        document.getElementById("saleRecipe").value;
 
-    if (!recipeId) {
+    if(!id){
 
-        document.getElementById("saleRecipeInfo")
-            .innerHTML = "";
+        document.getElementById(
+            "saleRecipePreview"
+        ).innerHTML = "";
 
-        document.getElementById("saleProductName")
-            .value = "";
+
+        calculateSalePreview();
 
         return;
 
     }
 
-    const response =
-        await fetch(
-            `/api/recipes/${recipeId}`
-        );
 
     const recipe =
-        await response.json();
+        recipesData.find(
+            x => x.id == id
+        );
 
-    document.getElementById("saleProductName")
-        .value = recipe.name;
+
+    if(!recipe) return;
+
+
+    document.getElementById(
+        "saleProduct"
+    ).value =
+        recipe.name;
+
 
     let html = `
-        <div class="panel"
-             style="background:#f8fafc;">
-            <b>Retsept tarkibi:</b>
+
+        <strong>
+            🍽️ ${escapeHtml(recipe.name)}
+        </strong>
+
+        <br><br>
+
+        <strong>
+            Tannarx:
+        </strong>
+
+        ${money(recipe.cost)}
+
+        <br><br>
+
     `;
 
-    (recipe.ingredients || [])
-        .forEach(item => {
 
-            html += `
-                <div>
-                    • ${item.inventory_name}
-                    — ${item.quantity} ${item.unit}
-                </div>
-            `;
+    if(recipe.items){
 
-        });
+        html += recipe.items.map(
+            item => `
 
-    html += `</div>`;
+                ${escapeHtml(item.name)}
+                —
+                ${number(item.quantity)}
+                ${escapeHtml(item.unit)}
 
-    document.getElementById("saleRecipeInfo")
-        .innerHTML = html;
+                <br>
+
+            `
+        ).join("");
+
+    }
+
+
+    document.getElementById(
+        "saleRecipePreview"
+    ).innerHTML = html;
+
 
     calculateSalePreview();
+
 }
 
 
-/* =====================================================
-   SALE PREVIEW
-===================================================== */
-
-function calculateSalePreview() {
+function calculateSalePreview(){
 
     const quantity =
         Number(
             document.getElementById(
                 "saleQuantity"
-            ).value
-        ) || 0;
+            ).value || 0
+        );
+
 
     const price =
         Number(
             document.getElementById(
-                "saleUnitPrice"
-            ).value
-        ) || 0;
-
-    document.getElementById("salePreview")
-        .textContent =
-            money(quantity * price);
-}
+                "salePrice"
+            ).value || 0
+        );
 
 
-/* =====================================================
-   SAVE SALE
-===================================================== */
+    const total =
+        quantity * price;
 
-async function saveSale() {
+
+    let cost = 0;
+
 
     const recipeId =
-        document.getElementById("saleRecipe").value;
-
-    const productName =
         document.getElementById(
-            "saleProductName"
-        ).value.trim();
-
-    const quantity =
-        document.getElementById(
-            "saleQuantity"
+            "saleRecipe"
         ).value;
 
-    const unitPrice =
+
+    if(recipeId){
+
+        const recipe =
+            recipesData.find(
+                x => x.id == recipeId
+            );
+
+
+        if(recipe){
+
+            cost =
+                quantity *
+                Number(recipe.cost || 0);
+
+        }
+
+    }
+
+
+    const profit =
+        total - cost;
+
+
+    document.getElementById(
+        "saleTotalPreview"
+    ).textContent =
+        money(total);
+
+
+    document.getElementById(
+        "saleCostPreview"
+    ).textContent =
+        money(cost);
+
+
+    const profitElement =
         document.getElementById(
-            "saleUnitPrice"
-        ).value;
-
-    if (!productName) {
-
-        alert("Taom nomini kiriting");
-        return;
-
-    }
-
-    if (!quantity || Number(quantity) <= 0) {
-
-        alert("Miqdorni kiriting");
-        return;
-
-    }
-
-    if (unitPrice === "" || Number(unitPrice) < 0) {
-
-        alert("Narxni kiriting");
-        return;
-
-    }
-
-    const payload = {
-
-        product_name: productName,
-
-        quantity: Number(quantity),
-
-        unit_price: Number(unitPrice)
-
-    };
-
-    if (recipeId) {
-
-        payload.recipe_id =
-            Number(recipeId);
-
-    }
-
-    const response =
-        await fetch(
-            "/api/sales",
-            {
-                method: "POST",
-
-                headers: {
-                    "Content-Type":
-                        "application/json"
-                },
-
-                body:
-                    JSON.stringify(payload)
-            }
+            "saleProfitPreview"
         );
 
-    const data =
-        await response.json();
 
-    if (!response.ok) {
+    profitElement.textContent =
+        money(profit);
+
+
+    profitElement.classList.remove(
+        "profit",
+        "loss"
+    );
+
+
+    profitElement.classList.add(
+        profit >= 0
+        ? "profit"
+        : "loss"
+    );
+
+}
+
+
+async function saveSale(){
+
+    try{
+
+        const recipeId =
+            document.getElementById(
+                "saleRecipe"
+            ).value;
+
+
+        const productName =
+            document.getElementById(
+                "saleProduct"
+            ).value;
+
+
+        const quantity =
+            document.getElementById(
+                "saleQuantity"
+            ).value;
+
+
+        const price =
+            document.getElementById(
+                "salePrice"
+            ).value;
+
+
+        if(!productName){
+
+            alert(
+                "Mahsulot nomini kiriting."
+            );
+
+            return;
+
+        }
+
+
+        const result =
+            await api(
+                "/api/sales",
+                {
+
+                    method:"POST",
+
+                    body:JSON.stringify({
+
+                        product_name:
+                            productName,
+
+                        quantity:
+                            Number(quantity),
+
+                        unit_price:
+                            Number(price),
+
+                        recipe_id:
+                            recipeId
+                            ? Number(recipeId)
+                            : null
+
+                    })
+
+                }
+            );
+
+
+        closeModal(
+            "saleModal"
+        );
+
 
         alert(
-            data.error ||
-            "Sotuvni saqlashda xatolik"
+            "Sotuv muvaffaqiyatli saqlandi!"
         );
 
-        return;
+
+        await loadSales();
+        await loadDashboard();
+        await loadInventory();
+
+
+    }catch(error){
+
+        showError(error);
 
     }
 
-    closeModal("saleModal");
-
-    loadSales();
-    loadDashboard();
-    loadInventory();
-
-    alert(
-        "✅ Sotuv muvaffaqiyatli saqlandi!"
-    );
 }
 
 
-/* =====================================================
-   DELETE SALE
-===================================================== */
+async function deleteSale(id){
 
-async function deleteSale(id) {
+    if(!confirm(
+        "Sotuvni o‘chirasizmi?\n\n" +
+        "Agar retseptli sotuv bo‘lsa, " +
+        "ishlatilgan mahsulotlar omborga qaytariladi."
+    )) return;
 
-    if (!confirm(
-        "Bu sotuvni o‘chirmoqchimisiz?"
-    )) {
-        return;
+
+    try{
+
+        const result =
+            await api(
+                "/api/sales/" + id,
+                {
+                    method:"DELETE"
+                }
+            );
+
+
+        alert(
+            result.message ||
+            "Sotuv o‘chirildi."
+        );
+
+
+        await loadSales();
+        await loadDashboard();
+        await loadInventory();
+
+
+    }catch(error){
+
+        showError(error);
+
     }
 
-    const response =
-        await fetch(
-            `/api/sales/${id}`,
+}
+
+
+// =====================================================
+// EMPLOYEES
+// =====================================================
+
+async function loadEmployees(){
+
+    try{
+
+        employeesData =
+            await api(
+                "/api/employees"
+            );
+
+
+        const tbody =
+            document.getElementById(
+                "employeesTable"
+            );
+
+
+        if(!employeesData.length){
+
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="6"
+                        class="empty">
+                        Xodimlar yo‘q
+                    </td>
+                </tr>
+            `;
+
+        }else{
+
+            tbody.innerHTML =
+                employeesData.map(employee => `
+
+                    <tr>
+
+                        <td>
+                            ${employee.id}
+                        </td>
+
+                        <td>
+                            ${escapeHtml(
+                                employee.name
+                            )}
+                        </td>
+
+                        <td>
+                            ${escapeHtml(
+                                employee.phone || ""
+                            )}
+                        </td>
+
+                        <td>
+                            ${escapeHtml(
+                                employee.position || ""
+                            )}
+                        </td>
+
+                        <td>
+                            ${money(
+                                employee.salary
+                            )}
+                        </td>
+
+                        <td>
+
+                            <button
+                                class="btn blue"
+                                onclick="editEmployee(${employee.id})">
+                                Tahrirlash
+                            </button>
+
+                            <button
+                                class="btn red"
+                                onclick="deleteEmployee(${employee.id})">
+                                O‘chirish
+                            </button>
+
+                        </td>
+
+                    </tr>
+
+                `).join("");
+
+        }
+
+
+        const summary =
+            await api(
+                "/api/employees/summary"
+            );
+
+
+        document.getElementById(
+            "employeeCount"
+        ).textContent =
+            number(summary.employees);
+
+
+        document.getElementById(
+            "employeeSalary"
+        ).textContent =
+            money(summary.total_salary);
+
+
+    }catch(error){
+
+        showError(error);
+
+    }
+
+}
+
+
+function openEmployeeModal(employee = null){
+
+    document.getElementById(
+        "employeeModalTitle"
+    ).textContent =
+        employee
+        ? "Xodimni tahrirlash"
+        : "Yangi xodim";
+
+
+    document.getElementById(
+        "employeeId"
+    ).value =
+        employee ? employee.id : "";
+
+
+    document.getElementById(
+        "employeeName"
+    ).value =
+        employee ? employee.name : "";
+
+
+    document.getElementById(
+        "employeePhone"
+    ).value =
+        employee ? employee.phone : "";
+
+
+    document.getElementById(
+        "employeePosition"
+    ).value =
+        employee ? employee.position : "";
+
+
+    document.getElementById(
+        "employeeSalary"
+    ).value =
+        employee ? employee.salary : 0;
+
+
+    document.getElementById(
+        "employeeModal"
+    ).classList.add("show");
+
+}
+
+
+async function editEmployee(id){
+
+    const employee =
+        employeesData.find(
+            x => x.id == id
+        );
+
+
+    if(employee){
+
+        openEmployeeModal(employee);
+
+    }
+
+}
+
+
+async function saveEmployee(){
+
+    try{
+
+        const id =
+            document.getElementById(
+                "employeeId"
+            ).value;
+
+
+        const body = {
+
+            name:
+                document.getElementById(
+                    "employeeName"
+                ).value,
+
+            phone:
+                document.getElementById(
+                    "employeePhone"
+                ).value,
+
+            position:
+                document.getElementById(
+                    "employeePosition"
+                ).value,
+
+            salary:
+                document.getElementById(
+                    "employeeSalary"
+                ).value
+
+        };
+
+
+        await api(
+            id
+            ? "/api/employees/" + id
+            : "/api/employees",
             {
-                method: "DELETE"
+
+                method:id
+                    ? "PUT"
+                    : "POST",
+
+                body:JSON.stringify(body)
+
             }
         );
 
-    const data =
-        await response.json();
 
-    if (!response.ok) {
-
-        alert(data.error || "Xatolik");
-        return;
-
-    }
-
-    loadSales();
-    loadDashboard();
-}
-
-
-/* =====================================================
-   EMPLOYEES
-===================================================== */
-
-async function loadEmployees() {
-
-    const response =
-        await fetch("/api/employees");
-
-    const data =
-        await response.json();
-
-    const table =
-        document.getElementById(
-            "employeesTable"
+        closeModal(
+            "employeeModal"
         );
 
-    table.innerHTML = "";
 
-    data.forEach(employee => {
-
-        table.innerHTML += `
-            <tr>
-
-                <td>
-                    <b>${employee.name}</b>
-                </td>
-
-                <td>
-                    ${employee.phone || ""}
-                </td>
-
-                <td>
-                    ${employee.position || ""}
-                </td>
-
-                <td>
-                    ${money(employee.salary)}
-                </td>
-
-                <td>
-
-                    <button class="gray"
-                        onclick='editEmployee(${JSON.stringify(employee)})'>
-                        ✏️
-                    </button>
-
-                    <button class="danger"
-                        onclick="deleteEmployee(${employee.id})">
-                        🗑️
-                    </button>
-
-                </td>
-
-            </tr>
-        `;
-
-    });
-
-    const summaryResponse =
-        await fetch(
-            "/api/employees/summary"
-        );
-
-    const summary =
-        await summaryResponse.json();
-
-    document.getElementById("employeeCount")
-        .textContent = summary.count;
-
-    document.getElementById("employeeSalary")
-        .textContent = money(summary.salaries);
-}
+        await loadEmployees();
 
 
-function openEmployeeModal(employee = null) {
+    }catch(error){
 
-    document.getElementById("employeeId")
-        .value = employee?.id || "";
-
-    document.getElementById("employeeName")
-        .value = employee?.name || "";
-
-    document.getElementById("employeePhone")
-        .value = employee?.phone || "";
-
-    document.getElementById("employeePosition")
-        .value = employee?.position || "";
-
-    document.getElementById("employeeSalaryInput")
-        .value = employee?.salary || "";
-
-    openModal("employeeModal");
-}
-
-
-function editEmployee(employee) {
-
-    openEmployeeModal(employee);
-}
-
-
-async function saveEmployee() {
-
-    const id =
-        document.getElementById(
-            "employeeId"
-        ).value;
-
-    const payload = {
-
-        name:
-            document.getElementById(
-                "employeeName"
-            ).value,
-
-        phone:
-            document.getElementById(
-                "employeePhone"
-            ).value,
-
-        position:
-            document.getElementById(
-                "employeePosition"
-            ).value,
-
-        salary:
-            document.getElementById(
-                "employeeSalaryInput"
-            ).value || 0
-    };
-
-    if (!payload.name) {
-
-        alert("Ismni kiriting");
-        return;
+        showError(error);
 
     }
 
-    let response;
-
-    if (id) {
-
-        response =
-            await fetch(
-                `/api/employees/${id}`,
-                {
-                    method: "PUT",
-
-                    headers: {
-                        "Content-Type":
-                            "application/json"
-                    },
-
-                    body:
-                        JSON.stringify(payload)
-                }
-            );
-
-    } else {
-
-        response =
-            await fetch(
-                "/api/employees",
-                {
-                    method: "POST",
-
-                    headers: {
-                        "Content-Type":
-                            "application/json"
-                    },
-
-                    body:
-                        JSON.stringify(payload)
-                }
-            );
-
-    }
-
-    const data =
-        await response.json();
-
-    if (!response.ok) {
-
-        alert(data.error || "Xatolik");
-        return;
-
-    }
-
-    closeModal("employeeModal");
-
-    loadEmployees();
 }
 
 
-async function deleteEmployee(id) {
+async function deleteEmployee(id){
 
-    if (!confirm(
+    if(!confirm(
         "Bu xodimni o‘chirmoqchimisiz?"
-    )) {
-        return;
-    }
+    )) return;
 
-    const response =
-        await fetch(
-            `/api/employees/${id}`,
+
+    try{
+
+        await api(
+            "/api/employees/" + id,
             {
-                method: "DELETE"
+                method:"DELETE"
             }
         );
 
-    const data =
-        await response.json();
 
-    if (!response.ok) {
+        await loadEmployees();
 
-        alert(data.error || "Xatolik");
-        return;
+
+    }catch(error){
+
+        showError(error);
 
     }
 
-    loadEmployees();
 }
 
 
-/* =====================================================
-   DATE
-===================================================== */
+// =====================================================
+// UTILITIES
+// =====================================================
 
-function formatDate(value) {
+function formatDate(date){
 
-    if (!value) {
-        return "";
+    if(!date) return "-";
+
+
+    try{
+
+        return new Date(date)
+            .toLocaleString(
+                "uz-UZ"
+            );
+
+    }catch{
+
+        return date;
+
     }
 
-    const date =
-        new Date(value);
-
-    return date.toLocaleString(
-        "uz-UZ"
-    );
 }
 
 
-/* =====================================================
-   START
-===================================================== */
+function escapeHtml(value){
 
-loadDashboard();
+    return String(value ?? "")
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+
+}
+
+
+// =====================================================
+// START
+// =====================================================
+
+async function startApp(){
+
+    try{
+
+        await loadInventory();
+
+        await loadRecipes();
+
+        await loadDashboard();
+
+        await loadSales();
+
+        await loadTransactions();
+
+        await loadEmployees();
+
+        await loadReportPeriod("today");
+
+    }catch(error){
+
+        console.error(error);
+
+    }
+
+}
+
+
+startApp();
 
 </script>
 
