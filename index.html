@@ -1,11 +1,19 @@
 <!DOCTYPE html>
 <html lang="uz">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
     <title>Real CEO</title>
 
     <style>
+
         * {
             box-sizing: border-box;
         }
@@ -86,6 +94,11 @@
             transform: scale(0.97);
         }
 
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
         .primary {
             background: #111827;
             color: white;
@@ -99,6 +112,7 @@
             align-items: center;
             justify-content: center;
             padding: 20px;
+            z-index: 100;
         }
 
         .modal-content {
@@ -127,80 +141,261 @@
         .modal-buttons button {
             flex: 1;
         }
+
+        .transaction {
+            padding: 14px 0;
+            border-bottom: 1px solid #eeeeee;
+        }
+
+        .transaction:last-child {
+            border-bottom: none;
+        }
+
+        .transaction-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .transaction-name {
+            font-weight: bold;
+            font-size: 15px;
+        }
+
+        .transaction-description {
+            color: #6b7280;
+            font-size: 13px;
+            margin-top: 5px;
+        }
+
+        .transaction-date {
+            color: #9ca3af;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        .income-value {
+            color: #16a34a;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .expense-value {
+            color: #dc2626;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .empty {
+            color: #6b7280;
+            text-align: center;
+            padding: 15px 0;
+        }
+
+        @media (max-width: 400px) {
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .transaction-row {
+                align-items: flex-start;
+            }
+
+            .income-value,
+            .expense-value {
+                font-size: 14px;
+            }
+        }
+
     </style>
+
 </head>
+
 
 <body>
 
+
 <div class="header">
+
     <h1>REAL CEO 👔</h1>
-    <p>Real Choyxona M39</p>
+
+    <p>
+        Real Choyxona M39
+    </p>
+
 </div>
+
 
 <div class="container">
 
+
+    <!-- MOLIYAVIY KO'RSATKICHLAR -->
+
     <div class="stats">
 
-        <div class="card">
-            <div class="title">💰 Daromad</div>
-            <div class="amount" id="income">0 so'm</div>
-        </div>
 
         <div class="card">
-            <div class="title">💸 Xarajat</div>
-            <div class="amount" id="expense">0 so'm</div>
+
+            <div class="title">
+                💰 Daromad
+            </div>
+
+            <div
+                class="amount"
+                id="income"
+            >
+                0 so'm
+            </div>
+
         </div>
+
+
+        <div class="card">
+
+            <div class="title">
+                💸 Xarajat
+            </div>
+
+            <div
+                class="amount"
+                id="expense"
+            >
+                0 so'm
+            </div>
+
+        </div>
+
 
     </div>
+
+
+    <!-- FOYDA -->
 
     <div class="card">
-        <div class="title">📈 Foyda</div>
-        <div class="amount" id="profit">0 so'm</div>
+
+        <div class="title">
+            📈 Foyda
+        </div>
+
+        <div
+            class="amount"
+            id="profit"
+        >
+            0 so'm
+        </div>
+
     </div>
+
+
+    <!-- TRANZAKSIYALAR -->
+
+    <div class="card">
+
+        <div class="title">
+            📋 So‘nggi operatsiyalar
+        </div>
+
+
+        <div id="transactions">
+
+            <div class="empty">
+                Ma'lumotlar yuklanmoqda...
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ASOSIY MENYU -->
 
     <div class="menu">
 
-        <button class="primary" onclick="openModal('income')">
-            💰<br>Daromad qo‘shish
+
+        <button
+            class="primary"
+            onclick="openModal('income')"
+        >
+            💰
+            <br>
+            Daromad qo‘shish
         </button>
 
-        <button onclick="openModal('expense')">
-            💸<br>Xarajat qo‘shish
+
+        <button
+            onclick="openModal('expense')"
+        >
+            💸
+            <br>
+            Xarajat qo‘shish
         </button>
 
-        <button>
-            📦<br>Ombor
-        </button>
-
-        <button>
-            👥<br>Xodimlar
-        </button>
-
-        <button>
-            🍽️<br>Savdo
-        </button>
-
-        <button>
-            📊<br>Hisobot
-        </button>
 
         <button>
-            🤖<br>AI CEO
+            📦
+            <br>
+            Ombor
         </button>
 
+
         <button>
-            ⚙️<br>Sozlamalar
+            👥
+            <br>
+            Xodimlar
         </button>
+
+
+        <button>
+            🍽️
+            <br>
+            Savdo
+        </button>
+
+
+        <button>
+            📊
+            <br>
+            Hisobot
+        </button>
+
+
+        <button>
+            🤖
+            <br>
+            AI CEO
+        </button>
+
+
+        <button>
+            ⚙️
+            <br>
+            Sozlamalar
+        </button>
+
 
     </div>
 
+
 </div>
 
-<div class="modal" id="modal">
+
+<!-- DAROMAD / XARAJAT MODALI -->
+
+<div
+    class="modal"
+    id="modal"
+>
+
 
     <div class="modal-content">
 
-        <h2 id="modalTitle">Daromad qo‘shish</h2>
+
+        <h2 id="modalTitle">
+            Daromad qo‘shish
+        </h2>
+
 
         <input
             type="number"
@@ -208,144 +403,504 @@
             placeholder="Summa, masalan: 500000"
         >
 
+
         <input
             type="text"
             id="description"
             placeholder="Izoh"
         >
 
+
         <div class="modal-buttons">
 
-            <button onclick="closeModal()">
+
+            <button
+                onclick="closeModal()"
+            >
                 Bekor qilish
             </button>
 
-            <button class="primary" onclick="saveData()">
+
+            <button
+                class="primary"
+                onclick="saveData()"
+            >
                 Saqlash
             </button>
 
+
         </div>
+
 
     </div>
 
+
 </div>
 
+
 <script>
+
+
 let currentType = "";
+
 
 const API_URL = "/api";
 
+
+// =========================================================
+// MODAL
+// =========================================================
+
 function openModal(type) {
+
     currentType = type;
 
-    document.getElementById("modal").style.display = "flex";
+    document.getElementById(
+        "modal"
+    ).style.display = "flex";
 
-    document.getElementById("modalTitle").innerText =
+
+    document.getElementById(
+        "modalTitle"
+    ).innerText =
+
         type === "income"
+
             ? "💰 Daromad qo‘shish"
+
             : "💸 Xarajat qo‘shish";
 }
 
+
 function closeModal() {
-    document.getElementById("modal").style.display = "none";
-    document.getElementById("amount").value = "";
-    document.getElementById("description").value = "";
+
+    document.getElementById(
+        "modal"
+    ).style.display = "none";
+
+
+    document.getElementById(
+        "amount"
+    ).value = "";
+
+
+    document.getElementById(
+        "description"
+    ).value = "";
 }
+
+
+// =========================================================
+// PUL FORMAT
+// =========================================================
 
 function formatMoney(value) {
-    return Number(value).toLocaleString("uz-UZ") + " so‘m";
+
+    return Number(
+        value
+    ).toLocaleString(
+        "uz-UZ"
+    ) + " so‘m";
 }
 
-// PostgreSQL bazasidan hisobotni olish
+
+// =========================================================
+// DASHBOARD
+// =========================================================
+
 async function loadDashboard() {
+
     try {
-        const response = await fetch(API_URL + "/summary");
+
+        const response =
+            await fetch(
+                API_URL + "/summary"
+            );
+
 
         if (!response.ok) {
-            throw new Error("Hisobotni olishda xatolik");
-        }
 
-        const data = await response.json();
-
-        document.getElementById("income").innerText =
-            formatMoney(data.income);
-
-        document.getElementById("expense").innerText =
-            formatMoney(data.expense);
-
-        document.getElementById("profit").innerText =
-            formatMoney(data.profit);
-
-    } catch (error) {
-        console.error(error);
-        alert("Serverdan ma'lumot olishda xatolik yuz berdi.");
-    }
-}
-
-// Daromad yoki xarajatni PostgreSQL bazasiga saqlash
-async function saveData() {
-    const amount = Number(
-        document.getElementById("amount").value
-    );
-
-    const description =
-        document.getElementById("description").value.trim();
-
-    if (!Number.isFinite(amount) || amount <= 0) {
-        alert("Iltimos, to‘g‘ri summani kiriting.");
-        return;
-    }
-
-    const saveButton =
-        document.querySelector(".modal-buttons .primary");
-
-    saveButton.disabled = true;
-    saveButton.innerText = "Saqlanmoqda...";
-
-    try {
-        const response = await fetch(
-            API_URL + "/transactions",
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    type: currentType,
-                    amount: amount,
-                    description: description
-                })
-            }
-        );
-
-        const result = await response.json();
-
-        if (!response.ok || !result.success) {
             throw new Error(
-                result.error || "Saqlashda xatolik"
+                "Hisobotni olishda xatolik"
             );
         }
 
-        closeModal();
 
-        await loadDashboard();
+        const data =
+            await response.json();
 
-        alert("Ma'lumot muvaffaqiyatli saqlandi!");
+
+        document.getElementById(
+            "income"
+        ).innerText =
+            formatMoney(
+                data.income
+            );
+
+
+        document.getElementById(
+            "expense"
+        ).innerText =
+            formatMoney(
+                data.expense
+            );
+
+
+        document.getElementById(
+            "profit"
+        ).innerText =
+            formatMoney(
+                data.profit
+            );
+
 
     } catch (error) {
-        alert("Xatolik: " + error.message);
-    } finally {
-        saveButton.disabled = false;
-        saveButton.innerText = "Saqlash";
+
+        console.error(
+            error
+        );
+
+        alert(
+            "Serverdan ma'lumot olishda xatolik yuz berdi."
+        );
     }
 }
 
-// Sahifa ochilganda ma'lumotlarni yuklash
+
+// =========================================================
+// TRANZAKSIYALAR TARIXI
+// =========================================================
+
+async function loadTransactions() {
+
+    try {
+
+        const response =
+            await fetch(
+                API_URL + "/transactions"
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Operatsiyalarni olishda xatolik"
+            );
+        }
+
+
+        const data =
+            await response.json();
+
+
+        const container =
+            document.getElementById(
+                "transactions"
+            );
+
+
+        if (
+            !data.transactions ||
+            data.transactions.length === 0
+        ) {
+
+            container.innerHTML =
+                `
+                <div class="empty">
+                    Hozircha operatsiyalar yo‘q.
+                </div>
+                `;
+
+            return;
+        }
+
+
+        container.innerHTML = "";
+
+
+        data.transactions.forEach(
+            transaction => {
+
+
+                const item =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                item.className =
+                    "transaction";
+
+
+                const isIncome =
+                    transaction.type === "income";
+
+
+                const icon =
+                    isIncome
+                        ? "💰"
+                        : "💸";
+
+
+                const name =
+                    isIncome
+                        ? "Daromad"
+                        : "Xarajat";
+
+
+                const sign =
+                    isIncome
+                        ? "+"
+                        : "-";
+
+
+                const valueClass =
+                    isIncome
+                        ? "income-value"
+                        : "expense-value";
+
+
+                const date =
+                    new Date(
+                        transaction.created_at
+                    ).toLocaleString(
+                        "uz-UZ"
+                    );
+
+
+                item.innerHTML = `
+
+                    <div class="transaction-row">
+
+
+                        <div>
+
+                            <div class="transaction-name">
+
+                                ${icon}
+                                ${name}
+
+                            </div>
+
+
+                            <div class="transaction-description">
+
+                                ${
+                                    transaction.description ||
+                                    "Izoh yo‘q"
+                                }
+
+                            </div>
+
+
+                            <div class="transaction-date">
+
+                                ${date}
+
+                            </div>
+
+                        </div>
+
+
+                        <div
+                            class="${valueClass}"
+                        >
+
+                            ${sign}
+                            ${formatMoney(
+                                transaction.amount
+                            )}
+
+                        </div>
+
+
+                    </div>
+
+                `;
+
+
+                container.appendChild(
+                    item
+                );
+
+            }
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            error
+        );
+
+
+        document.getElementById(
+            "transactions"
+        ).innerHTML =
+
+            `
+            <div
+                class="empty"
+                style="color:#dc2626;"
+            >
+                Tarixni yuklashda xatolik.
+            </div>
+            `;
+    }
+}
+
+
+// =========================================================
+// DAROMAD / XARAJAT SAQLASH
+// =========================================================
+
+async function saveData() {
+
+
+    const amount =
+        Number(
+            document.getElementById(
+                "amount"
+            ).value
+        );
+
+
+    const description =
+        document.getElementById(
+            "description"
+        ).value.trim();
+
+
+    if (
+        !Number.isFinite(
+            amount
+        ) ||
+        amount <= 0
+    ) {
+
+        alert(
+            "Iltimos, to‘g‘ri summani kiriting."
+        );
+
+        return;
+    }
+
+
+    const saveButton =
+        document.querySelector(
+            ".modal-buttons .primary"
+        );
+
+
+    saveButton.disabled =
+        true;
+
+
+    saveButton.innerText =
+        "Saqlanmoqda...";
+
+
+    try {
+
+
+        const response =
+            await fetch(
+                API_URL + "/transactions",
+                {
+
+                    method: "POST",
+
+                    headers: {
+
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:
+                        JSON.stringify({
+
+                            type:
+                                currentType,
+
+                            amount:
+                                amount,
+
+                            description:
+                                description
+                        })
+                }
+            );
+
+
+        const result =
+            await response.json();
+
+
+        if (
+            !response.ok ||
+            !result.success
+        ) {
+
+            throw new Error(
+                result.error ||
+                "Saqlashda xatolik"
+            );
+        }
+
+
+        closeModal();
+
+
+        await loadDashboard();
+
+
+        await loadTransactions();
+
+
+        alert(
+            "Ma'lumot muvaffaqiyatli saqlandi!"
+        );
+
+
+    } catch (error) {
+
+        alert(
+            "Xatolik: " +
+            error.message
+        );
+
+
+    } finally {
+
+        saveButton.disabled =
+            false;
+
+
+        saveButton.innerText =
+            "Saqlash";
+    }
+}
+
+
+// =========================================================
+// SAHIFA OCHILGANDA
+// =========================================================
+
 document.addEventListener(
     "DOMContentLoaded",
-    loadDashboard
+    async function () {
+
+        await loadDashboard();
+
+        await loadTransactions();
+
+    }
 );
+
+
 </script>
 
+
 </body>
+
 </html>
