@@ -3,2353 +3,2224 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>REAL CEO</title>
 
-<link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#111827">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Real CEO">
-<link rel="apple-touch-icon" href="/icon-192.png">
 
-<title>Real CEO</title>
+<link rel="manifest" href="/manifest.json">
 
 <style>
-
-*{
-    box-sizing:border-box;
+* {
+    box-sizing: border-box;
 }
 
-body{
-    margin:0;
-    font-family:Arial,Helvetica,sans-serif;
-    background:#f4f6f8;
-    color:#1f2937;
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f3f4f6;
+    color: #111827;
 }
 
-button{
-    border:none;
-    cursor:pointer;
+button,
+input,
+select {
+    font-family: inherit;
 }
 
-.topbar{
-    background:#111827;
-    color:white;
-    padding:15px 20px;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    position:sticky;
-    top:0;
-    z-index:100;
+button {
+    cursor: pointer;
 }
 
-.logo{
-    font-size:22px;
-    font-weight:bold;
+.hidden {
+    display: none !important;
 }
 
-.logo span{
-    color:#22c55e;
+/* =========================
+   LOGIN
+========================= */
+
+#loginScreen {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background:
+        radial-gradient(circle at top, #374151 0, #111827 45%, #030712 100%);
 }
 
-.menu{
-    display:flex;
-    gap:8px;
-    flex-wrap:wrap;
+.login-box {
+    width: 100%;
+    max-width: 430px;
+    background: white;
+    border-radius: 24px;
+    padding: 30px;
+    box-shadow: 0 25px 70px rgba(0,0,0,.35);
 }
 
-.menu button{
-    background:#1f2937;
-    color:#fff;
-    padding:10px 14px;
-    border-radius:8px;
+.login-logo {
+    text-align: center;
+    font-size: 42px;
+    font-weight: 900;
+    margin-bottom: 5px;
 }
 
-.menu button:hover,
-.menu button.active{
-    background:#22c55e;
+.login-subtitle {
+    text-align: center;
+    color: #6b7280;
+    margin-bottom: 25px;
 }
 
-.container{
-    max-width:1400px;
-    margin:auto;
-    padding:20px;
+.login-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
 }
 
-.page{
-    display:none;
+.login-tab {
+    flex: 1;
+    border: 0;
+    padding: 12px;
+    border-radius: 12px;
+    background: #e5e7eb;
+    color: #374151;
+    font-weight: 700;
 }
 
-.page.active{
-    display:block;
+.login-tab.active {
+    background: #111827;
+    color: white;
 }
 
-h1{
-    margin-top:0;
+.login-field {
+    margin-bottom: 15px;
 }
 
-h2{
-    margin-top:0;
+.login-field label {
+    display: block;
+    margin-bottom: 7px;
+    font-size: 14px;
+    font-weight: 700;
 }
 
-.cards{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:15px;
-    margin-bottom:20px;
+.login-field input {
+    width: 100%;
+    padding: 13px 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 12px;
+    outline: none;
 }
 
-.card{
-    background:white;
-    border-radius:14px;
-    padding:18px;
-    box-shadow:0 3px 12px rgba(0,0,0,.06);
+.login-field input:focus {
+    border-color: #111827;
 }
 
-.card-title{
-    color:#6b7280;
-    font-size:14px;
-    margin-bottom:8px;
+.login-button {
+    width: 100%;
+    border: 0;
+    padding: 14px;
+    border-radius: 12px;
+    background: #111827;
+    color: white;
+    font-size: 16px;
+    font-weight: 800;
 }
 
-.card-value{
-    font-size:25px;
-    font-weight:bold;
+.login-error {
+    margin-top: 12px;
+    padding: 10px;
+    border-radius: 10px;
+    background: #fee2e2;
+    color: #991b1b;
+    font-size: 14px;
+    display: none;
 }
 
-.profit{
-    color:#16a34a;
+/* =========================
+   APP
+========================= */
+
+#app {
+    min-height: 100vh;
 }
 
-.loss{
-    color:#dc2626;
+.topbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: #111827;
+    color: white;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
 }
 
-.section{
-    background:white;
-    border-radius:14px;
-    padding:20px;
-    margin-bottom:20px;
-    box-shadow:0 3px 12px rgba(0,0,0,.05);
+.logo {
+    font-weight: 900;
+    font-size: 21px;
 }
 
-.toolbar{
-    display:flex;
-    justify-content:space-between;
-    gap:10px;
-    align-items:center;
-    margin-bottom:15px;
-    flex-wrap:wrap;
+.user-area {
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
-.btn{
-    padding:10px 15px;
-    border-radius:8px;
-    background:#111827;
-    color:white;
+.user-badge {
+    background: #374151;
+    border-radius: 20px;
+    padding: 7px 12px;
+    font-size: 12px;
 }
 
-.btn.green{
-    background:#16a34a;
+.logout-btn {
+    border: 0;
+    background: #dc2626;
+    color: white;
+    border-radius: 9px;
+    padding: 8px 11px;
+    font-weight: 700;
 }
 
-.btn.red{
-    background:#dc2626;
+.nav {
+    background: white;
+    border-bottom: 1px solid #e5e7eb;
+    padding: 8px;
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    position: sticky;
+    top: 53px;
+    z-index: 90;
 }
 
-.btn.blue{
-    background:#2563eb;
+.nav button {
+    border: 0;
+    background: #f3f4f6;
+    padding: 10px 14px;
+    border-radius: 10px;
+    white-space: nowrap;
+    font-weight: 700;
+    color: #374151;
 }
 
-.btn.gray{
-    background:#6b7280;
+.nav button.active {
+    background: #111827;
+    color: white;
 }
 
-.btn:hover{
-    opacity:.9;
+.container {
+    max-width: 1400px;
+    margin: auto;
+    padding: 18px;
 }
 
-table{
-    width:100%;
-    border-collapse:collapse;
+.section {
+    display: none;
+}
+
+.section.active {
+    display: block;
+}
+
+.page-title {
+    font-size: 25px;
+    font-weight: 900;
+    margin-bottom: 18px;
+}
+
+/* =========================
+   DASHBOARD
+========================= */
+
+.cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+}
+
+.card {
+    background: white;
+    border-radius: 16px;
+    padding: 18px;
+    box-shadow: 0 3px 15px rgba(0,0,0,.06);
+}
+
+.card-title {
+    color: #6b7280;
+    font-size: 13px;
+    margin-bottom: 8px;
+}
+
+.card-value {
+    font-size: 25px;
+    font-weight: 900;
+}
+
+/* =========================
+   TABLES
+========================= */
+
+.panel {
+    background: white;
+    border-radius: 16px;
+    padding: 18px;
+    margin-bottom: 18px;
+    box-shadow: 0 3px 15px rgba(0,0,0,.06);
+}
+
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+}
+
+.panel-title {
+    font-size: 19px;
+    font-weight: 900;
+}
+
+.table-wrapper {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
 }
 
 th,
-td{
-    padding:11px 9px;
-    border-bottom:1px solid #e5e7eb;
-    text-align:left;
+td {
+    padding: 11px;
+    border-bottom: 1px solid #e5e7eb;
+    text-align: left;
+    white-space: nowrap;
 }
 
-th{
-    background:#f9fafb;
+th {
+    font-size: 13px;
+    color: #6b7280;
 }
 
-.badge{
-    display:inline-block;
-    padding:5px 9px;
-    border-radius:20px;
-    font-size:12px;
+.action-btn {
+    border: 0;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-weight: 700;
 }
 
-.badge.green{
-    background:#dcfce7;
-    color:#166534;
+.btn-primary {
+    background: #111827;
+    color: white;
 }
 
-.badge.red{
-    background:#fee2e2;
-    color:#991b1b;
+.btn-success {
+    background: #16a34a;
+    color: white;
 }
 
-.badge.yellow{
-    background:#fef3c7;
-    color:#92400e;
+.btn-danger {
+    background: #dc2626;
+    color: white;
 }
 
-input,
-select{
-    width:100%;
-    padding:11px;
-    border:1px solid #d1d5db;
-    border-radius:8px;
-    font-size:15px;
+.btn-warning {
+    background: #f59e0b;
+    color: white;
 }
 
-label{
-    display:block;
-    font-size:13px;
-    margin-bottom:6px;
-    font-weight:bold;
+/* =========================
+   FORMS
+========================= */
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
 }
 
-.form-grid{
-    display:grid;
-    grid-template-columns:repeat(2,1fr);
-    gap:14px;
+.form-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 6px;
 }
 
-.form-group{
-    margin-bottom:10px;
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 11px;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    outline: none;
 }
 
-.modal{
-    display:none;
-    position:fixed;
-    inset:0;
-    background:rgba(0,0,0,.55);
-    z-index:1000;
-    align-items:center;
-    justify-content:center;
-    padding:20px;
+.form-group textarea {
+    min-height: 90px;
+    resize: vertical;
 }
 
-.modal.show{
-    display:flex;
+.form-actions {
+    margin-top: 15px;
+    display: flex;
+    gap: 8px;
 }
 
-.modal-content{
-    background:white;
-    width:100%;
-    max-width:650px;
-    max-height:90vh;
-    overflow:auto;
-    border-radius:15px;
-    padding:22px;
+/* =========================
+   MODAL
+========================= */
+
+.modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.55);
+    z-index: 1000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
 }
 
-.modal-header{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:15px;
+.modal.show {
+    display: flex;
 }
 
-.close{
-    font-size:26px;
-    cursor:pointer;
+.modal-content {
+    width: 100%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+    background: white;
+    border-radius: 18px;
+    padding: 20px;
 }
 
-.ingredient-row{
-    display:grid;
-    grid-template-columns:1fr 120px 45px;
-    gap:8px;
-    margin-bottom:8px;
-    align-items:end;
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
 }
 
-.remove-btn{
-    background:#fee2e2;
-    color:#991b1b;
-    height:42px;
-    border-radius:7px;
+.modal-title {
+    font-size: 20px;
+    font-weight: 900;
 }
 
-.preview{
-    background:#f3f4f6;
-    border-radius:10px;
-    padding:12px;
-    margin:12px 0;
+.close-btn {
+    border: 0;
+    background: #f3f4f6;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    font-size: 20px;
 }
 
-.profit-box{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:12px;
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 900px) {
+    .cards {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 
-.profit-item{
-    padding:15px;
-    background:#f9fafb;
-    border-radius:10px;
-}
+@media (max-width: 600px) {
 
-.profit-item small{
-    display:block;
-    color:#6b7280;
-    margin-bottom:5px;
-}
-
-.profit-item strong{
-    font-size:20px;
-}
-
-.period-buttons{
-    display:flex;
-    gap:8px;
-    flex-wrap:wrap;
-}
-
-.period-buttons button{
-    padding:9px 14px;
-    border-radius:8px;
-    background:#e5e7eb;
-}
-
-.period-buttons button.active{
-    background:#111827;
-    color:white;
-}
-
-.empty{
-    text-align:center;
-    padding:30px;
-    color:#6b7280;
-}
-
-.recipe-item{
-    background:#f9fafb;
-    padding:12px;
-    border-radius:8px;
-    margin-bottom:7px;
-}
-
-.top-product{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    gap:10px;
-    padding:13px 0;
-    border-bottom:1px solid #eee;
-}
-
-.top-product:last-child{
-    border-bottom:none;
-}
-
-.product-name{
-    font-weight:bold;
-}
-
-.product-meta{
-    color:#6b7280;
-    font-size:13px;
-}
-
-@media(max-width:1000px){
-
-    .cards{
-        grid-template-columns:repeat(2,1fr);
+    .topbar {
+        padding: 10px;
     }
 
-}
-
-/* =====================================================
-   REAL CEO APP LOCK
-===================================================== */
-
-#appShell{
-    display:none;
-}
-
-body.unlocked #appShell{
-    display:block;
-}
-
-#appLock{
-    position:fixed;
-    inset:0;
-    z-index:99999;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    padding:20px;
-    background:linear-gradient(135deg,#111827,#1f2937);
-}
-
-.lock-card{
-    width:100%;
-    max-width:390px;
-    background:white;
-    border-radius:20px;
-    padding:30px 24px;
-    box-shadow:0 20px 60px rgba(0,0,0,.25);
-    text-align:center;
-}
-
-.lock-logo{
-    font-size:30px;
-    font-weight:bold;
-    margin-bottom:8px;
-}
-
-.lock-logo span{
-    color:#22c55e;
-}
-
-.lock-subtitle{
-    color:#6b7280;
-    margin-bottom:22px;
-}
-
-.lock-input{
-    margin-bottom:12px;
-    text-align:left;
-}
-
-.lock-error{
-    min-height:20px;
-    color:#dc2626;
-    font-size:13px;
-    margin:8px 0;
-}
-
-.lock-btn{
-    width:100%;
-    padding:13px;
-    border-radius:10px;
-    background:#16a34a;
-    color:white;
-    font-size:16px;
-    font-weight:bold;
-}
-
-.lock-btn:active{
-    transform:scale(.99);
-}
-
-@media(max-width:700px){
-
-    .topbar{
-        flex-direction:column;
-        align-items:flex-start;
-        gap:12px;
+    .logo {
+        font-size: 18px;
     }
 
-    .menu{
-        width:100%;
-        overflow-x:auto;
-        flex-wrap:nowrap;
+    .user-badge {
+        max-width: 130px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
 
-    .menu button{
-        white-space:nowrap;
+    .container {
+        padding: 12px;
     }
 
-    .container{
-        padding:12px;
+    .cards {
+        grid-template-columns: 1fr 1fr;
+        gap: 9px;
     }
 
-    .cards{
-        grid-template-columns:1fr 1fr;
-        gap:10px;
+    .card {
+        padding: 13px;
     }
 
-    .card{
-        padding:14px;
+    .card-value {
+        font-size: 19px;
     }
 
-    .card-value{
-        font-size:19px;
+    .form-grid {
+        grid-template-columns: 1fr;
     }
 
-    .form-grid{
-        grid-template-columns:1fr;
+    .page-title {
+        font-size: 22px;
     }
-
-    .profit-box{
-        grid-template-columns:1fr;
-    }
-
-    table{
-        min-width:700px;
-    }
-
-    .section{
-        overflow-x:auto;
-    }
-
-    .section > .toolbar,
-    .section > h2{
-        min-width:auto;
-    }
-
 }
-
 </style>
 </head>
 
-<body class="locked">
+<body>
 
-<!-- =====================================================
-     REAL CEO APP LOCK
-===================================================== -->
-<div id="appLock">
-    <div class="lock-card">
-        <div class="lock-logo">
-            REAL <span>CEO</span>
+<!-- =========================
+     LOGIN SCREEN
+========================= -->
+
+<div id="loginScreen">
+
+    <div class="login-box">
+
+        <div class="login-logo">REAL CEO</div>
+
+        <div class="login-subtitle">
+            Boshqaruv tizimiga kirish
         </div>
 
-        <div class="lock-subtitle">
-            Ilovani ochish uchun maxsus kodni kiriting
+        <div class="login-tabs">
+
+            <button
+                id="adminTab"
+                class="login-tab active"
+                onclick="setLoginType('admin')">
+                ADMIN
+            </button>
+
+            <button
+                id="employeeTab"
+                class="login-tab"
+                onclick="setLoginType('employee')">
+                XODIM
+            </button>
+
         </div>
 
-        <div class="lock-input">
-            <label for="appCode">Maxsus kod</label>
+        <!-- ADMIN LOGIN -->
+
+        <div id="adminLoginFields">
+
+            <div class="login-field">
+
+                <label>Admin ism-familiyasi</label>
+
+                <input
+                    id="adminName"
+                    type="text"
+                    placeholder="Masalan: Abduvaliev Jamshid">
+
+            </div>
+
+        </div>
+
+        <!-- EMPLOYEE LOGIN -->
+
+        <div id="employeeLoginFields" style="display:none;">
+
+            <div class="login-field">
+
+                <label>Telefon raqam</label>
+
+                <input
+                    id="employeePhone"
+                    type="text"
+                    placeholder="+998901234567">
+
+            </div>
+
+        </div>
+
+        <div class="login-field">
+
+            <label>Maxsus kirish kodi</label>
+
             <input
                 id="appCode"
                 type="password"
-                inputmode="text"
-                autocomplete="current-password"
-                placeholder="Kodni kiriting"
-                onkeydown="if(event.key==='Enter') unlockApp()"
-            >
+                placeholder="Kirish kodi">
+
         </div>
 
-        <div id="lockError" class="lock-error"></div>
+        <button
+            class="login-button"
+            onclick="loginApp()">
 
-        <button class="lock-btn" onclick="unlockApp()">
-            🔐 Kirish
+            KIRISH
+
         </button>
+
+        <div
+            id="loginError"
+            class="login-error">
+        </div>
+
     </div>
+
 </div>
 
-<div id="appShell">
 
-<header class="topbar">
+<!-- =========================
+     MAIN APP
+========================= -->
 
-    <div class="logo">
-        REAL <span>CEO</span>
-    </div>
+<div id="app" style="display:none;">
 
-    <div class="menu">
+    <header class="topbar">
 
-        <button class="active" onclick="showPage('dashboard',this)">
+        <div class="logo">
+            REAL CEO
+        </div>
+
+        <div class="user-area">
+
+            <div
+                id="userBadge"
+                class="user-badge">
+                —
+            </div>
+
+            <button
+                class="logout-btn"
+                onclick="logoutApp()">
+                Chiqish
+            </button>
+
+        </div>
+
+    </header>
+
+
+    <!-- NAVIGATION -->
+
+    <nav class="nav">
+
+        <button
+            id="navDashboard"
+            onclick="showSection('dashboard', this)">
             📊 Dashboard
         </button>
 
-        <button onclick="showPage('sales',this)">
+        <button
+            id="navSales"
+            onclick="showSection('sales', this)">
             🛒 Sotuv
         </button>
 
-        <button onclick="showPage('finance',this)">
-            💳 Moliya
+        <button
+            id="navFinance"
+            onclick="showSection('finance', this)">
+            💰 Moliya
         </button>
 
-        <button onclick="showPage('reports',this)">
+        <button
+            id="navReports"
+            onclick="showSection('reports', this)">
             📈 Hisobot
         </button>
 
-        <button onclick="showPage('inventory',this)">
+        <button
+            id="navInventory"
+            onclick="showSection('inventory', this)">
             📦 Ombor
         </button>
 
-        <button onclick="showPage('recipes',this)">
-            🍽️ Retseptlar
+        <button
+            id="navRecipes"
+            onclick="showSection('recipes', this)">
+            🍳 Retseptlar
         </button>
 
-        <button onclick="showPage('employees',this)">
+        <button
+            id="navEmployees"
+            onclick="showSection('employees', this)">
             👥 Xodimlar
         </button>
 
-    </div>
-
-</header>
+    </nav>
 
 
-<div class="container">
+    <main class="container">
 
 
-<!-- =====================================================
-     DASHBOARD
-===================================================== -->
+        <!-- =========================
+             DASHBOARD
+        ========================= -->
 
-<section id="dashboard" class="page active">
+        <section
+            id="dashboard"
+            class="section">
 
-    <h1>📊 Boshqaruv paneli</h1>
-
-    <div class="cards">
-
-        <div class="card">
-            <div class="card-title">
-                Jami daromad
+            <div class="page-title">
+                Dashboard
             </div>
 
-            <div class="card-value" id="dashboardIncome">
-                0 so‘m
-            </div>
-        </div>
+            <div class="cards">
+
+                <div class="card">
+
+                    <div class="card-title">
+                        Bugungi daromad
+                    </div>
+
+                    <div
+                        id="dashboardRevenue"
+                        class="card-value">
+                        0 so'm
+                    </div>
+
+                </div>
 
 
-        <div class="card">
-            <div class="card-title">
-                Jami xarajat
-            </div>
+                <div class="card">
 
-            <div class="card-value" id="dashboardExpense">
-                0 so‘m
-            </div>
-        </div>
+                    <div class="card-title">
+                        Bugungi xarajat
+                    </div>
 
+                    <div
+                        id="dashboardExpense"
+                        class="card-value">
+                        0 so'm
+                    </div>
 
-        <div class="card">
-            <div class="card-title">
-                Sof foyda
-            </div>
-
-            <div class="card-value profit" id="dashboardProfit">
-                0 so‘m
-            </div>
-        </div>
+                </div>
 
 
-        <div class="card">
-            <div class="card-title">
-                Ombor qiymati
-            </div>
+                <div class="card">
 
-            <div class="card-value" id="dashboardInventory">
-                0 so‘m
-            </div>
-        </div>
+                    <div class="card-title">
+                        Bugungi foyda
+                    </div>
 
+                    <div
+                        id="dashboardProfit"
+                        class="card-value">
+                        0 so'm
+                    </div>
 
-        <div class="card">
-            <div class="card-title">
-                Kam qolgan mahsulot
-            </div>
-
-            <div class="card-value" id="dashboardLowStock">
-                0
-            </div>
-        </div>
+                </div>
 
 
-        <div class="card">
-            <div class="card-title">
-                Bugungi sotuv
-            </div>
+                <div class="card">
 
-            <div class="card-value" id="dashboardTodaySales">
-                0
-            </div>
-        </div>
+                    <div class="card-title">
+                        Sotuvlar
+                    </div>
 
+                    <div
+                        id="dashboardSales"
+                        class="card-value">
+                        0
+                    </div>
 
-        <div class="card">
-            <div class="card-title">
-                Bugungi tannarx
-            </div>
-
-            <div class="card-value" id="dashboardTodayCost">
-                0 so‘m
-            </div>
-        </div>
-
-
-        <div class="card">
-            <div class="card-title">
-                Bugungi mahsulot foydasi
-            </div>
-
-            <div class="card-value profit" id="dashboardTodayProfit">
-                0 so‘m
-            </div>
-        </div>
-
-    </div>
-
-
-    <div class="section">
-
-        <div class="toolbar">
-
-            <h2>📊 Foyda tahlili</h2>
-
-            <div class="period-buttons">
-
-                <button
-                    id="profitTodayBtn"
-                    class="active"
-                    onclick="loadProfitPeriod('today')">
-                    Bugun
-                </button>
-
-                <button
-                    id="profitWeekBtn"
-                    onclick="loadProfitPeriod('week')">
-                    Hafta
-                </button>
-
-                <button
-                    id="profitMonthBtn"
-                    onclick="loadProfitPeriod('month')">
-                    Oy
-                </button>
+                </div>
 
             </div>
 
-        </div>
 
+            <div class="panel" style="margin-top:18px;">
 
-        <div class="profit-box">
+                <div class="panel-header">
 
-            <div class="profit-item">
-                <small>Daromad</small>
-                <strong id="profitRevenue">
-                    0 so‘m
-                </strong>
+                    <div class="panel-title">
+                        Oxirgi operatsiyalar
+                    </div>
+
+                </div>
+
+                <div class="table-wrapper">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+                                <th>Sana</th>
+                                <th>Turi</th>
+                                <th>Summa</th>
+                                <th>Izoh</th>
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="dashboardTransactions">
+                        </tbody>
+
+                    </table>
+
+                </div>
+
             </div>
 
-            <div class="profit-item">
-                <small>Tannarx</small>
-                <strong id="profitCost">
-                    0 so‘m
-                </strong>
+        </section>
+
+
+        <!-- =========================
+             SALES
+        ========================= -->
+
+        <section
+            id="sales"
+            class="section">
+
+            <div class="page-title">
+                Sotuv
             </div>
 
-            <div class="profit-item">
-                <small>Foyda</small>
-                <strong
-                    class="profit"
-                    id="profitValue">
-                    0 so‘m
-                </strong>
+
+            <div class="panel">
+
+                <div class="panel-header">
+
+                    <div class="panel-title">
+                        Yangi sotuv
+                    </div>
+
+                </div>
+
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+
+                        <label>
+                            Mahsulot
+                        </label>
+
+                        <input
+                            id="saleProduct"
+                            placeholder="Masalan: Osh">
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>
+                            Miqdor
+                        </label>
+
+                        <input
+                            id="saleQuantity"
+                            type="number"
+                            step="0.01"
+                            value="1">
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>
+                            Sotuv narxi
+                        </label>
+
+                        <input
+                            id="salePrice"
+                            type="number"
+                            step="0.01">
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>
+                            Izoh
+                        </label>
+
+                        <input
+                            id="saleDescription"
+                            placeholder="Izoh">
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-actions">
+
+                    <button
+                        class="action-btn btn-success"
+                        onclick="addSale()">
+
+                        Sotuvni saqlash
+
+                    </button>
+
+                </div>
+
             </div>
 
-        </div>
 
-    </div>
+            <div class="panel">
 
+                <div class="panel-header">
 
-    <div class="section">
+                    <div class="panel-title">
+                        Oxirgi sotuvlar
+                    </div>
 
-        <h2>🔥 Eng ko‘p sotilgan mahsulotlar</h2>
+                </div>
 
-        <div id="topProductsDashboard">
-            <div class="empty">
-                Ma'lumot yuklanmoqda...
-            </div>
-        </div>
+                <div class="table-wrapper">
 
-    </div>
+                    <table>
 
-</section>
+                        <thead>
 
+                            <tr>
+                                <th>Sana</th>
+                                <th>Mahsulot</th>
+                                <th>Miqdor</th>
+                                <th>Summa</th>
+                                <th>Tannarx</th>
+                                <th>Foyda</th>
+                            </tr>
 
-<!-- =====================================================
-     SALES
-===================================================== -->
+                        </thead>
 
-<section id="sales" class="page">
+                        <tbody id="salesTable">
+                        </tbody>
 
-    <div class="toolbar">
+                    </table>
 
-        <h1>🛒 Sotuvlar</h1>
+                </div>
 
-        <button
-            class="btn green"
-            onclick="openSaleModal()">
-            + Sotuv qo‘shish
-        </button>
-
-    </div>
-
-
-    <div class="cards">
-
-        <div class="card">
-
-            <div class="card-title">
-                Bugungi sotilgan miqdor
             </div>
 
-            <div
-                class="card-value"
-                id="salesQuantity">
-                0
+        </section>
+
+
+        <!-- =========================
+             FINANCE
+        ========================= -->
+
+        <section
+            id="finance"
+            class="section">
+
+            <div class="page-title">
+                Moliya
             </div>
 
-        </div>
+
+            <div class="panel">
+
+                <div class="panel-header">
+
+                    <div class="panel-title">
+                        Yangi operatsiya
+                    </div>
+
+                </div>
 
 
-        <div class="card">
+                <div class="form-grid">
 
-            <div class="card-title">
-                Bugungi savdo
+                    <div class="form-group">
+
+                        <label>
+                            Turi
+                        </label>
+
+                        <select id="transactionType">
+
+                            <option value="income">
+                                Daromad
+                            </option>
+
+                            <option value="expense">
+                                Xarajat
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>
+                            Summa
+                        </label>
+
+                        <input
+                            id="transactionAmount"
+                            type="number"
+                            step="0.01">
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>
+                            Izoh
+                        </label>
+
+                        <input
+                            id="transactionDescription"
+                            placeholder="Izoh">
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-actions">
+
+                    <button
+                        class="action-btn btn-primary"
+                        onclick="addTransaction()">
+
+                        Saqlash
+
+                    </button>
+
+                </div>
+
             </div>
 
-            <div
-                class="card-value"
-                id="salesTotal">
-                0 so‘m
+
+            <div class="panel">
+
+                <div class="panel-header">
+
+                    <div class="panel-title">
+                        Operatsiyalar
+                    </div>
+
+                </div>
+
+                <div class="table-wrapper">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+                                <th>Sana</th>
+                                <th>Turi</th>
+                                <th>Summa</th>
+                                <th>Izoh</th>
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="financeTable">
+                        </tbody>
+
+                    </table>
+
+                </div>
+
             </div>
 
-        </div>
-
-    </div>
+        </section>
 
 
-    <div class="section">
+        <!-- =========================
+             REPORTS
+        ========================= -->
 
-        <table>
+        <section
+            id="reports"
+            class="section">
 
-            <thead>
-
-                <tr>
-                    <th>ID</th>
-                    <th>Mahsulot</th>
-                    <th>Retsept</th>
-                    <th>Miqdor</th>
-                    <th>Narx</th>
-                    <th>Jami</th>
-                    <th>Sana</th>
-                    <th>Amal</th>
-                </tr>
-
-            </thead>
-
-            <tbody id="salesTable">
-            </tbody>
-
-        </table>
-
-    </div>
-
-</section>
-
-
-<!-- =====================================================
-     FINANCE
-===================================================== -->
-
-<section id="finance" class="page">
-
-    <div class="toolbar">
-
-        <h1>💳 Moliya</h1>
-
-        <button
-            class="btn green"
-            onclick="openTransactionModal()">
-            + Tranzaksiya
-        </button>
-
-    </div>
-
-
-    <div class="section">
-
-        <table>
-
-            <thead>
-
-                <tr>
-                    <th>ID</th>
-                    <th>Turi</th>
-                    <th>Summa</th>
-                    <th>Izoh</th>
-                    <th>Sana</th>
-                    <th>Amal</th>
-                </tr>
-
-            </thead>
-
-            <tbody id="transactionsTable">
-            </tbody>
-
-        </table>
-
-    </div>
-
-</section>
-
-
-<!-- =====================================================
-     REPORTS
-===================================================== -->
-
-<section id="reports" class="page">
-
-    <h1>📈 Hisobot</h1>
-
-
-    <div class="section">
-
-        <div class="period-buttons">
-
-            <button
-                class="active"
-                id="reportTodayBtn"
-                onclick="loadReportPeriod('today')">
-                Bugun
-            </button>
-
-            <button
-                id="reportWeekBtn"
-                onclick="loadReportPeriod('week')">
-                Hafta
-            </button>
-
-            <button
-                id="reportMonthBtn"
-                onclick="loadReportPeriod('month')">
-                Oy
-            </button>
-
-        </div>
-
-    </div>
-
-
-    <div class="cards">
-
-        <div class="card">
-
-            <div class="card-title">
-                Daromad
+            <div class="page-title">
+                Hisobot
             </div>
 
-            <div
-                class="card-value"
-                id="reportIncome">
-                0 so‘m
+
+            <div class="cards">
+
+                <div class="card">
+
+                    <div class="card-title">
+                        Jami daromad
+                    </div>
+
+                    <div
+                        id="reportRevenue"
+                        class="card-value">
+                        0 so'm
+                    </div>
+
+                </div>
+
+
+                <div class="card">
+
+                    <div class="card-title">
+                        Jami xarajat
+                    </div>
+
+                    <div
+                        id="reportExpense"
+                        class="card-value">
+                        0 so'm
+                    </div>
+
+                </div>
+
+
+                <div class="card">
+
+                    <div class="card-title">
+                        Jami foyda
+                    </div>
+
+                    <div
+                        id="reportProfit"
+                        class="card-value">
+                        0 so'm
+                    </div>
+
+                </div>
+
             </div>
 
-        </div>
 
+            <div class="panel" style="margin-top:18px;">
 
-        <div class="card">
+                <div class="panel-title">
+                    Hisobot ma'lumotlari
+                </div>
 
-            <div class="card-title">
-                Xarajat
+                <div id="reportContent">
+                    Ma'lumot yuklanmoqda...
+                </div>
+
             </div>
 
-            <div
-                class="card-value"
-                id="reportExpense">
-                0 so‘m
+        </section>
+
+
+        <!-- =========================
+             INVENTORY
+        ========================= -->
+
+        <section
+            id="inventory"
+            class="section">
+
+            <div class="page-title">
+                Ombor
             </div>
 
-        </div>
+
+            <div class="panel">
+
+                <div class="panel-header">
+
+                    <div class="panel-title">
+                        Yangi mahsulot
+                    </div>
+
+                </div>
 
 
-        <div class="card">
+                <div class="form-grid">
 
-            <div class="card-title">
-                Foyda
+                    <div class="form-group">
+
+                        <label>
+                            Nomi
+                        </label>
+
+                        <input
+                            id="inventoryName"
+                            placeholder="Masalan: Guruch">
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>
+                            Birlik
+                        </label>
+
+                        <input
+                            id="inventoryUnit"
+                            placeholder="kg / dona / litr">
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>
+                            Miqdor
+                        </label>
+
+                        <input
+                            id="inventoryQuantity"
+                            type="number"
+                            step="0.01">
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>
+                            Narx
+                        </label>
+
+                        <input
+                            id="inventoryPrice"
+                            type="number"
+                            step="0.01">
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-actions">
+
+                    <button
+                        class="action-btn btn-success"
+                        onclick="addInventory()">
+
+                        Saqlash
+
+                    </button>
+
+                </div>
+
             </div>
 
-            <div
-                class="card-value profit"
-                id="reportProfit">
-                0 so‘m
+
+            <div class="panel">
+
+                <div class="panel-header">
+
+                    <div class="panel-title">
+                        Ombor qoldig'i
+                    </div>
+
+                </div>
+
+                <div class="table-wrapper">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+                                <th>Nomi</th>
+                                <th>Birlik</th>
+                                <th>Miqdor</th>
+                                <th>Narx</th>
+                                <th>Qiymat</th>
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="inventoryTable">
+                        </tbody>
+
+                    </table>
+
+                </div>
+
             </div>
 
-        </div>
-
-    </div>
+        </section>
 
 
-    <div class="section">
+        <!-- =========================
+             RECIPES
+        ========================= -->
 
-        <h2>🔥 Eng ko‘p sotilgan mahsulotlar</h2>
+        <section
+            id="recipes"
+            class="section">
 
-        <div id="topProductsReport">
-        </div>
-
-    </div>
-
-</section>
-
-
-<!-- =====================================================
-     INVENTORY
-===================================================== -->
-
-<section id="inventory" class="page">
-
-    <div class="toolbar">
-
-        <h1>📦 Ombor</h1>
-
-        <button
-            class="btn green"
-            onclick="openProductModal()">
-            + Mahsulot
-        </button>
-
-    </div>
-
-
-    <div class="cards">
-
-        <div class="card">
-
-            <div class="card-title">
-                Ombor qiymati
+            <div class="page-title">
+                Retseptlar
             </div>
 
-            <div
-                class="card-value"
-                id="inventoryTotal">
-                0 so‘m
+
+            <div class="panel">
+
+                <div class="panel-header">
+
+                    <div class="panel-title">
+                        Retseptlar
+                    </div>
+
+                </div>
+
+                <div class="table-wrapper">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+                                <th>Mahsulot</th>
+                                <th>Tarkibi</th>
+                                <th>Tannarx</th>
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="recipesTable">
+                        </tbody>
+
+                    </table>
+
+                </div>
+
             </div>
 
-        </div>
+        </section>
 
 
-        <div class="card">
+        <!-- =========================
+             EMPLOYEES
+        ========================= -->
 
-            <div class="card-title">
-                Mahsulotlar
+        <section
+            id="employees"
+            class="section">
+
+            <div class="page-title">
+                Xodimlar
             </div>
 
-            <div
-                class="card-value"
-                id="inventoryProducts">
-                0
+
+            <div class="panel">
+
+                <div class="panel-header">
+
+                    <div class="panel-title">
+                        Xodimlar boshqaruvi
+                    </div>
+
+                    <button
+                        class="action-btn btn-primary"
+                        onclick="openEmployeeModal()">
+
+                        + Xodim qo'shish
+
+                    </button>
+
+                </div>
+
+
+                <div class="table-wrapper">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+                                <th>Ism</th>
+                                <th>Telefon</th>
+                                <th>Lavozim</th>
+                                <th>Rol</th>
+                                <th>Maosh</th>
+                                <th>Amal</th>
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="employeesTable">
+                        </tbody>
+
+                    </table>
+
+                </div>
+
             </div>
 
-        </div>
+        </section>
 
-
-        <div class="card">
-
-            <div class="card-title">
-                Kam qolgan
-            </div>
-
-            <div
-                class="card-value"
-                id="inventoryLow">
-                0
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <div class="section">
-
-        <table>
-
-            <thead>
-
-                <tr>
-                    <th>ID</th>
-                    <th>Mahsulot</th>
-                    <th>Birlik</th>
-                    <th>Miqdor</th>
-                    <th>Min.</th>
-                    <th>Narx</th>
-                    <th>Qiymat</th>
-                    <th>Holat</th>
-                    <th>Amal</th>
-                </tr>
-
-            </thead>
-
-            <tbody id="inventoryTable">
-            </tbody>
-
-        </table>
-
-    </div>
-
-</section>
-
-
-<!-- =====================================================
-     RECIPES
-===================================================== -->
-
-<section id="recipes" class="page">
-
-    <div class="toolbar">
-
-        <h1>🍽️ Retseptlar</h1>
-
-        <button
-            class="btn green"
-            onclick="openRecipeModal()">
-            + Retsept
-        </button>
-
-    </div>
-
-
-    <div
-        class="section"
-        id="recipesContainer">
-    </div>
-
-</section>
-
-
-<!-- =====================================================
-     EMPLOYEES
-===================================================== -->
-
-<section id="employees" class="page">
-
-    <div class="toolbar">
-
-        <h1>👥 Xodimlar</h1>
-
-        <button
-            class="btn green"
-            onclick="openEmployeeModal()">
-            + Xodim
-        </button>
-
-    </div>
-
-
-    <div class="cards">
-
-        <div class="card">
-
-            <div class="card-title">
-                Xodimlar soni
-            </div>
-
-            <div
-                class="card-value"
-                id="employeeCount">
-                0
-            </div>
-
-        </div>
-
-
-        <div class="card">
-
-            <div class="card-title">
-                Jami maosh
-            </div>
-
-            <div
-                class="card-value"
-                id="employeeSalary">
-                0 so‘m
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <div class="section">
-
-        <table>
-
-            <thead>
-
-                <tr>
-                    <th>ID</th>
-                    <th>Ism</th>
-                    <th>Telefon</th>
-                    <th>Lavozim</th>
-                    <th>Maosh</th>
-                    <th>Amal</th>
-                </tr>
-
-            </thead>
-
-            <tbody id="employeesTable">
-            </tbody>
-
-        </table>
-
-    </div>
-
-</section>
+    </main>
 
 </div>
 
 
-<!-- =====================================================
-     TRANSACTION MODAL
-===================================================== -->
-
-<div
-    class="modal"
-    id="transactionModal">
-
-    <div class="modal-content">
-
-        <div class="modal-header">
-
-            <h2>Tranzaksiya</h2>
-
-            <span
-                class="close"
-                onclick="closeModal('transactionModal')">
-                ×
-            </span>
-
-        </div>
-
-
-        <div class="form-group">
-
-            <label>Turi</label>
-
-            <select id="transactionType">
-
-                <option value="income">
-                    Daromad
-                </option>
-
-                <option value="expense">
-                    Xarajat
-                </option>
-
-            </select>
-
-        </div>
-
-
-        <div class="form-group">
-
-            <label>Summa</label>
-
-            <input
-                type="number"
-                id="transactionAmount"
-                placeholder="0">
-
-        </div>
-
-
-        <div class="form-group">
-
-            <label>Izoh</label>
-
-            <input
-                id="transactionDescription"
-                placeholder="Izoh">
-
-        </div>
-
-
-        <button
-            class="btn green"
-            onclick="saveTransaction()">
-            Saqlash
-        </button>
-
-    </div>
-
-</div>
-
-
-<!-- =====================================================
-     PRODUCT MODAL
-===================================================== -->
-
-<div
-    class="modal"
-    id="productModal">
-
-    <div class="modal-content">
-
-        <div class="modal-header">
-
-            <h2>Mahsulot</h2>
-
-            <span
-                class="close"
-                onclick="closeModal('productModal')">
-                ×
-            </span>
-
-        </div>
-
-
-        <input
-            type="hidden"
-            id="productId">
-
-
-        <div class="form-grid">
-
-            <div class="form-group">
-
-                <label>Mahsulot nomi</label>
-
-                <input
-                    id="productName"
-                    placeholder="Masalan: Go‘sht">
-
-            </div>
-
-
-            <div class="form-group">
-
-                <label>Birlik</label>
-
-                <input
-                    id="productUnit"
-                    placeholder="kg, litr, dona">
-
-            </div>
-
-
-            <div class="form-group">
-
-                <label>Miqdor</label>
-
-                <input
-                    type="number"
-                    step="0.001"
-                    id="productQuantity"
-                    value="0">
-
-            </div>
-
-
-            <div class="form-group">
-
-                <label>Minimal miqdor</label>
-
-                <input
-                    type="number"
-                    step="0.001"
-                    id="productMin"
-                    value="0">
-
-            </div>
-
-
-            <div class="form-group">
-
-                <label>1 birlik narxi</label>
-
-                <input
-                    type="number"
-                    id="productPrice"
-                    value="0">
-
-            </div>
-
-        </div>
-
-
-        <button
-            class="btn green"
-            onclick="saveProduct()">
-            Saqlash
-        </button>
-
-    </div>
-
-</div>
-
-
-<!-- =====================================================
-     STOCK MODAL
-===================================================== -->
-
-<div
-    class="modal"
-    id="stockModal">
-
-    <div class="modal-content">
-
-        <div class="modal-header">
-
-            <h2>Ombor harakati</h2>
-
-            <span
-                class="close"
-                onclick="closeModal('stockModal')">
-                ×
-            </span>
-
-        </div>
-
-
-        <input
-            type="hidden"
-            id="stockId">
-
-
-        <div class="form-group">
-
-            <label>Amal</label>
-
-            <select id="stockAction">
-
-                <option value="in">
-                    📥 Omborga kirim
-                </option>
-
-                <option value="out">
-                    📤 Ombordan chiqim
-                </option>
-
-            </select>
-
-        </div>
-
-
-        <div class="form-group">
-
-            <label>Miqdor</label>
-
-            <input
-                type="number"
-                step="0.001"
-                id="stockAmount">
-
-        </div>
-
-
-        <button
-            class="btn green"
-            onclick="saveStock()">
-            Saqlash
-        </button>
-
-    </div>
-
-</div>
-
-
-<!-- =====================================================
-     PRICE MODAL
-===================================================== -->
-
-<div
-    class="modal"
-    id="priceModal">
-
-    <div class="modal-content">
-
-        <div class="modal-header">
-
-            <h2>Narxni o‘zgartirish</h2>
-
-            <span
-                class="close"
-                onclick="closeModal('priceModal')">
-                ×
-            </span>
-
-        </div>
-
-
-        <input
-            type="hidden"
-            id="priceId">
-
-
-        <div class="form-group">
-
-            <label>1 birlik narxi</label>
-
-            <input
-                type="number"
-                id="newPrice">
-
-        </div>
-
-
-        <button
-            class="btn green"
-            onclick="savePrice()">
-            Saqlash
-        </button>
-
-    </div>
-
-</div>
-
-
-<!-- =====================================================
-     RECIPE MODAL
-===================================================== -->
-
-<div
-    class="modal"
-    id="recipeModal">
-
-    <div class="modal-content">
-
-        <div class="modal-header">
-
-            <h2 id="recipeModalTitle">
-                Yangi retsept
-            </h2>
-
-            <span
-                class="close"
-                onclick="closeModal('recipeModal')">
-                ×
-            </span>
-
-        </div>
-
-
-        <input
-            type="hidden"
-            id="recipeId">
-
-
-        <div class="form-grid">
-
-            <div class="form-group">
-
-                <label>Retsept nomi</label>
-
-                <input
-                    id="recipeName"
-                    placeholder="Masalan: Osh">
-
-            </div>
-
-
-            <div class="form-group">
-
-                <label>Sotuv birligi</label>
-
-                <input
-                    id="recipeUnit"
-                    placeholder="dona, porsiya, kg">
-
-            </div>
-
-        </div>
-
-
-        <h3>🥕 Tarkibi</h3>
-
-
-        <div id="ingredientsContainer">
-        </div>
-
-
-        <button
-            class="btn blue"
-            onclick="addIngredientRow()">
-            + Mahsulot qo‘shish
-        </button>
-
-
-        <div class="preview">
-
-            <strong>
-                Tannarx:
-            </strong>
-
-            <span id="recipeCostPreview">
-                0 so‘m
-            </span>
-
-        </div>
-
-
-        <button
-            class="btn green"
-            onclick="saveRecipe()">
-            Saqlash
-        </button>
-
-    </div>
-
-</div>
-
-
-<!-- =====================================================
-     SALE MODAL
-===================================================== -->
-
-<div
-    class="modal"
-    id="saleModal">
-
-    <div class="modal-content">
-
-        <div class="modal-header">
-
-            <h2>Sotuv qo‘shish</h2>
-
-            <span
-                class="close"
-                onclick="closeModal('saleModal')">
-                ×
-            </span>
-
-        </div>
-
-
-        <div class="form-group">
-
-            <label>Retsept</label>
-
-            <select
-                id="saleRecipe"
-                onchange="recipeSelected()">
-
-                <option value="">
-                    Retseptsiz sotuv
-                </option>
-
-            </select>
-
-        </div>
-
-
-        <div class="form-group">
-
-            <label>Mahsulot nomi</label>
-
-            <input
-                id="saleProduct"
-                placeholder="Masalan: Osh">
-
-        </div>
-
-
-        <div class="form-grid">
-
-            <div class="form-group">
-
-                <label>Miqdor</label>
-
-                <input
-                    type="number"
-                    step="0.001"
-                    id="saleQuantity"
-                    value="1"
-                    oninput="calculateSalePreview()">
-
-            </div>
-
-
-            <div class="form-group">
-
-                <label>1 dona/porsiya narxi</label>
-
-                <input
-                    type="number"
-                    id="salePrice"
-                    value="0"
-                    oninput="calculateSalePreview()">
-
-            </div>
-
-        </div>
-
-
-        <div class="preview">
-
-            <div>
-                <strong>
-                    Jami sotuv:
-                </strong>
-
-                <span id="saleTotalPreview">
-                    0 so‘m
-                </span>
-            </div>
-
-
-            <div>
-                <strong>
-                    Tannarx:
-                </strong>
-
-                <span id="saleCostPreview">
-                    0 so‘m
-                </span>
-            </div>
-
-
-            <div>
-                <strong>
-                    Foyda:
-                </strong>
-
-                <span
-                    class="profit"
-                    id="saleProfitPreview">
-                    0 so‘m
-                </span>
-            </div>
-
-        </div>
-
-
-        <div
-            id="saleRecipePreview"
-            class="preview">
-        </div>
-
-
-        <button
-            class="btn green"
-            onclick="saveSale()">
-            Sotuvni saqlash
-        </button>
-
-    </div>
-
-</div>
-
-
-<!-- =====================================================
+<!-- =========================
      EMPLOYEE MODAL
-===================================================== -->
+========================= -->
 
 <div
-    class="modal"
-    id="employeeModal">
+    id="employeeModal"
+    class="modal">
 
     <div class="modal-content">
 
         <div class="modal-header">
 
-            <h2 id="employeeModalTitle">
-                Yangi xodim
-            </h2>
+            <div class="modal-title">
+                Xodim
+            </div>
 
-            <span
-                class="close"
-                onclick="closeModal('employeeModal')">
+            <button
+                class="close-btn"
+                onclick="closeEmployeeModal()">
                 ×
-            </span>
+            </button>
 
         </div>
 
 
         <input
-            type="hidden"
-            id="employeeId">
+            id="employeeId"
+            type="hidden">
 
 
-        <div class="form-group">
+        <div class="form-grid">
 
-            <label>Ism</label>
+            <div class="form-group">
 
-            <input
-                id="employeeName"
-                placeholder="Xodim ismi">
+                <label>
+                    Ism-familiya
+                </label>
+
+                <input
+                    id="employeeName"
+                    placeholder="Ism familiya">
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Telefon
+                </label>
+
+                <input
+                    id="employeePhoneInput"
+                    placeholder="+998...">
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Lavozim
+                </label>
+
+                <input
+                    id="employeePosition"
+                    placeholder="Afitsant, oshpaz...">
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Rol
+                </label>
+
+                <select id="employeeRole">
+
+                    <option value="AFITSANT">
+                        AFITSANT
+                    </option>
+
+                    <option value="OSHPAZ">
+                        OSHPAZ
+                    </option>
+
+                    <option value="SALATCHI">
+                        SALATCHI
+                    </option>
+
+                    <option value="SHASHLIKCHI">
+                        SHASHLIKCHI
+                    </option>
+
+                    <option value="SOMSACHI">
+                        SOMSACHI
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Maosh
+                </label>
+
+                <input
+                    id="employeeSalary"
+                    type="number"
+                    step="0.01">
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Maxsus kirish kodi
+                </label>
+
+                <input
+                    id="employeePin"
+                    type="password"
+                    placeholder="Yangi kod">
+
+            </div>
 
         </div>
 
 
-        <div class="form-group">
+        <div class="form-actions">
 
-            <label>Telefon</label>
+            <button
+                class="action-btn btn-primary"
+                onclick="saveEmployee()">
 
-            <input
-                id="employeePhone"
-                placeholder="+998">
+                Saqlash
 
-        </div>
+            </button>
 
+            <button
+                class="action-btn"
+                onclick="closeEmployeeModal()">
 
-        <div class="form-group">
+                Bekor qilish
 
-            <label>Lavozim</label>
-
-            <input
-                id="employeePosition"
-                placeholder="Oshpaz">
-
-        </div>
-
-
-        <div class="form-group">
-
-            <label>Maosh</label>
-
-            <input
-                type="number"
-                id="employeeSalary"
-                value="0">
+            </button>
 
         </div>
-
-
-        <button
-            class="btn green"
-            onclick="saveEmployee()">
-            Saqlash
-        </button>
 
     </div>
 
 </div>
-
-</div><!-- /appShell -->
 
 
 <script>
 
-// =====================================================
-// REAL CEO APP LOCK + PWA
-// =====================================================
+/* =====================================================
+   GLOBAL STATE
+===================================================== */
 
-const REAL_CEO_ACCESS_CODE = "2212jama";
-const REAL_CEO_UNLOCK_KEY = "real_ceo_unlocked";
+let currentUser = null;
+let loginType = "admin";
 
-function unlockApp(){
 
-    const input = document.getElementById("appCode");
-    const error = document.getElementById("lockError");
+/* =====================================================
+   HELPERS
+===================================================== */
 
-    const code = input.value;
+function money(value) {
 
-    if(code === REAL_CEO_ACCESS_CODE){
+    const number = Number(value || 0);
 
-        localStorage.setItem(
-            REAL_CEO_UNLOCK_KEY,
-            "yes"
+    return number.toLocaleString("uz-UZ") + " so'm";
+}
+
+
+function escapeHtml(value) {
+
+    return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+
+async function api(url, options = {}) {
+
+    const response = await fetch(url, {
+        credentials: "same-origin",
+        ...options,
+        headers: {
+            "Content-Type": "application/json",
+            ...(options.headers || {})
+        }
+    });
+
+    let data = {};
+
+    try {
+        data = await response.json();
+    } catch (error) {
+        data = {};
+    }
+
+    if (!response.ok) {
+
+        if (response.status === 401) {
+            showLogin();
+        }
+
+        throw new Error(
+            data.error ||
+            data.message ||
+            "Server xatosi"
+        );
+    }
+
+    return data;
+}
+
+
+/* =====================================================
+   LOGIN TYPE
+===================================================== */
+
+function setLoginType(type) {
+
+    loginType = type;
+
+    const adminTab =
+        document.getElementById("adminTab");
+
+    const employeeTab =
+        document.getElementById("employeeTab");
+
+    const adminFields =
+        document.getElementById("adminLoginFields");
+
+    const employeeFields =
+        document.getElementById("employeeLoginFields");
+
+    if (type === "admin") {
+
+        adminTab.classList.add("active");
+        employeeTab.classList.remove("active");
+
+        adminFields.style.display = "block";
+        employeeFields.style.display = "none";
+
+    } else {
+
+        adminTab.classList.remove("active");
+        employeeTab.classList.add("active");
+
+        adminFields.style.display = "none";
+        employeeFields.style.display = "block";
+    }
+
+    hideLoginError();
+}
+
+
+/* =====================================================
+   LOGIN
+===================================================== */
+
+async function loginApp() {
+
+    const errorBox =
+        document.getElementById("loginError");
+
+    hideLoginError();
+
+    const code =
+        document.getElementById("appCode").value.trim();
+
+    if (!code) {
+
+        showLoginError(
+            "Kirish kodini kiriting."
         );
 
-        document.body.classList.remove("locked");
-        document.body.classList.add("unlocked");
+        return;
+    }
 
-        document.getElementById("appLock").style.display = "none";
+    try {
 
-        error.textContent = "";
+        let body = {
+            login_type: loginType
+        };
+
+
+        if (loginType === "admin") {
+
+            const name =
+                document
+                    .getElementById("adminName")
+                    .value
+                    .trim();
+
+            if (!name) {
+
+                showLoginError(
+                    "Admin ism-familiyasini kiriting."
+                );
+
+                return;
+            }
+
+            body.name = name;
+            body.code = code;
+
+        } else {
+
+            const phone =
+                document
+                    .getElementById("employeePhone")
+                    .value
+                    .trim();
+
+            if (!phone) {
+
+                showLoginError(
+                    "Telefon raqamni kiriting."
+                );
+
+                return;
+            }
+
+            body.phone = phone;
+            body.pin = code;
+        }
+
+
+        const result =
+            await api(
+                "/api/auth/login",
+                {
+                    method: "POST",
+                    body: JSON.stringify(body)
+                }
+            );
+
+
+        currentUser = result.user;
 
         startApp();
 
-    }else{
+    } catch (error) {
 
-        error.textContent =
-            "Kod noto‘g‘ri. Qaytadan kiriting.";
+        showLoginError(
+            error.message ||
+            "Kirish amalga oshmadi."
+        );
+    }
+}
 
-        input.value = "";
-        input.focus();
 
+function showLoginError(message) {
+
+    const box =
+        document.getElementById("loginError");
+
+    box.textContent = message;
+    box.style.display = "block";
+}
+
+
+function hideLoginError() {
+
+    const box =
+        document.getElementById("loginError");
+
+    box.textContent = "";
+    box.style.display = "none";
+}
+
+
+/* =====================================================
+   CURRENT USER
+===================================================== */
+
+async function loadCurrentUser() {
+
+    try {
+
+        const result =
+            await api("/api/auth/me");
+
+        if (result.logged_in) {
+
+            currentUser = result.user;
+
+            startApp();
+
+            return true;
+        }
+
+    } catch (error) {
+
+        console.log(error);
     }
 
+    return false;
 }
 
-function isAppUnlocked(){
 
-    return localStorage.getItem(
-        REAL_CEO_UNLOCK_KEY
-    ) === "yes";
+/* =====================================================
+   START APP
+===================================================== */
 
+function startApp() {
+
+    document.getElementById("loginScreen")
+        .style.display = "none";
+
+    document.getElementById("app")
+        .style.display = "block";
+
+    updateUserBadge();
+    applyRoleUI();
+
+    showFirstAllowedSection();
 }
 
-function registerPWA(){
 
-    if("serviceWorker" in navigator){
+/* =====================================================
+   USER BADGE
+===================================================== */
 
-        window.addEventListener("load", () => {
+function updateUserBadge() {
 
-            navigator.serviceWorker
-                .register("/service-worker.js")
-                .then(() => {
+    const badge =
+        document.getElementById("userBadge");
 
-                    console.log(
-                        "Real CEO PWA ishga tushdi"
-                    );
+    if (!currentUser) {
 
-                })
-                .catch(error => {
+        badge.textContent = "—";
 
-                    console.error(
-                        "Service Worker xatosi:",
-                        error
-                    );
-
-                });
-
-        });
-
+        return;
     }
 
-}
+    const role =
+        currentUser.role || "";
 
-let inventoryData = [];
-let recipesData = [];
-let salesData = [];
-let employeesData = [];
-
-
-// =====================================================
-// HELPERS
-// =====================================================
-
-function money(value){
-
-    return Number(value || 0)
-        .toLocaleString("uz-UZ") + " so‘m";
-
+    badge.textContent =
+        `${currentUser.name || ""} · ${role}`;
 }
 
 
-function number(value){
+/* =====================================================
+   ROLE UI
+===================================================== */
 
-    return Number(value || 0)
-        .toLocaleString("uz-UZ");
+function applyRoleUI() {
 
-}
+    const role =
+        String(currentUser?.role || "")
+            .toUpperCase();
 
 
-async function api(url, options = {}){
+    const adminRoles =
+        ["CEO", "ADMIN"];
 
-    const response = await fetch(url, {
+    const waiterRoles =
+        ["AFITSANT"];
 
-        headers:{
-            "Content-Type":"application/json"
-        },
+    const kitchenRoles =
+        [
+            "OSHPAZ",
+            "SALATCHI",
+            "SHASHLIKCHI",
+            "SOMSACHI"
+        ];
 
-        ...options
+
+    const allNavs = {
+
+        dashboard:
+            document.getElementById("navDashboard"),
+
+        sales:
+            document.getElementById("navSales"),
+
+        finance:
+            document.getElementById("navFinance"),
+
+        reports:
+            document.getElementById("navReports"),
+
+        inventory:
+            document.getElementById("navInventory"),
+
+        recipes:
+            document.getElementById("navRecipes"),
+
+        employees:
+            document.getElementById("navEmployees")
+    };
+
+
+    Object.values(allNavs).forEach(button => {
+
+        if (button) {
+            button.style.display = "none";
+        }
 
     });
 
 
-    let data;
+    if (adminRoles.includes(role)) {
 
-    try{
+        Object.values(allNavs).forEach(button => {
 
-        data = await response.json();
+            if (button) {
+                button.style.display = "";
+            }
 
-    }catch{
+        });
 
-        data = {};
-
+        return;
     }
 
 
-    if(!response.ok){
+    if (waiterRoles.includes(role)) {
 
-        throw new Error(
-            data.error || "Server xatosi"
-        );
+        allNavs.sales.style.display = "";
 
+        return;
     }
 
 
-    return data;
+    if (kitchenRoles.includes(role)) {
 
-}
+        allNavs.inventory.style.display = "";
+        allNavs.recipes.style.display = "";
 
-
-function showError(error){
-
-    alert(
-        error.message ||
-        "Xatolik yuz berdi"
-    );
-
-}
-
-
-function closeModal(id){
-
-    document.getElementById(id)
-        .classList.remove("show");
-
-}
-
-
-// =====================================================
-// PAGE NAVIGATION
-// =====================================================
-
-function showPage(page, button){
-
-    document
-        .querySelectorAll(".page")
-        .forEach(el =>
-            el.classList.remove("active")
-        );
-
-
-    document
-        .getElementById(page)
-        .classList.add("active");
-
-
-    document
-        .querySelectorAll(".menu button")
-        .forEach(el =>
-            el.classList.remove("active")
-        );
-
-
-    if(button){
-        button.classList.add("active");
+        return;
     }
+}
 
 
-    if(page === "dashboard"){
+/* =====================================================
+   FIRST ALLOWED SECTION
+===================================================== */
+
+function showFirstAllowedSection() {
+
+    const role =
+        String(currentUser?.role || "")
+            .toUpperCase();
+
+
+    if (
+        role === "ADMIN" ||
+        role === "CEO"
+    ) {
+
+        const button =
+            document.getElementById(
+                "navDashboard"
+            );
+
+        showSection(
+            "dashboard",
+            button
+        );
 
         loadDashboard();
 
+        return;
     }
 
 
-    if(page === "sales"){
+    if (role === "AFITSANT") {
+
+        const button =
+            document.getElementById(
+                "navSales"
+            );
+
+        showSection(
+            "sales",
+            button
+        );
 
         loadSales();
 
+        return;
     }
-
-
-    if(page === "finance"){
-
-        loadTransactions();
-
-    }
-
-
-    if(page === "reports"){
-
-        loadReportPeriod("today");
-        loadTopProducts("today");
-
-    }
-
-
-    if(page === "inventory"){
-
-        loadInventory();
-
-    }
-
-
-    if(page === "recipes"){
-
-        loadRecipes();
-
-    }
-
-
-    if(page === "employees"){
-
-        loadEmployees();
-
-    }
-
-}
-
-
-// =====================================================
-// DASHBOARD
-// =====================================================
-
-async function loadDashboard(){
-
-    try{
-
-        const data =
-            await api("/api/summary");
-
-
-        document.getElementById(
-            "dashboardIncome"
-        ).textContent = money(data.income);
-
-
-        document.getElementById(
-            "dashboardExpense"
-        ).textContent = money(data.expense);
-
-
-        document.getElementById(
-            "dashboardProfit"
-        ).textContent = money(data.profit);
-
-
-        document.getElementById(
-            "dashboardInventory"
-        ).textContent =
-            money(data.inventory_value);
-
-
-        document.getElementById(
-            "dashboardLowStock"
-        ).textContent =
-            number(data.low_stock);
-
-
-        document.getElementById(
-            "dashboardTodaySales"
-        ).textContent =
-            number(data.today_sales);
-
-
-        const profit =
-            await api("/api/profit-summary");
-
-
-        document.getElementById(
-            "dashboardTodayCost"
-        ).textContent =
-            money(profit.today.cost);
-
-
-        document.getElementById(
-            "dashboardTodayProfit"
-        ).textContent =
-            money(profit.today.profit);
-
-
-        displayProfit(
-            profit.today
-        );
-
-
-        displayTopProducts(
-            profit.top_products,
-            "topProductsDashboard"
-        );
-
-
-    }catch(error){
-
-        showError(error);
-
-    }
-
-}
-
-
-// =====================================================
-// PROFIT PERIOD
-// =====================================================
-
-async function loadProfitPeriod(period){
-
-    document
-        .querySelectorAll("#dashboard .period-buttons button")
-        .forEach(btn =>
-            btn.classList.remove("active")
-        );
 
 
     const button =
         document.getElementById(
-            "profit" +
-            period.charAt(0).toUpperCase() +
-            period.slice(1) +
-            "Btn"
+            "navInventory"
         );
 
-
-    if(button){
-
-        button.classList.add("active");
-
-    }
-
-
-    try{
-
-        const data =
-            await api("/api/profit-summary");
-
-
-        displayProfit(
-            data[period]
-        );
-
-
-    }catch(error){
-
-        showError(error);
-
-    }
-
-}
-
-
-function displayProfit(data){
-
-    document.getElementById(
-        "profitRevenue"
-    ).textContent =
-        money(data.revenue);
-
-
-    document.getElementById(
-        "profitCost"
-    ).textContent =
-        money(data.cost);
-
-
-    const profit =
-        document.getElementById(
-            "profitValue"
-        );
-
-
-    profit.textContent =
-        money(data.profit);
-
-
-    profit.classList.remove(
-        "profit",
-        "loss"
+    showSection(
+        "inventory",
+        button
     );
 
-
-    if(Number(data.profit) >= 0){
-
-        profit.classList.add("profit");
-
-    }else{
-
-        profit.classList.add("loss");
-
-    }
-
+    loadInventory();
 }
 
 
-// =====================================================
-// TOP PRODUCTS
-// =====================================================
+/* =====================================================
+   LOGOUT
+===================================================== */
 
-async function loadTopProducts(period){
+async function logoutApp() {
 
-    try{
+    try {
+
+        await api(
+            "/api/auth/logout",
+            {
+                method: "POST"
+            }
+        );
+
+    } catch (error) {
+
+        console.log(error);
+
+    } finally {
+
+        currentUser = null;
+
+        showLogin();
+    }
+}
+
+
+function showLogin() {
+
+    document.getElementById("app")
+        .style.display = "none";
+
+    document.getElementById("loginScreen")
+        .style.display = "flex";
+
+    document.getElementById("appCode").value = "";
+
+    hideLoginError();
+}
+
+
+/* =====================================================
+   NAVIGATION
+===================================================== */
+
+function showSection(sectionId, button) {
+
+    const role =
+        String(currentUser?.role || "")
+            .toUpperCase();
+
+
+    const allowed = {
+
+        ADMIN: [
+            "dashboard",
+            "sales",
+            "finance",
+            "reports",
+            "inventory",
+            "recipes",
+            "employees"
+        ],
+
+        CEO: [
+            "dashboard",
+            "sales",
+            "finance",
+            "reports",
+            "inventory",
+            "recipes",
+            "employees"
+        ],
+
+        AFITSANT: [
+            "sales"
+        ],
+
+        OSHPAZ: [
+            "inventory",
+            "recipes"
+        ],
+
+        SALATCHI: [
+            "inventory",
+            "recipes"
+        ],
+
+        SHASHLIKCHI: [
+            "inventory",
+            "recipes"
+        ],
+
+        SOMSACHI: [
+            "inventory",
+            "recipes"
+        ]
+    };
+
+
+    if (
+        !allowed[role] ||
+        !allowed[role].includes(sectionId)
+    ) {
+
+        alert(
+            "Bu bo'lim siz uchun yopiq."
+        );
+
+        return;
+    }
+
+
+    document
+        .querySelectorAll(".section")
+        .forEach(section => {
+
+            section.classList.remove("active");
+
+        });
+
+
+    document
+        .querySelectorAll(".nav button")
+        .forEach(btn => {
+
+            btn.classList.remove("active");
+
+        });
+
+
+    const section =
+        document.getElementById(sectionId);
+
+    if (section) {
+        section.classList.add("active");
+    }
+
+    if (button) {
+        button.classList.add("active");
+    }
+
+
+    if (sectionId === "dashboard") {
+        loadDashboard();
+    }
+
+    if (sectionId === "sales") {
+        loadSales();
+    }
+
+    if (sectionId === "finance") {
+        loadFinance();
+    }
+
+    if (sectionId === "reports") {
+        loadReports();
+    }
+
+    if (sectionId === "inventory") {
+        loadInventory();
+    }
+
+    if (sectionId === "recipes") {
+        loadRecipes();
+    }
+
+    if (sectionId === "employees") {
+        loadEmployees();
+    }
+}
+
+
+/* =====================================================
+   DASHBOARD
+===================================================== */
+
+async function loadDashboard() {
+
+    try {
 
         const data =
             await api(
-                "/api/top-products?period=" +
-                period
+                "/api/summary"
             );
 
 
-        displayTopProducts(
-            data,
-            "topProductsReport"
+        const revenue =
+            data.revenue ??
+            data.total_revenue ??
+            data.income ??
+            0;
+
+        const expense =
+            data.expense ??
+            data.total_expense ??
+            data.expenses ??
+            0;
+
+        const profit =
+            data.profit ??
+            (Number(revenue) - Number(expense));
+
+
+        const sales =
+            data.sales_count ??
+            data.sales ??
+            0;
+
+
+        document.getElementById(
+            "dashboardRevenue"
+        ).textContent = money(revenue);
+
+
+        document.getElementById(
+            "dashboardExpense"
+        ).textContent = money(expense);
+
+
+        document.getElementById(
+            "dashboardProfit"
+        ).textContent = money(profit);
+
+
+        document.getElementById(
+            "dashboardSales"
+        ).textContent = sales;
+
+
+        await loadDashboardTransactions();
+
+    } catch (error) {
+
+        console.error(
+            "Dashboard:",
+            error
         );
-
-
-    }catch(error){
-
-        showError(error);
-
     }
-
 }
 
 
-function displayTopProducts(
-    products,
-    elementId
-){
+async function loadDashboardTransactions() {
 
-    const container =
-        document.getElementById(elementId);
-
-
-    if(!products || products.length === 0){
-
-        container.innerHTML = `
-            <div class="empty">
-                Hozircha sotuv ma'lumotlari yo‘q.
-            </div>
-        `;
-
-        return;
-
-    }
-
-
-    container.innerHTML =
-        products.map((product,index) => `
-
-            <div class="top-product">
-
-                <div>
-
-                    <div class="product-name">
-                        ${index + 1}.
-                        ${escapeHtml(
-                            product.product_name
-                        )}
-                    </div>
-
-                    <div class="product-meta">
-                        ${number(product.quantity)}
-                        ta sotildi
-                    </div>
-
-                </div>
-
-                <div style="text-align:right">
-
-                    <div>
-                        Daromad:
-                        <strong>
-                            ${money(product.revenue)}
-                        </strong>
-                    </div>
-
-                    <div>
-                        Tannarx:
-                        ${money(product.cost)}
-                    </div>
-
-                    <div class="profit">
-                        Foyda:
-                        <strong>
-                            ${money(product.profit)}
-                        </strong>
-                    </div>
-
-                </div>
-
-            </div>
-
-        `).join("");
-
-}
-
-
-// =====================================================
-// TRANSACTIONS
-// =====================================================
-
-async function loadTransactions(){
-
-    try{
+    try {
 
         const data =
             await api(
@@ -2357,1202 +2228,180 @@ async function loadTransactions(){
             );
 
 
-        const tbody =
-            document.getElementById(
-                "transactionsTable"
-            );
-
-
-        if(!data.length){
-
-            tbody.innerHTML = `
-                <tr>
-                    <td colspan="6"
-                        class="empty">
-                        Tranzaksiyalar yo‘q
-                    </td>
-                </tr>
-            `;
-
-            return;
-
-        }
-
-
-        tbody.innerHTML =
-            data.map(tx => `
-
-                <tr>
-
-                    <td>${tx.id}</td>
-
-                    <td>
-                        ${
-                            tx.type === "income"
-                            ? `<span class="badge green">
-                                Daromad
-                               </span>`
-                            : `<span class="badge red">
-                                Xarajat
-                               </span>`
-                        }
-                    </td>
-
-                    <td>
-                        ${money(tx.amount)}
-                    </td>
-
-                    <td>
-                        ${escapeHtml(
-                            tx.description || ""
-                        )}
-                    </td>
-
-                    <td>
-                        ${formatDate(tx.created_at)}
-                    </td>
-
-                    <td>
-
-                        <button
-                            class="btn red"
-                            onclick="deleteTransaction(${tx.id})">
-                            O‘chirish
-                        </button>
-
-                    </td>
-
-                </tr>
-
-            `).join("");
-
-
-    }catch(error){
-
-        showError(error);
-
-    }
-
-}
-
-
-function openTransactionModal(){
-
-    document.getElementById(
-        "transactionType"
-    ).value = "income";
-
-
-    document.getElementById(
-        "transactionAmount"
-    ).value = "";
-
-
-    document.getElementById(
-        "transactionDescription"
-    ).value = "";
-
-
-    document.getElementById(
-        "transactionModal"
-    ).classList.add("show");
-
-}
-
-
-async function saveTransaction(){
-
-    try{
-
-        await api(
-            "/api/transactions",
-            {
-                method:"POST",
-
-                body:JSON.stringify({
-
-                    type:
-                        document.getElementById(
-                            "transactionType"
-                        ).value,
-
-                    amount:
-                        document.getElementById(
-                            "transactionAmount"
-                        ).value,
-
-                    description:
-                        document.getElementById(
-                            "transactionDescription"
-                        ).value
-
-                })
-
-            }
-        );
-
-
-        closeModal(
-            "transactionModal"
-        );
-
-
-        await loadTransactions();
-        await loadDashboard();
-
-
-    }catch(error){
-
-        showError(error);
-
-    }
-
-}
-
-
-async function deleteTransaction(id){
-
-    if(!confirm(
-        "Bu tranzaksiyani o‘chirmoqchimisiz?"
-    )) return;
-
-
-    try{
-
-        await api(
-            "/api/transactions/" + id,
-            {
-                method:"DELETE"
-            }
-        );
-
-
-        await loadTransactions();
-        await loadDashboard();
-
-
-    }catch(error){
-
-        showError(error);
-
-    }
-
-}
-
-
-// =====================================================
-// REPORT
-// =====================================================
-
-async function loadReportPeriod(period){
-
-    document
-        .querySelectorAll(
-            "#reports .period-buttons button"
-        )
-        .forEach(btn =>
-            btn.classList.remove("active")
-        );
-
-
-    const button =
-        document.getElementById(
-            "report" +
-            period.charAt(0).toUpperCase() +
-            period.slice(1) +
-            "Btn"
-        );
-
-
-    if(button){
-
-        button.classList.add("active");
-
-    }
-
-
-    try{
-
-        const data =
-            await api(
-                "/api/report?period=" +
-                period
-            );
-
-
-        document.getElementById(
-            "reportIncome"
-        ).textContent =
-            money(data.income);
-
-
-        document.getElementById(
-            "reportExpense"
-        ).textContent =
-            money(data.expense);
-
-
-        document.getElementById(
-            "reportProfit"
-        ).textContent =
-            money(data.profit);
-
-
-        await loadTopProducts(period);
-
-
-    }catch(error){
-
-        showError(error);
-
-    }
-
-}
-
-
-// =====================================================
-// INVENTORY
-// =====================================================
-
-async function loadInventory(){
-
-    try{
-
-        inventoryData =
-            await api(
-                "/api/inventory"
-            );
+        const rows =
+            Array.isArray(data)
+                ? data
+                : (
+                    data.transactions ||
+                    data.items ||
+                    []
+                );
 
 
         const tbody =
             document.getElementById(
-                "inventoryTable"
+                "dashboardTransactions"
             );
 
 
-        if(!inventoryData.length){
+        tbody.innerHTML = "";
 
-            tbody.innerHTML = `
-                <tr>
-                    <td colspan="9"
-                        class="empty">
-                        Omborda mahsulot yo‘q
-                    </td>
-                </tr>
-            `;
 
-        }else{
+        rows
+            .slice(0, 10)
+            .forEach(item => {
 
-            tbody.innerHTML =
-                inventoryData.map(item => `
-
+                tbody.innerHTML += `
                     <tr>
 
-                        <td>${item.id}</td>
-
                         <td>
-                            ${escapeHtml(item.name)}
+                            ${escapeHtml(
+                                item.created_at ||
+                                item.date ||
+                                ""
+                            )}
                         </td>
 
                         <td>
-                            ${escapeHtml(item.unit)}
+                            ${escapeHtml(
+                                item.type || ""
+                            )}
                         </td>
 
                         <td>
-                            ${number(item.quantity)}
+                            ${money(
+                                item.amount || 0
+                            )}
                         </td>
 
                         <td>
-                            ${number(item.min_quantity)}
-                        </td>
-
-                        <td>
-                            ${money(item.price)}
-                        </td>
-
-                        <td>
-                            ${money(item.total_value)}
-                        </td>
-
-                        <td>
-
-                            ${
-                                item.low_stock
-                                ? `<span class="badge red">
-                                    Kam
-                                   </span>`
-                                : `<span class="badge green">
-                                    Yetarli
-                                   </span>`
-                            }
-
-                        </td>
-
-                        <td>
-
-                            <button
-                                class="btn blue"
-                                onclick="openStockModal(${item.id})">
-                                Kirim/Chiqim
-                            </button>
-
-                            <button
-                                class="btn gray"
-                                onclick="openPriceModal(${item.id})">
-                                Narx
-                            </button>
-
-                            <button
-                                class="btn red"
-                                onclick="deleteInventory(${item.id})">
-                                O‘chirish
-                            </button>
-
+                            ${escapeHtml(
+                                item.description || ""
+                            )}
                         </td>
 
                     </tr>
-
-                `).join("");
-
-        }
-
-
-        const summary =
-            await api(
-                "/api/inventory/summary"
-            );
-
-
-        document.getElementById(
-            "inventoryTotal"
-        ).textContent =
-            money(summary.total_value);
-
-
-        document.getElementById(
-            "inventoryProducts"
-        ).textContent =
-            number(summary.products);
-
-
-        document.getElementById(
-            "inventoryLow"
-        ).textContent =
-            number(summary.low_stock);
-
-
-    }catch(error){
-
-        showError(error);
-
-    }
-
-}
-
-
-function openProductModal(){
-
-    document.getElementById(
-        "productId"
-    ).value = "";
-
-
-    document.getElementById(
-        "productName"
-    ).value = "";
-
-
-    document.getElementById(
-        "productUnit"
-    ).value = "";
-
-
-    document.getElementById(
-        "productQuantity"
-    ).value = 0;
-
-
-    document.getElementById(
-        "productMin"
-    ).value = 0;
-
-
-    document.getElementById(
-        "productPrice"
-    ).value = 0;
-
-
-    document.getElementById(
-        "productModal"
-    ).classList.add("show");
-
-}
-
-
-async function saveProduct(){
-
-    try{
-
-        const id =
-            document.getElementById(
-                "productId"
-            ).value;
-
-
-        const body = {
-
-            name:
-                document.getElementById(
-                    "productName"
-                ).value,
-
-            unit:
-                document.getElementById(
-                    "productUnit"
-                ).value,
-
-            quantity:
-                document.getElementById(
-                    "productQuantity"
-                ).value,
-
-            min_quantity:
-                document.getElementById(
-                    "productMin"
-                ).value,
-
-            price:
-                document.getElementById(
-                    "productPrice"
-                ).value
-
-        };
-
-
-        await api(
-            id
-            ? "/api/inventory/" + id
-            : "/api/inventory",
-            {
-
-                method:id
-                    ? "PUT"
-                    : "POST",
-
-                body:JSON.stringify(body)
-
-            }
-        );
-
-
-        closeModal(
-            "productModal"
-        );
-
-
-        await loadInventory();
-        await loadRecipes();
-
-
-    }catch(error){
-
-        showError(error);
-
-    }
-
-}
-
-
-function openStockModal(id){
-
-    document.getElementById(
-        "stockId"
-    ).value = id;
-
-
-    document.getElementById(
-        "stockAmount"
-    ).value = "";
-
-
-    document.getElementById(
-        "stockAction"
-    ).value = "in";
-
-
-    document.getElementById(
-        "stockModal"
-    ).classList.add("show");
-
-}
-
-
-async function saveStock(){
-
-    try{
-
-        const id =
-            document.getElementById(
-                "stockId"
-            ).value;
-
-
-        await api(
-            "/api/inventory/" +
-            id +
-            "/stock",
-            {
-
-                method:"POST",
-
-                body:JSON.stringify({
-
-                    action:
-                        document.getElementById(
-                            "stockAction"
-                        ).value,
-
-                    amount:
-                        document.getElementById(
-                            "stockAmount"
-                        ).value
-
-                })
-
-            }
-        );
-
-
-        closeModal(
-            "stockModal"
-        );
-
-
-        await loadInventory();
-        await loadDashboard();
-
-
-    }catch(error){
-
-        showError(error);
-
-    }
-
-}
-
-
-function openPriceModal(id){
-
-    const item =
-        inventoryData.find(
-            x => x.id == id
-        );
-
-
-    document.getElementById(
-        "priceId"
-    ).value = id;
-
-
-    document.getElementById(
-        "newPrice"
-    ).value =
-        item ? item.price : 0;
-
-
-    document.getElementById(
-        "priceModal"
-    ).classList.add("show");
-
-}
-
-
-async function savePrice(){
-
-    try{
-
-        const id =
-            document.getElementById(
-                "priceId"
-            ).value;
-
-
-        await api(
-            "/api/inventory/" +
-            id +
-            "/price",
-            {
-
-                method:"PUT",
-
-                body:JSON.stringify({
-
-                    price:
-                        document.getElementById(
-                            "newPrice"
-                        ).value
-
-                })
-
-            }
-        );
-
-
-        closeModal(
-            "priceModal"
-        );
-
-
-        await loadInventory();
-        await loadRecipes();
-
-
-    }catch(error){
-
-        showError(error);
-
-    }
-
-}
-
-
-async function deleteInventory(id){
-
-    if(!confirm(
-        "Bu mahsulotni o‘chirmoqchimisiz?"
-    )) return;
-
-
-    try{
-
-        await api(
-            "/api/inventory/" +
-            id,
-            {
-                method:"DELETE"
-            }
-        );
-
-
-        await loadInventory();
-        await loadRecipes();
-
-
-    }catch(error){
-
-        showError(error);
-
-    }
-
-}
-
-
-// =====================================================
-// RECIPES
-// =====================================================
-
-async function loadRecipes(){
-
-    try{
-
-        recipesData =
-            await api(
-                "/api/recipes"
-            );
-
-
-        const container =
-            document.getElementById(
-                "recipesContainer"
-            );
-
-
-        if(!recipesData.length){
-
-            container.innerHTML = `
-                <div class="empty">
-                    Hozircha retseptlar yo‘q.
-                </div>
-            `;
-
-            return;
-
-        }
-
-
-        container.innerHTML =
-            recipesData.map(recipe => `
-
-                <div
-                    class="section"
-                    style="box-shadow:none;border:1px solid #eee">
-
-                    <div class="toolbar">
-
-                        <div>
-
-                            <h2>
-                                🍽️
-                                ${escapeHtml(recipe.name)}
-                            </h2>
-
-                            <div>
-                                Birlik:
-                                ${escapeHtml(
-                                    recipe.sale_unit
-                                )}
-                            </div>
-
-                        </div>
-
-
-                        <div style="text-align:right">
-
-                            <div>
-                                Tannarx:
-                            </div>
-
-                            <strong>
-                                ${money(recipe.cost)}
-                            </strong>
-
-                        </div>
-
-                    </div>
-
-
-                    <div>
-
-                        ${
-                            recipe.items &&
-                            recipe.items.length
-
-                            ?
-
-                            recipe.items.map(item => `
-
-                                <div class="recipe-item">
-
-                                    <strong>
-                                        ${escapeHtml(item.name)}
-                                    </strong>
-
-                                    —
-                                    ${number(item.quantity)}
-                                    ${escapeHtml(item.unit)}
-
-                                    ×
-                                    ${money(item.price)}
-
-                                    =
-                                    <strong>
-                                        ${money(item.item_cost)}
-                                    </strong>
-
-                                </div>
-
-                            `).join("")
-
-                            :
-
-                            `<div class="empty">
-                                Tarkib yo‘q
-                             </div>`
-
-                        }
-
-                    </div>
-
-
-                    <div style="margin-top:12px">
-
-                        <button
-                            class="btn blue"
-                            onclick="editRecipe(${recipe.id})">
-                            Tahrirlash
-                        </button>
-
-                        <button
-                            class="btn red"
-                            onclick="deleteRecipe(${recipe.id})">
-                            O‘chirish
-                        </button>
-
-                    </div>
-
-                </div>
-
-            `).join("");
-
-
-    }catch(error){
-
-        showError(error);
-
-    }
-
-}
-
-
-function openRecipeModal(recipe = null){
-
-    document.getElementById(
-        "recipeId"
-    ).value =
-        recipe ? recipe.id : "";
-
-
-    document.getElementById(
-        "recipeModalTitle"
-    ).textContent =
-        recipe
-        ? "Retseptni tahrirlash"
-        : "Yangi retsept";
-
-
-    document.getElementById(
-        "recipeName"
-    ).value =
-        recipe ? recipe.name : "";
-
-
-    document.getElementById(
-        "recipeUnit"
-    ).value =
-        recipe ? recipe.sale_unit : "dona";
-
-
-    document.getElementById(
-        "ingredientsContainer"
-    ).innerHTML = "";
-
-
-    if(recipe && recipe.items){
-
-        recipe.items.forEach(item => {
-
-            addIngredientRow(
-                item.inventory_id,
-                item.quantity
-            );
-
-        });
-
-    }else{
-
-        addIngredientRow();
-
-    }
-
-
-    calculateRecipeCost();
-
-
-    document.getElementById(
-        "recipeModal"
-    ).classList.add("show");
-
-}
-
-
-function addIngredientRow(
-    selectedId = "",
-    quantity = ""
-){
-
-    const container =
-        document.getElementById(
-            "ingredientsContainer"
-        );
-
-
-    const row =
-        document.createElement("div");
-
-
-    row.className =
-        "ingredient-row";
-
-
-    let options = `
-        <option value="">
-            Mahsulot tanlang
-        </option>
-    `;
-
-
-    inventoryData.forEach(item => {
-
-        options += `
-            <option
-                value="${item.id}"
-                ${item.id == selectedId
-                    ? "selected"
-                    : ""}>
-
-                ${escapeHtml(item.name)}
-                (${escapeHtml(item.unit)})
-
-            </option>
-        `;
-
-    });
-
-
-    row.innerHTML = `
-
-        <select
-            class="ingredient-product"
-            onchange="calculateRecipeCost()">
-
-            ${options}
-
-        </select>
-
-
-        <input
-            type="number"
-            step="0.001"
-            class="ingredient-quantity"
-            value="${quantity}"
-            placeholder="Miqdor"
-            oninput="calculateRecipeCost()">
-
-
-        <button
-            class="remove-btn"
-            onclick="this.parentElement.remove();calculateRecipeCost()">
-
-            ×
-
-        </button>
-
-    `;
-
-
-    container.appendChild(row);
-
-}
-
-
-function calculateRecipeCost(){
-
-    let total = 0;
-
-
-    document
-        .querySelectorAll(".ingredient-row")
-        .forEach(row => {
-
-            const productId =
-                row.querySelector(
-                    ".ingredient-product"
-                ).value;
-
-
-            const quantity =
-                Number(
-                    row.querySelector(
-                        ".ingredient-quantity"
-                    ).value || 0
-                );
-
-
-            const item =
-                inventoryData.find(
-                    x => x.id == productId
-                );
-
-
-            if(item){
-
-                total +=
-                    quantity *
-                    Number(item.price || 0);
-
-            }
-
-        });
-
-
-    document.getElementById(
-        "recipeCostPreview"
-    ).textContent =
-        money(total);
-
-}
-
-
-async function saveRecipe(){
-
-    try{
-
-        const id =
-            document.getElementById(
-                "recipeId"
-            ).value;
-
-
-        const items = [];
-
-
-        document
-            .querySelectorAll(".ingredient-row")
-            .forEach(row => {
-
-                const inventoryId =
-                    row.querySelector(
-                        ".ingredient-product"
-                    ).value;
-
-
-                const quantity =
-                    row.querySelector(
-                        ".ingredient-quantity"
-                    ).value;
-
-
-                if(inventoryId && quantity){
-
-                    items.push({
-
-                        inventory_id:
-                            Number(inventoryId),
-
-                        quantity:
-                            Number(quantity)
-
-                    });
-
-                }
+                `;
 
             });
 
+    } catch (error) {
 
-        if(!items.length){
-
-            alert(
-                "Retseptga kamida bitta mahsulot qo‘shing."
-            );
-
-            return;
-
-        }
+        console.error(error);
+    }
+}
 
 
-        const body = {
+/* =====================================================
+   SALES
+===================================================== */
 
-            name:
-                document.getElementById(
-                    "recipeName"
-                ).value,
+async function addSale() {
 
-            sale_unit:
-                document.getElementById(
-                    "recipeUnit"
-                ).value,
+    const product =
+        document
+            .getElementById("saleProduct")
+            .value
+            .trim();
 
-            items
+    const quantity =
+        Number(
+            document
+                .getElementById("saleQuantity")
+                .value || 0
+        );
 
-        };
+    const price =
+        Number(
+            document
+                .getElementById("salePrice")
+                .value || 0
+        );
 
+    const description =
+        document
+            .getElementById("saleDescription")
+            .value
+            .trim();
+
+
+    if (!product || quantity <= 0 || price <= 0) {
+
+        alert(
+            "Mahsulot, miqdor va narxni kiriting."
+        );
+
+        return;
+    }
+
+
+    try {
 
         await api(
-            id
-            ? "/api/recipes/" + id
-            : "/api/recipes",
+            "/api/sales",
             {
+                method: "POST",
+                body: JSON.stringify({
 
-                method:id
-                    ? "PUT"
-                    : "POST",
+                    product_name: product,
+                    quantity: quantity,
+                    sale_price: price,
+                    price: price,
+                    description: description
 
-                body:JSON.stringify(body)
-
+                })
             }
         );
 
 
-        closeModal(
-            "recipeModal"
+        document.getElementById(
+            "saleProduct"
+        ).value = "";
+
+        document.getElementById(
+            "saleQuantity"
+        ).value = "1";
+
+        document.getElementById(
+            "salePrice"
+        ).value = "";
+
+        document.getElementById(
+            "saleDescription"
+        ).value = "";
+
+
+        alert("Sotuv saqlandi.");
+
+        loadSales();
+
+    } catch (error) {
+
+        alert(
+            error.message
         );
-
-
-        await loadRecipes();
-
-
-    }catch(error){
-
-        showError(error);
-
     }
-
 }
 
 
-async function editRecipe(id){
+async function loadSales() {
 
-    try{
+    try {
 
-        const recipe =
-            await api(
-                "/api/recipes/" + id
-            );
-
-
-        openRecipeModal(recipe);
-
-
-    }catch(error){
-
-        showError(error);
-
-    }
-
-}
-
-
-async function deleteRecipe(id){
-
-    if(!confirm(
-        "Bu retseptni o‘chirmoqchimisiz?"
-    )) return;
-
-
-    try{
-
-        await api(
-            "/api/recipes/" + id,
-            {
-                method:"DELETE"
-            }
-        );
-
-
-        await loadRecipes();
-
-
-    }catch(error){
-
-        showError(error);
-
-    }
-
-}
-
-
-// =====================================================
-// SALES
-// =====================================================
-
-async function loadSales(){
-
-    try{
-
-        salesData =
+        const data =
             await api(
                 "/api/sales"
             );
+
+
+        const rows =
+            Array.isArray(data)
+                ? data
+                : (
+                    data.sales ||
+                    data.items ||
+                    []
+                );
 
 
         const tbody =
@@ -3561,497 +2410,626 @@ async function loadSales(){
             );
 
 
-        if(!salesData.length){
+        tbody.innerHTML = "";
 
-            tbody.innerHTML = `
+
+        rows.forEach(item => {
+
+            tbody.innerHTML += `
                 <tr>
-                    <td colspan="8"
-                        class="empty">
-                        Hozircha sotuvlar yo‘q
+
+                    <td>
+                        ${escapeHtml(
+                            item.created_at ||
+                            item.date ||
+                            ""
+                        )}
                     </td>
+
+                    <td>
+                        ${escapeHtml(
+                            item.product_name ||
+                            item.product ||
+                            ""
+                        )}
+                    </td>
+
+                    <td>
+                        ${item.quantity ?? ""}
+                    </td>
+
+                    <td>
+                        ${money(
+                            item.sale_price ??
+                            item.total_price ??
+                            item.amount ??
+                            0
+                        )}
+                    </td>
+
+                    <td>
+                        ${money(
+                            item.cost ??
+                            item.cost_price ??
+                            0
+                        )}
+                    </td>
+
+                    <td>
+                        ${money(
+                            item.profit ??
+                            0
+                        )}
+                    </td>
+
                 </tr>
             `;
 
-        }else{
+        });
 
-            tbody.innerHTML =
-                salesData.map(sale => `
+    } catch (error) {
 
-                    <tr>
-
-                        <td>
-                            ${sale.id}
-                        </td>
-
-                        <td>
-                            ${escapeHtml(
-                                sale.product_name
-                            )}
-                        </td>
-
-                        <td>
-                            ${
-                                sale.recipe_name
-                                ? escapeHtml(
-                                    sale.recipe_name
-                                )
-                                : "-"
-                            }
-                        </td>
-
-                        <td>
-                            ${number(
-                                sale.quantity
-                            )}
-                        </td>
-
-                        <td>
-                            ${money(
-                                sale.unit_price
-                            )}
-                        </td>
-
-                        <td>
-                            <strong>
-                                ${money(
-                                    sale.total
-                                )}
-                            </strong>
-                        </td>
-
-                        <td>
-                            ${formatDate(
-                                sale.created_at
-                            )}
-                        </td>
-
-                        <td>
-
-                            <button
-                                class="btn red"
-                                onclick="deleteSale(${sale.id})">
-                                O‘chirish
-                            </button>
-
-                        </td>
-
-                    </tr>
-
-                `).join("");
-
-        }
+        console.error(
+            "Sales:",
+            error
+        );
+    }
+}
 
 
-        const summary =
+/* =====================================================
+   FINANCE
+===================================================== */
+
+async function addTransaction() {
+
+    const type =
+        document
+            .getElementById(
+                "transactionType"
+            )
+            .value;
+
+    const amount =
+        Number(
+            document
+                .getElementById(
+                    "transactionAmount"
+                )
+                .value || 0
+        );
+
+    const description =
+        document
+            .getElementById(
+                "transactionDescription"
+            )
+            .value
+            .trim();
+
+
+    if (amount <= 0) {
+
+        alert(
+            "Summani kiriting."
+        );
+
+        return;
+    }
+
+
+    try {
+
+        await api(
+            "/api/transactions",
+            {
+                method: "POST",
+                body: JSON.stringify({
+
+                    type: type,
+                    amount: amount,
+                    description: description
+
+                })
+            }
+        );
+
+
+        document.getElementById(
+            "transactionAmount"
+        ).value = "";
+
+        document.getElementById(
+            "transactionDescription"
+        ).value = "";
+
+
+        alert(
+            "Operatsiya saqlandi."
+        );
+
+        loadFinance();
+
+    } catch (error) {
+
+        alert(
+            error.message
+        );
+    }
+}
+
+
+async function loadFinance() {
+
+    try {
+
+        const data =
             await api(
-                "/api/sales/summary"
+                "/api/transactions"
+            );
+
+
+        const rows =
+            Array.isArray(data)
+                ? data
+                : (
+                    data.transactions ||
+                    data.items ||
+                    []
+                );
+
+
+        const tbody =
+            document.getElementById(
+                "financeTable"
+            );
+
+
+        tbody.innerHTML = "";
+
+
+        rows.forEach(item => {
+
+            tbody.innerHTML += `
+                <tr>
+
+                    <td>
+                        ${escapeHtml(
+                            item.created_at ||
+                            item.date ||
+                            ""
+                        )}
+                    </td>
+
+                    <td>
+                        ${escapeHtml(
+                            item.type || ""
+                        )}
+                    </td>
+
+                    <td>
+                        ${money(
+                            item.amount || 0
+                        )}
+                    </td>
+
+                    <td>
+                        ${escapeHtml(
+                            item.description || ""
+                        )}
+                    </td>
+
+                </tr>
+            `;
+
+        });
+
+    } catch (error) {
+
+        console.error(
+            "Finance:",
+            error
+        );
+    }
+}
+
+
+/* =====================================================
+   REPORTS
+===================================================== */
+
+async function loadReports() {
+
+    try {
+
+        const data =
+            await api(
+                "/api/summary"
+            );
+
+
+        const revenue =
+            data.revenue ??
+            data.total_revenue ??
+            data.income ??
+            0;
+
+        const expense =
+            data.expense ??
+            data.total_expense ??
+            data.expenses ??
+            0;
+
+        const profit =
+            data.profit ??
+            (
+                Number(revenue) -
+                Number(expense)
             );
 
 
         document.getElementById(
-            "salesQuantity"
-        ).textContent =
-            number(summary.total_quantity);
+            "reportRevenue"
+        ).textContent = money(revenue);
 
 
         document.getElementById(
-            "salesTotal"
-        ).textContent =
-            money(summary.total_sales);
+            "reportExpense"
+        ).textContent = money(expense);
 
 
-    }catch(error){
-
-        showError(error);
-
-    }
-
-}
-
-
-function openSaleModal(){
-
-    const select =
         document.getElementById(
-            "saleRecipe"
-        );
+            "reportProfit"
+        ).textContent = money(profit);
 
 
-    select.innerHTML = `
-        <option value="">
-            Retseptsiz sotuv
-        </option>
-    `;
+        document.getElementById(
+            "reportContent"
+        ).innerHTML = `
+            <p>
+                Daromad:
+                <strong>${money(revenue)}</strong>
+            </p>
 
+            <p>
+                Xarajat:
+                <strong>${money(expense)}</strong>
+            </p>
 
-    recipesData.forEach(recipe => {
-
-        select.innerHTML += `
-
-            <option value="${recipe.id}">
-
-                ${escapeHtml(recipe.name)}
-
-                —
-                tannarx:
-                ${money(recipe.cost)}
-
-            </option>
-
+            <p>
+                Foyda:
+                <strong>${money(profit)}</strong>
+            </p>
         `;
 
-    });
+    } catch (error) {
 
-
-    document.getElementById(
-        "saleProduct"
-    ).value = "";
-
-
-    document.getElementById(
-        "saleQuantity"
-    ).value = 1;
-
-
-    document.getElementById(
-        "salePrice"
-    ).value = 0;
-
-
-    document.getElementById(
-        "saleRecipePreview"
-    ).innerHTML = "";
-
-
-    calculateSalePreview();
-
-
-    document.getElementById(
-        "saleModal"
-    ).classList.add("show");
-
-}
-
-
-function recipeSelected(){
-
-    const id =
-        document.getElementById(
-            "saleRecipe"
-        ).value;
-
-
-    if(!id){
-
-        document.getElementById(
-            "saleRecipePreview"
-        ).innerHTML = "";
-
-
-        calculateSalePreview();
-
-        return;
-
-    }
-
-
-    const recipe =
-        recipesData.find(
-            x => x.id == id
+        console.error(
+            "Reports:",
+            error
         );
-
-
-    if(!recipe) return;
-
-
-    document.getElementById(
-        "saleProduct"
-    ).value =
-        recipe.name;
-
-
-    let html = `
-
-        <strong>
-            🍽️ ${escapeHtml(recipe.name)}
-        </strong>
-
-        <br><br>
-
-        <strong>
-            Tannarx:
-        </strong>
-
-        ${money(recipe.cost)}
-
-        <br><br>
-
-    `;
-
-
-    if(recipe.items){
-
-        html += recipe.items.map(
-            item => `
-
-                ${escapeHtml(item.name)}
-                —
-                ${number(item.quantity)}
-                ${escapeHtml(item.unit)}
-
-                <br>
-
-            `
-        ).join("");
-
     }
-
-
-    document.getElementById(
-        "saleRecipePreview"
-    ).innerHTML = html;
-
-
-    calculateSalePreview();
-
 }
 
 
-function calculateSalePreview(){
+/* =====================================================
+   INVENTORY
+===================================================== */
+
+async function addInventory() {
+
+    const name =
+        document
+            .getElementById(
+                "inventoryName"
+            )
+            .value
+            .trim();
+
+    const unit =
+        document
+            .getElementById(
+                "inventoryUnit"
+            )
+            .value
+            .trim();
 
     const quantity =
         Number(
-            document.getElementById(
-                "saleQuantity"
-            ).value || 0
+            document
+                .getElementById(
+                    "inventoryQuantity"
+                )
+                .value || 0
         );
-
 
     const price =
         Number(
-            document.getElementById(
-                "salePrice"
-            ).value || 0
+            document
+                .getElementById(
+                    "inventoryPrice"
+                )
+                .value || 0
         );
 
 
-    const total =
-        quantity * price;
+    if (!name) {
 
+        alert(
+            "Mahsulot nomini kiriting."
+        );
 
-    let cost = 0;
-
-
-    const recipeId =
-        document.getElementById(
-            "saleRecipe"
-        ).value;
-
-
-    if(recipeId){
-
-        const recipe =
-            recipesData.find(
-                x => x.id == recipeId
-            );
-
-
-        if(recipe){
-
-            cost =
-                quantity *
-                Number(recipe.cost || 0);
-
-        }
-
+        return;
     }
 
 
-    const profit =
-        total - cost;
+    try {
+
+        await api(
+            "/api/inventory",
+            {
+                method: "POST",
+                body: JSON.stringify({
+
+                    name: name,
+                    unit: unit,
+                    quantity: quantity,
+                    price: price
+
+                })
+            }
+        );
 
 
-    document.getElementById(
-        "saleTotalPreview"
-    ).textContent =
-        money(total);
-
-
-    document.getElementById(
-        "saleCostPreview"
-    ).textContent =
-        money(cost);
-
-
-    const profitElement =
         document.getElementById(
-            "saleProfitPreview"
-        );
+            "inventoryName"
+        ).value = "";
 
+        document.getElementById(
+            "inventoryUnit"
+        ).value = "";
 
-    profitElement.textContent =
-        money(profit);
+        document.getElementById(
+            "inventoryQuantity"
+        ).value = "";
 
-
-    profitElement.classList.remove(
-        "profit",
-        "loss"
-    );
-
-
-    profitElement.classList.add(
-        profit >= 0
-        ? "profit"
-        : "loss"
-    );
-
-}
-
-
-async function saveSale(){
-
-    try{
-
-        const recipeId =
-            document.getElementById(
-                "saleRecipe"
-            ).value;
-
-
-        const productName =
-            document.getElementById(
-                "saleProduct"
-            ).value;
-
-
-        const quantity =
-            document.getElementById(
-                "saleQuantity"
-            ).value;
-
-
-        const price =
-            document.getElementById(
-                "salePrice"
-            ).value;
-
-
-        if(!productName){
-
-            alert(
-                "Mahsulot nomini kiriting."
-            );
-
-            return;
-
-        }
-
-
-        const result =
-            await api(
-                "/api/sales",
-                {
-
-                    method:"POST",
-
-                    body:JSON.stringify({
-
-                        product_name:
-                            productName,
-
-                        quantity:
-                            Number(quantity),
-
-                        unit_price:
-                            Number(price),
-
-                        recipe_id:
-                            recipeId
-                            ? Number(recipeId)
-                            : null
-
-                    })
-
-                }
-            );
-
-
-        closeModal(
-            "saleModal"
-        );
+        document.getElementById(
+            "inventoryPrice"
+        ).value = "";
 
 
         alert(
-            "Sotuv muvaffaqiyatli saqlandi!"
+            "Mahsulot saqlandi."
         );
 
+        loadInventory();
 
-        await loadSales();
-        await loadDashboard();
-        await loadInventory();
+    } catch (error) {
 
-
-    }catch(error){
-
-        showError(error);
-
+        alert(
+            error.message
+        );
     }
-
 }
 
 
-async function deleteSale(id){
+async function loadInventory() {
 
-    if(!confirm(
-        "Sotuvni o‘chirasizmi?\n\n" +
-        "Agar retseptli sotuv bo‘lsa, " +
-        "ishlatilgan mahsulotlar omborga qaytariladi."
-    )) return;
+    try {
 
-
-    try{
-
-        const result =
+        const data =
             await api(
-                "/api/sales/" + id,
-                {
-                    method:"DELETE"
-                }
+                "/api/inventory"
             );
 
 
-        alert(
-            result.message ||
-            "Sotuv o‘chirildi."
+        const rows =
+            Array.isArray(data)
+                ? data
+                : (
+                    data.inventory ||
+                    data.items ||
+                    []
+                );
+
+
+        const tbody =
+            document.getElementById(
+                "inventoryTable"
+            );
+
+
+        tbody.innerHTML = "";
+
+
+        rows.forEach(item => {
+
+            const quantity =
+                Number(
+                    item.quantity || 0
+                );
+
+            const price =
+                Number(
+                    item.price ||
+                    item.unit_price ||
+                    0
+                );
+
+
+            tbody.innerHTML += `
+                <tr>
+
+                    <td>
+                        ${escapeHtml(
+                            item.name || ""
+                        )}
+                    </td>
+
+                    <td>
+                        ${escapeHtml(
+                            item.unit || ""
+                        )}
+                    </td>
+
+                    <td>
+                        ${quantity}
+                    </td>
+
+                    <td>
+                        ${money(price)}
+                    </td>
+
+                    <td>
+                        ${money(
+                            quantity * price
+                        )}
+                    </td>
+
+                </tr>
+            `;
+
+        });
+
+    } catch (error) {
+
+        console.error(
+            "Inventory:",
+            error
         );
-
-
-        await loadSales();
-        await loadDashboard();
-        await loadInventory();
-
-
-    }catch(error){
-
-        showError(error);
-
     }
-
 }
 
 
-// =====================================================
-// EMPLOYEES
-// =====================================================
+/* =====================================================
+   RECIPES
+===================================================== */
 
-async function loadEmployees(){
+async function loadRecipes() {
 
-    try{
+    try {
 
-        employeesData =
+        const data =
+            await api(
+                "/api/recipes"
+            );
+
+
+        const rows =
+            Array.isArray(data)
+                ? data
+                : (
+                    data.recipes ||
+                    data.items ||
+                    []
+                );
+
+
+        const tbody =
+            document.getElementById(
+                "recipesTable"
+            );
+
+
+        tbody.innerHTML = "";
+
+
+        rows.forEach(recipe => {
+
+            let ingredients = "";
+
+
+            if (
+                Array.isArray(
+                    recipe.items
+                )
+            ) {
+
+                ingredients =
+                    recipe.items
+                        .map(item => {
+
+                            return `
+                                ${escapeHtml(
+                                    item.name || ""
+                                )}
+                                ×
+                                ${item.quantity ?? ""}
+                            `;
+
+                        })
+                        .join(", ");
+
+            } else {
+
+                ingredients =
+                    recipe.ingredients ||
+                    "";
+            }
+
+
+            tbody.innerHTML += `
+                <tr>
+
+                    <td>
+                        ${escapeHtml(
+                            recipe.name ||
+                            recipe.product_name ||
+                            ""
+                        )}
+                    </td>
+
+                    <td>
+                        ${escapeHtml(
+                            ingredients
+                        )}
+                    </td>
+
+                    <td>
+                        ${money(
+                            recipe.cost ||
+                            recipe.total_cost ||
+                            0
+                        )}
+                    </td>
+
+                </tr>
+            `;
+
+        });
+
+    } catch (error) {
+
+        console.error(
+            "Recipes:",
+            error
+        );
+    }
+}
+
+
+/* =====================================================
+   EMPLOYEES
+===================================================== */
+
+async function loadEmployees() {
+
+    try {
+
+        const data =
             await api(
                 "/api/employees"
             );
+
+
+        const rows =
+            Array.isArray(data)
+                ? data
+                : (
+                    data.employees ||
+                    data.items ||
+                    []
+                );
 
 
         const tbody =
@@ -4060,358 +3038,379 @@ async function loadEmployees(){
             );
 
 
-        if(!employeesData.length){
+        tbody.innerHTML = "";
 
-            tbody.innerHTML = `
+
+        rows.forEach(employee => {
+
+            tbody.innerHTML += `
                 <tr>
-                    <td colspan="6"
-                        class="empty">
-                        Xodimlar yo‘q
+
+                    <td>
+                        ${escapeHtml(
+                            employee.name || ""
+                        )}
                     </td>
+
+                    <td>
+                        ${escapeHtml(
+                            employee.phone || ""
+                        )}
+                    </td>
+
+                    <td>
+                        ${escapeHtml(
+                            employee.position || ""
+                        )}
+                    </td>
+
+                    <td>
+                        ${escapeHtml(
+                            employee.login_role ||
+                            employee.role ||
+                            ""
+                        )}
+                    </td>
+
+                    <td>
+                        ${money(
+                            employee.salary || 0
+                        )}
+                    </td>
+
+                    <td>
+
+                        <button
+                            class="action-btn btn-warning"
+                            onclick='editEmployee(${JSON.stringify(employee)})'>
+
+                            Tahrirlash
+
+                        </button>
+
+                        <button
+                            class="action-btn btn-danger"
+                            onclick="deleteEmployee(${employee.id})">
+
+                            O'chirish
+
+                        </button>
+
+                    </td>
+
                 </tr>
             `;
 
-        }else{
+        });
 
-            tbody.innerHTML =
-                employeesData.map(employee => `
+    } catch (error) {
 
-                    <tr>
-
-                        <td>
-                            ${employee.id}
-                        </td>
-
-                        <td>
-                            ${escapeHtml(
-                                employee.name
-                            )}
-                        </td>
-
-                        <td>
-                            ${escapeHtml(
-                                employee.phone || ""
-                            )}
-                        </td>
-
-                        <td>
-                            ${escapeHtml(
-                                employee.position || ""
-                            )}
-                        </td>
-
-                        <td>
-                            ${money(
-                                employee.salary
-                            )}
-                        </td>
-
-                        <td>
-
-                            <button
-                                class="btn blue"
-                                onclick="editEmployee(${employee.id})">
-                                Tahrirlash
-                            </button>
-
-                            <button
-                                class="btn red"
-                                onclick="deleteEmployee(${employee.id})">
-                                O‘chirish
-                            </button>
-
-                        </td>
-
-                    </tr>
-
-                `).join("");
-
-        }
-
-
-        const summary =
-            await api(
-                "/api/employees/summary"
-            );
-
-
-        document.getElementById(
-            "employeeCount"
-        ).textContent =
-            number(summary.employees);
-
-
-        document.getElementById(
-            "employeeSalary"
-        ).textContent =
-            money(summary.total_salary);
-
-
-    }catch(error){
-
-        showError(error);
-
+        console.error(
+            "Employees:",
+            error
+        );
     }
-
 }
 
 
-function openEmployeeModal(employee = null){
+/* =====================================================
+   EMPLOYEE MODAL
+===================================================== */
 
-    document.getElementById(
-        "employeeModalTitle"
-    ).textContent =
-        employee
-        ? "Xodimni tahrirlash"
-        : "Yangi xodim";
+function openEmployeeModal(employee = null) {
+
+    document
+        .getElementById(
+            "employeeModal"
+        )
+        .classList.add("show");
 
 
     document.getElementById(
         "employeeId"
     ).value =
-        employee ? employee.id : "";
+        employee?.id || "";
 
 
     document.getElementById(
         "employeeName"
     ).value =
-        employee ? employee.name : "";
+        employee?.name || "";
 
 
     document.getElementById(
-        "employeePhone"
+        "employeePhoneInput"
     ).value =
-        employee ? employee.phone : "";
+        employee?.phone || "";
 
 
     document.getElementById(
         "employeePosition"
     ).value =
-        employee ? employee.position : "";
+        employee?.position || "";
+
+
+    document.getElementById(
+        "employeeRole"
+    ).value =
+        employee?.login_role ||
+        employee?.role ||
+        "AFITSANT";
 
 
     document.getElementById(
         "employeeSalary"
     ).value =
-        employee ? employee.salary : 0;
+        employee?.salary || "";
 
 
     document.getElementById(
-        "employeeModal"
-    ).classList.add("show");
-
+        "employeePin"
+    ).value = "";
 }
 
 
-async function editEmployee(id){
+function closeEmployeeModal() {
 
-    const employee =
-        employeesData.find(
-            x => x.id == id
-        );
-
-
-    if(employee){
-
-        openEmployeeModal(employee);
-
-    }
-
-}
-
-
-async function saveEmployee(){
-
-    try{
-
-        const id =
-            document.getElementById(
-                "employeeId"
-            ).value;
-
-
-        const body = {
-
-            name:
-                document.getElementById(
-                    "employeeName"
-                ).value,
-
-            phone:
-                document.getElementById(
-                    "employeePhone"
-                ).value,
-
-            position:
-                document.getElementById(
-                    "employeePosition"
-                ).value,
-
-            salary:
-                document.getElementById(
-                    "employeeSalary"
-                ).value
-
-        };
-
-
-        await api(
-            id
-            ? "/api/employees/" + id
-            : "/api/employees",
-            {
-
-                method:id
-                    ? "PUT"
-                    : "POST",
-
-                body:JSON.stringify(body)
-
-            }
-        );
-
-
-        closeModal(
+    document
+        .getElementById(
             "employeeModal"
-        );
-
-
-        await loadEmployees();
-
-
-    }catch(error){
-
-        showError(error);
-
-    }
-
+        )
+        .classList.remove("show");
 }
 
 
-async function deleteEmployee(id){
+function editEmployee(employee) {
 
-    if(!confirm(
-        "Bu xodimni o‘chirmoqchimisiz?"
-    )) return;
-
-
-    try{
-
-        await api(
-            "/api/employees/" + id,
-            {
-                method:"DELETE"
-            }
-        );
-
-
-        await loadEmployees();
-
-
-    }catch(error){
-
-        showError(error);
-
-    }
-
+    openEmployeeModal(employee);
 }
 
 
-// =====================================================
-// UTILITIES
-// =====================================================
+async function saveEmployee() {
 
-function formatDate(date){
+    const id =
+        document
+            .getElementById(
+                "employeeId"
+            )
+            .value;
 
-    if(!date) return "-";
+
+    const name =
+        document
+            .getElementById(
+                "employeeName"
+            )
+            .value
+            .trim();
 
 
-    try{
+    const phone =
+        document
+            .getElementById(
+                "employeePhoneInput"
+            )
+            .value
+            .trim();
 
-        return new Date(date)
-            .toLocaleString(
-                "uz-UZ"
+
+    const position =
+        document
+            .getElementById(
+                "employeePosition"
+            )
+            .value
+            .trim();
+
+
+    const role =
+        document
+            .getElementById(
+                "employeeRole"
+            )
+            .value;
+
+
+    const salary =
+        Number(
+            document
+                .getElementById(
+                    "employeeSalary"
+                )
+                .value || 0
+        );
+
+
+    const pin =
+        document
+            .getElementById(
+                "employeePin"
+            )
+            .value
+            .trim();
+
+
+    if (!name || !phone) {
+
+        alert(
+            "Ism va telefon raqamni kiriting."
+        );
+
+        return;
+    }
+
+
+    if (!id && !pin) {
+
+        alert(
+            "Yangi xodim uchun maxsus kirish kodini kiriting."
+        );
+
+        return;
+    }
+
+
+    const payload = {
+
+        name: name,
+        phone: phone,
+        position: position,
+        salary: salary,
+        role: role
+
+    };
+
+
+    if (pin) {
+        payload.pin = pin;
+    }
+
+
+    try {
+
+        if (id) {
+
+            await api(
+                `/api/employees/${id}`,
+                {
+                    method: "PUT",
+                    body: JSON.stringify(payload)
+                }
             );
 
-    }catch{
+        } else {
 
-        return date;
+            await api(
+                "/api/employees",
+                {
+                    method: "POST",
+                    body: JSON.stringify(payload)
+                }
+            );
 
-    }
-
-}
-
-
-function escapeHtml(value){
-
-    return String(value ?? "")
-        .replace(/&/g,"&amp;")
-        .replace(/</g,"&lt;")
-        .replace(/>/g,"&gt;")
-        .replace(/"/g,"&quot;")
-        .replace(/'/g,"&#039;");
-
-}
-
-
-// =====================================================
-// START
-// =====================================================
-
-async function startApp(){
-
-    try{
-
-        await loadInventory();
-
-        await loadRecipes();
-
-        await loadDashboard();
-
-        await loadSales();
-
-        await loadTransactions();
-
-        await loadEmployees();
-
-        await loadReportPeriod("today");
-
-    }catch(error){
-
-        console.error(error);
-
-    }
-
-}
-
-
-registerPWA();
-
-if(isAppUnlocked()){
-
-    document.body.classList.remove("locked");
-    document.body.classList.add("unlocked");
-
-    document.getElementById("appLock").style.display = "none";
-
-    startApp();
-
-}else{
-
-    document.body.classList.add("locked");
-
-    setTimeout(() => {
-
-        const input =
-            document.getElementById("appCode");
-
-        if(input){
-            input.focus();
         }
 
-    }, 300);
 
+        closeEmployeeModal();
+
+        alert(
+            "Xodim saqlandi."
+        );
+
+        loadEmployees();
+
+    } catch (error) {
+
+        alert(
+            error.message
+        );
+    }
 }
+
+
+async function deleteEmployee(id) {
+
+    if (
+        !confirm(
+            "Bu xodimni o'chirishni xohlaysizmi?"
+        )
+    ) {
+
+        return;
+    }
+
+
+    try {
+
+        await api(
+            `/api/employees/${id}`,
+            {
+                method: "DELETE"
+            }
+        );
+
+
+        loadEmployees();
+
+    } catch (error) {
+
+        alert(
+            error.message
+        );
+    }
+}
+
+
+/* =====================================================
+   MODAL OUTSIDE CLICK
+===================================================== */
+
+document
+    .getElementById("employeeModal")
+    .addEventListener(
+        "click",
+        function(event) {
+
+            if (
+                event.target === this
+            ) {
+
+                closeEmployeeModal();
+
+            }
+
+        }
+    );
+
+
+/* =====================================================
+   INIT
+===================================================== */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    async function() {
+
+        const logged =
+            await loadCurrentUser();
+
+        if (!logged) {
+
+            document
+                .getElementById(
+                    "loginScreen"
+                )
+                .style.display = "flex";
+
+            document
+                .getElementById(
+                    "app"
+                )
+                .style.display = "none";
+        }
+
+    }
+);
 
 </script>
 
