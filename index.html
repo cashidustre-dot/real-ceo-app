@@ -549,9 +549,9 @@ body.unlocked #appShell{
 
         <div id="employeeLoginFields" style="display:none;">
             <div class="lock-input">
-                <label for="employeePhone">Telefon raqami</label>
+                <label for="loginPhone">Telefon raqami</label>
                 <input
-                    id="employeePhone"
+                    id="loginPhone"
                     type="tel"
                     autocomplete="tel"
                     placeholder="+998..."
@@ -1944,7 +1944,7 @@ async function loginApp(){
             return;
         }
     }else{
-        payload.phone = document.getElementById("employeePhone").value.trim();
+        payload.phone = document.getElementById("loginPhone").value.trim();
         payload.pin = code;
 
         if(!payload.phone || !code){
