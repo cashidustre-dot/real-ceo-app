@@ -113,6 +113,23 @@ def init_db():
         )
     """)
 
+    # Existing Railway databases may have an older employees table
+    # without these columns. Add them safely during startup.
+    cur.execute("""
+        ALTER TABLE employees
+        ADD COLUMN IF NOT EXISTS phone VARCHAR(100)
+    """)
+
+    cur.execute("""
+        ALTER TABLE employees
+        ADD COLUMN IF NOT EXISTS position VARCHAR(255)
+    """)
+
+    cur.execute("""
+        ALTER TABLE employees
+        ADD COLUMN IF NOT EXISTS salary NUMERIC(14,2) DEFAULT 0
+    """)
+
     # =====================================================
     # SALES
     # =====================================================
