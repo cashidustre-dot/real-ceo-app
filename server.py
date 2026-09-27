@@ -1,9 +1,38 @@
-from flask import Flask, request, jsonify, send_file
+from flask import Flask, request, jsonify, send_file, session
 import os
 import psycopg2
+from functools import wraps
+from werkzeug.security import generate_password_hash, check_password_hash
 from psycopg2.extras import RealDictCursor
 
 app = Flask(__name__)
+
+app.secret_key = os.environ.get("FLASK_SECRET_KEY")
+if not app.secret_key:
+    raise RuntimeError("FLASK_SECRET_KEY Railway Variables ga qo‘shilmagan")
+
+app.config.update(
+    SESSION_COOKIE_HTTPONLY=True,
+    SESSION_COOKIE_SAMESITE="Lax",
+    SESSION_COOKIE_SECURE=os.environ.get("RAILWAY_ENVIRONMENT") is not None,
+    PERMANENT_SESSION_LIFETIME=60 * 60 * 24 * 7
+)
+
+# =========================================================
+# FIXED ADMIN ACCOUNTS
+# =========================================================
+# Faqat quyidagi ikki ism ADMIN sifatida kira oladi.
+# Kodni Railway Variables ichidagi ADMIN_ACCESS_CODE orqali
+# almashtirish mumkin; hozirgi boshlang‘ich kod: gertn2212
+ADMIN_NAMES = {
+    "abduvaliev jamshid",
+    "toshpulatv axmadjon"
+}
+ADMIN_ACCESS_CODE = os.environ.get("ADMIN_ACCESS_CODE", "gertn2212")
+
+
+def normalize_admin_name(value):
+    return " ".join(str(value or "").strip().lower().split())
 
 
 # =========================================================
@@ -20,6 +49,22 @@ def get_db():
 def init_db():
     conn = get_db()
     cur = conn.cursor()
+
+    # =====================================================
+    # USERS / LOGIN
+    # =====================================================
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS users (
+            id SERIAL PRIMARY KEY,
+            employee_id INTEGER,
+            name VARCHAR(255) NOT NULL,
+            phone VARCHAR(100) UNIQUE NOT NULL,
+            password_hash TEXT NOT NULL,
+            role VARCHAR(30) NOT NULL DEFAULT 'AFITSANT',
+            is_active BOOLEAN DEFAULT TRUE,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    """)
 
     # =====================================================
     # TRANSACTIONS
@@ -154,6 +199,298 @@ try:
     init_db()
 except Exception as e:
     print("DATABASE INIT ERROR:", e)
+
+
+# =========================================================
+# DEFAULT CEO / AUTHENTICATION
+# =========================================================
+
+def ensure_default_ceo():
+    phone = os.environ.get("CEO_PHONE")
+    pin = os.environ.get("CEO_PIN")
+    name = os.environ.get("CEO_NAME", "REAL CEO")
+
+    if not phone or not pin:
+        print("CEO bootstrap skipped: CEO_PHONE yoki CEO_PIN mavjud emas")
+        return
+
+    conn = get_db()
+    cur = conn.cursor()
+    try:
+        cur.execute("SELECT id FROM users WHERE phone = %s", (phone,))
+        existing = cur.fetchone()
+        if not existing:
+            cur.execute("""
+                INSERT INTO users
+                (name, phone, password_hash, role, is_active)
+                VALUES (%s, %s, %s, 'CEO', TRUE)
+            """, (name, phone, generate_password_hash(pin)))
+            conn.commit()
+            print("Default CEO account created")
+    finally:
+        cur.close()
+        conn.close()
+
+
+try:
+    ensure_default_ceo()
+except Exception as e:
+    print("CEO BOOTSTRAP ERROR:", e)
+
+
+PUBLIC_API_PATHS = {
+    "/api/health",
+    "/api/auth/login",
+    "/api/auth/me",
+    "/api/auth/logout"
+}
+
+
+def current_user():
+    # Fixed admins live in the signed Flask session and do not need a DB row.
+    if session.get("role") == "ADMIN" and session.get("admin_name"):
+        return {
+            "id": None,
+            "employee_id": None,
+            "name": session["admin_name"],
+            "phone": None,
+            "role": "ADMIN",
+            "is_active": True
+        }
+
+    user_id = session.get("user_id")
+    if not user_id:
+        return None
+
+    conn = get_db()
+    cur = conn.cursor()
+    try:
+        cur.execute("""
+            SELECT id, employee_id, name, phone, role, is_active
+            FROM users
+            WHERE id = %s
+        """, (user_id,))
+        user = cur.fetchone()
+        return user
+    finally:
+        cur.close()
+        conn.close()
+
+
+def login_required(fn):
+    @wraps(fn)
+    def wrapper(*args, **kwargs):
+        user = current_user()
+        if not user or not user["is_active"]:
+            session.clear()
+            return jsonify({"error": "Kirish talab qilinadi"}), 401
+        return fn(*args, **kwargs)
+    return wrapper
+
+
+def role_required(*roles):
+    def decorator(fn):
+        @wraps(fn)
+        def wrapper(*args, **kwargs):
+            user = current_user()
+            if not user or not user["is_active"]:
+                session.clear()
+                return jsonify({"error": "Kirish talab qilinadi"}), 401
+            if user["role"] not in roles:
+                return jsonify({"error": "Bu bo‘lim uchun ruxsat yo‘q"}), 403
+            return fn(*args, **kwargs)
+        return wrapper
+    return decorator
+
+
+@app.before_request
+def protect_api():
+    if not request.path.startswith("/api/"):
+        return None
+    if request.path in PUBLIC_API_PATHS:
+        return None
+
+    user = current_user()
+    if not user or not user["is_active"]:
+        session.clear()
+        return jsonify({"error": "Kirish talab qilinadi"}), 401
+
+    role = user["role"]
+    path = request.path
+    method = request.method
+
+    if role in {"CEO", "ADMIN"}:
+        return None
+
+    # Afitsant: faqat sotuv va sotuv uchun retseptni ko‘rish.
+    if role == "AFITSANT":
+        allowed = (
+            path == "/api/sales" and method in {"GET", "POST"}
+        ) or (
+            path == "/api/sales/summary" and method == "GET"
+        ) or (
+            path.startswith("/api/recipes/") and method == "GET"
+        ) or (
+            path == "/api/recipes" and method == "GET"
+        )
+        if allowed:
+            return None
+        return jsonify({"error": "Afitsant uchun bu amal taqiqlangan"}), 403
+
+    # Oshpaz va boshqa oshxona rollari: ombor/retseptlarni ko‘rish.
+    kitchen_roles = {"OSHPAZ", "SALATCHI", "SHASHLIKCHI", "SOMSACHI"}
+    if role in kitchen_roles:
+        allowed = (
+            path == "/api/inventory" and method == "GET"
+        ) or (
+            path == "/api/inventory/summary" and method == "GET"
+        ) or (
+            path == "/api/recipes" and method == "GET"
+        ) or (
+            path.startswith("/api/recipes/") and method == "GET"
+        )
+        if allowed:
+            return None
+        return jsonify({"error": "Bu rol uchun bu amal taqiqlangan"}), 403
+
+    return jsonify({"error": "Ruxsat yo‘q"}), 403
+
+
+# =========================================================
+# AUTH API
+# =========================================================
+
+@app.post("/api/auth/login")
+def auth_login():
+    data = request.get_json() or {}
+    login_type = str(data.get("login_type", "employee")).strip().lower()
+
+    # Fixed two-person ADMIN login.
+    if login_type == "admin":
+        name = normalize_admin_name(data.get("name"))
+        code = str(data.get("code", ""))
+
+        if name not in ADMIN_NAMES or code != ADMIN_ACCESS_CODE:
+            return jsonify({"error": "Admin ismi yoki maxsus kodi noto‘g‘ri"}), 401
+
+        display_name = "Abduvaliev Jamshid" if name == "abduvaliev jamshid" else "Toshpulatv Axmadjon"
+        session.clear()
+        session.permanent = True
+        session["role"] = "ADMIN"
+        session["admin_name"] = display_name
+
+        return jsonify({
+            "id": None,
+            "employee_id": None,
+            "name": display_name,
+            "phone": None,
+            "role": "ADMIN"
+        })
+
+    # Employee login: phone + code set by an Admin.
+    phone = str(data.get("phone", "")).strip()
+    pin = str(data.get("pin", ""))
+
+    if not phone or not pin:
+        return jsonify({"error": "Telefon va maxsus kod kiriting"}), 400
+
+    conn = get_db()
+    cur = conn.cursor()
+    try:
+        cur.execute("""
+            SELECT id, employee_id, name, phone, password_hash, role, is_active
+            FROM users
+            WHERE phone = %s
+        """, (phone,))
+        user = cur.fetchone()
+    finally:
+        cur.close()
+        conn.close()
+
+    if not user or not user["is_active"] or not check_password_hash(user["password_hash"], pin):
+        return jsonify({"error": "Telefon yoki maxsus kod noto‘g‘ri"}), 401
+
+    session.clear()
+    session.permanent = True
+    session["user_id"] = user["id"]
+
+    return jsonify({
+        "id": user["id"],
+        "employee_id": user["employee_id"],
+        "name": user["name"],
+        "phone": user["phone"],
+        "role": user["role"]
+    })
+
+
+@app.get("/api/auth/me")
+def auth_me():
+    user = current_user()
+    if not user or not user["is_active"]:
+        session.clear()
+        return jsonify({"error": "Kirish talab qilinadi"}), 401
+    return jsonify(dict(user))
+
+
+@app.post("/api/auth/logout")
+def auth_logout():
+    session.clear()
+    return jsonify({"message": "Tizimdan chiqildi"})
+
+
+@app.get("/api/users")
+@role_required("CEO", "ADMIN")
+def get_users():
+    conn = get_db()
+    cur = conn.cursor()
+    try:
+        cur.execute("""
+            SELECT id, employee_id, name, phone, role, is_active, created_at
+            FROM users
+            ORDER BY id DESC
+        """)
+        return jsonify(cur.fetchall())
+    finally:
+        cur.close()
+        conn.close()
+
+
+@app.post("/api/users")
+@role_required("CEO", "ADMIN")
+def add_user():
+    data = request.get_json() or {}
+    name = str(data.get("name", "")).strip()
+    phone = str(data.get("phone", "")).strip()
+    pin = str(data.get("pin", ""))
+    role = str(data.get("role", "AFITSANT")).upper().strip()
+    employee_id = data.get("employee_id")
+
+    allowed_roles = {"CEO", "AFITSANT", "OSHPAZ", "SALATCHI", "SHASHLIKCHI", "SOMSACHI"}
+    if not name or not phone or not pin:
+        return jsonify({"error": "Ism, telefon va PIN kerak"}), 400
+    if role not in allowed_roles:
+        return jsonify({"error": "Rol noto‘g‘ri"}), 400
+    if len(pin) < 4:
+        return jsonify({"error": "PIN kamida 4 belgidan iborat bo‘lsin"}), 400
+
+    conn = get_db()
+    cur = conn.cursor()
+    try:
+        cur.execute("""
+            INSERT INTO users
+            (employee_id, name, phone, password_hash, role, is_active)
+            VALUES (%s, %s, %s, %s, %s, TRUE)
+            RETURNING id, employee_id, name, phone, role, is_active, created_at
+        """, (employee_id, name, phone, generate_password_hash(pin), role))
+        row = cur.fetchone()
+        conn.commit()
+        return jsonify(row), 201
+    except psycopg2.errors.UniqueViolation:
+        conn.rollback()
+        return jsonify({"error": "Bu telefon raqami bilan login allaqachon mavjud"}), 409
+    finally:
+        cur.close()
+        conn.close()
 
 
 # =========================================================
@@ -722,9 +1059,14 @@ def get_employees():
     cur = conn.cursor()
 
     cur.execute("""
-        SELECT *
-        FROM employees
-        ORDER BY id DESC
+        SELECT
+            e.*,
+            u.role AS login_role,
+            u.is_active AS login_active
+        FROM employees e
+        LEFT JOIN users u
+            ON u.employee_id = e.id
+        ORDER BY e.id DESC
     """)
 
     rows = cur.fetchall()
@@ -736,45 +1078,69 @@ def get_employees():
 
 
 @app.post("/api/employees")
+@role_required("CEO", "ADMIN")
 def add_employee():
     data = request.get_json() or {}
 
-    name = data.get("name")
-    phone = data.get("phone", "")
-    position = data.get("position", "")
+    name = str(data.get("name", "")).strip()
+    phone = str(data.get("phone", "")).strip()
+    position = str(data.get("position", "")).strip()
     salary = data.get("salary", 0)
+    pin = str(data.get("pin", "")).strip()
+    role = str(data.get("role", "AFITSANT")).upper().strip()
 
-    if not name:
-        return jsonify({
-            "error": "name kerak"
-        }), 400
+    role_map = {
+        "AFITSANT": "AFITSANT",
+        "OSHPAZ": "OSHPAZ",
+        "SALATCHI": "SALATCHI",
+        "SHASHLIKCHI": "SHASHLIKCHI",
+        "SOMSACHI": "SOMSACHI",
+        "CEO": "CEO"
+    }
+
+    if not name or not phone:
+        return jsonify({"error": "Ism va telefon kerak"}), 400
+    if not pin or len(pin) < 4:
+        return jsonify({"error": "Maxsus kod kamida 4 belgidan iborat bo‘lsin"}), 400
+    if role not in role_map:
+        return jsonify({"error": "Lavozim/rol noto‘g‘ri"}), 400
 
     conn = get_db()
     cur = conn.cursor()
+    try:
+        cur.execute("""
+            INSERT INTO employees (name, phone, position, salary)
+            VALUES (%s, %s, %s, %s)
+            RETURNING *
+        """, (name, phone, position, salary))
+        employee = cur.fetchone()
 
-    cur.execute("""
-        INSERT INTO employees
-        (name, phone, position, salary)
-        VALUES (%s, %s, %s, %s)
-        RETURNING *
-    """, (
-        name,
-        phone,
-        position,
-        salary
-    ))
+        cur.execute("""
+            INSERT INTO users
+            (employee_id, name, phone, password_hash, role, is_active)
+            VALUES (%s, %s, %s, %s, %s, TRUE)
+            RETURNING id, employee_id, name, phone, role, is_active
+        """, (employee["id"], name, phone, generate_password_hash(pin), role))
+        user = cur.fetchone()
 
-    row = cur.fetchone()
+        conn.commit()
+        employee["role"] = user["role"]
+        employee["is_active"] = user["is_active"]
+        return jsonify(employee), 201
 
-    conn.commit()
-
-    cur.close()
-    conn.close()
-
-    return jsonify(row), 201
+    except psycopg2.errors.UniqueViolation:
+        conn.rollback()
+        return jsonify({"error": "Bu telefon raqami bilan xodim yoki login allaqachon mavjud"}), 409
+    except Exception as e:
+        conn.rollback()
+        return jsonify({"error": str(e)}), 400
+    finally:
+        cur.close()
+        conn.close()
 
 
 @app.put("/api/employees/<int:employee_id>")
+@role_required("CEO", "ADMIN")
 def update_employee(employee_id):
     data = request.get_json() or {}
 
@@ -782,50 +1148,66 @@ def update_employee(employee_id):
     phone = data.get("phone")
     position = data.get("position")
     salary = data.get("salary")
+    pin = str(data.get("pin", "")).strip()
+    role = str(data.get("role", "")).upper().strip()
 
     conn = get_db()
     cur = conn.cursor()
+    try:
+        cur.execute("""
+            UPDATE employees
+            SET name = COALESCE(%s, name),
+                phone = COALESCE(%s, phone),
+                position = COALESCE(%s, position),
+                salary = COALESCE(%s, salary)
+            WHERE id = %s
+            RETURNING *
+        """, (name, phone, position, salary, employee_id))
+        employee = cur.fetchone()
+        if not employee:
+            conn.rollback()
+            return jsonify({"error": "Xodim topilmadi"}), 404
 
-    cur.execute("""
-        UPDATE employees
-        SET
-            name = COALESCE(%s, name),
-            phone = COALESCE(%s, phone),
-            position = COALESCE(%s, position),
-            salary = COALESCE(%s, salary)
-        WHERE id = %s
-        RETURNING *
-    """, (
-        name,
-        phone,
-        position,
-        salary,
-        employee_id
-    ))
+        cur.execute("SELECT * FROM users WHERE employee_id = %s", (employee_id,))
+        user = cur.fetchone()
+        if not user:
+            if not phone or not pin or not role:
+                conn.rollback()
+                return jsonify({"error": "Bu xodim uchun login mavjud emas. Telefon, rol va yangi kod kerak."}), 400
+            cur.execute("""
+                INSERT INTO users (employee_id, name, phone, password_hash, role, is_active)
+                VALUES (%s, %s, %s, %s, %s, TRUE)
+            """, (employee_id, employee["name"], employee["phone"], generate_password_hash(pin), role))
+        else:
+            if role and role not in {"CEO","AFITSANT","OSHPAZ","SALATCHI","SHASHLIKCHI","SOMSACHI"}:
+                conn.rollback()
+                return jsonify({"error": "Rol noto‘g‘ri"}), 400
+            cur.execute("""
+                UPDATE users
+                SET name=%s, phone=%s, role=COALESCE(NULLIF(%s,''), role)
+                WHERE employee_id=%s
+            """, (employee["name"], employee["phone"], role, employee_id))
+            if pin:
+                cur.execute("UPDATE users SET password_hash=%s WHERE employee_id=%s", (generate_password_hash(pin), employee_id))
 
-    row = cur.fetchone()
-
-    if not row:
+        conn.commit()
+        employee["role"] = role or (user["role"] if user else None)
+        return jsonify(employee)
+    except psycopg2.errors.UniqueViolation:
         conn.rollback()
+        return jsonify({"error": "Bu telefon raqami bilan login allaqachon mavjud"}), 409
+    finally:
         cur.close()
         conn.close()
 
-        return jsonify({
-            "error": "Xodim topilmadi"
-        }), 404
-
-    conn.commit()
-
-    cur.close()
-    conn.close()
-
-    return jsonify(row)
-
 
 @app.delete("/api/employees/<int:employee_id>")
+@role_required("CEO", "ADMIN")
 def delete_employee(employee_id):
     conn = get_db()
     cur = conn.cursor()
+
+    cur.execute("DELETE FROM users WHERE employee_id = %s", (employee_id,))
 
     cur.execute("""
         DELETE FROM employees
@@ -843,6 +1225,8 @@ def delete_employee(employee_id):
         return jsonify({
             "error": "Xodim topilmadi"
         }), 404
+
+    cur.execute("DELETE FROM users WHERE employee_id = %s", (employee_id,))
 
     conn.commit()
 
